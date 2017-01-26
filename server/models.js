@@ -1,8 +1,10 @@
 'use strict'
 const Sequelize = require("sequelize");
-const dataBase = require('./configDB').sequelize;
+const configDB = require('./configDB').sqlite;
 
-var User = dataBase.define('user',
+var sequelize = new Sequelize('', '', '', configDB);
+
+var User = sequelize.define('user',
     {
         name: {
             type: Sequelize.STRING,

@@ -2,20 +2,21 @@
 
 const express = require('express');
 const api = express.Router();
-const controllers = require('./controllers');
+const facturas = require('./controllers/facturas');
+const users = require('./controllers/users');
+
 //const middleware = require('../middleware');
 
 // txt
-api.get('/listText/', controllers.getListTxt);
-api.get('/testDB/',controllers.testDB);
-api.get('/filetext/',controllers.getDataFile);
+api.get('/listText/', facturas.getListTxt);
+api.get('/testDB/',facturas.testDB);
+api.get('/filetext/',facturas.getDataFile);
 
 // users
-api.post('/registroUsuarios/',controllers.createUser);
-api.post('/login/',controllers.login);
+api.post('/registroUsuarios/',users.createUser);
+api.post('/login/',users.login);
 
 //api.get('/user/:id', controllers.getUser);
-
 //api.get('/cat-atributo/:id', catProductoCtrl.getCatProducto);
 
 module.exports = api;

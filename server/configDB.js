@@ -1,9 +1,8 @@
-const Sequelize = require("sequelize");
 
-var sequelize = new Sequelize('', '', '', {
-  dialect: 'sqlite',
-  storage: './database.sqlite'
-});
+var sqlite = {
+    dialect: 'sqlite',
+    storage: './database.sqlite'
+}
 
 var sqlServer = {
     userName: 'nodejs',
@@ -19,5 +18,5 @@ var sqlServer = {
 
 module.exports = {
     sqlServer,
-    sequelize
+    sqlite
 }
