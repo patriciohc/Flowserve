@@ -5,11 +5,12 @@ var sqlite = {
 }
 
 var sqlServer = {
-    userName: 'nodejs',
-    password: 'nodejs',
-    server: 'localhost',
+    userName: 'TLXUser',
+    password: 'Flowserve1*',
+    server: 'kaldb5131',
     options: {
-        port: 54187
+        port: 54187,
+        database: "EISystem"
     },
     // If you're on Windows Azure, you will need this:
     //options: {encrypt: true}

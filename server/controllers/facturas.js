@@ -3,8 +3,9 @@
 // configuaraciones de las base de datos
 const configDB = require('../configDB');
 // conexcion sql server
-//const Connection = require('tedious').Connection;
+const Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
+var TYPES = require('tedious').TYPES
 // lectura de archivos de directorios y archivos de texto
 const fs = require('fs');
 // lectura de excel
@@ -12,15 +13,15 @@ const XLSX = require('xlsx');
 const excel = require('../excel')
 
 
-//var connection = new Connection(configDB.sqlServer);
+var connection = new Connection(configDB.sqlServer);
 
-// connection.on('connect', function(err) {
-//     if (err){
-//         console.log("error: " + err);
-//     } else {
-//         console.log("Connected");
-//     }
-// });
+connection.on('connect', function(err) {
+    if (err){
+        console.log("error: " + err);
+    } else {
+        console.log("Connected");
+    }
+});
 
 //const dirFiles = "E:/datos_txt"
 const dirFiles = "./datos_txt";
@@ -79,20 +80,33 @@ function getDataFile(req, res) {
 }
 
 function testDB(req, res){
-    // var request = new Request("select * from table_test", function(err, rowCount) {
-    //     if (err) {
-    //         console.log(err);
-    //         throw err;
-    //         return res.status(200).send("error");
-    //     }
-    //     //return res.status(200).send(rowCount);
-    // });
+    var request = new Request("fsgTLXPartMaster", function(err, rowCount) {
+        if (err) {
+            console.log(err);
+            throw err;
+            return res.status(200).send("error");
+        }
+        //return res.status(200).send(rowCount);
+    });
 
-    // request.on('row', columns => {
-    //     return res.status(200).send(columns);
-    // });
+    request.addParameter('PartCode', TYPES.VarChar, '300000-BASE');
+    request.addParameter('OrganizationKey', TYPES.Int, '300000-BASE');
 
-    // connection.execSql(request);
+    request.on('row', rows => {
+        console.log(rows);
+        return res.status(200).send(rows);
+    });
+
+    request.on('doneProc', (rowCount, more, returnStatus, rows) => {
+        console.log(rows);
+        return res.status(200).send(rows);
+    });
+
+    //request.on('row', columns => {
+    //    return res.status(200).send(columns);
+    //});
+
+    connection.callProcedure(request);
 }
 
 module.exports = {
