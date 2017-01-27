@@ -54,12 +54,23 @@ function getDataFile(req, res) {
                     .map( item => {
                         var elementos = item.split("\r\n");
                         var dic = {};
-                        for (var i in elementos) {
+                        for (var i = 0; i < elementos.length; i++) {
                             var item = elementos[i].trim();
                             if (item == "") continue;
                             var key = item.split(" ")[0];
                             var value = item.substring(key.length, item.length).trim();
-                            dic[key] = value;
+                            if (key == "TpoCodigo1"){
+                                var infoHead = procesarHead(item);
+                                var rows = [];
+                                i++;
+                                while(i < elementos.length){
+                                    rows.push(procesarRow(elementos[i], infoHead));
+                                    i++;
+                                }
+                                dic["productos"] = { head: infoHead, rows: rows };
+                            } else {
+                                dic[key] = value;
+                            }
                         }
                         return dic;
                     });
@@ -103,11 +114,6 @@ function getDataFile(req, res) {
                             facturaProcesada.emisor.push(itemFactura);
                             break;
                         case "receptor":
-                            for (var key in  itemFactura) {
-                                if (key == "TpoCodigo1"){
-
-                                }
-                            }
                             facturaProcesada.receptor.push(itemFactura);
                             break;
                         case "otros":
@@ -118,21 +124,35 @@ function getDataFile(req, res) {
                 facturasProcesadas.push(facturaProcesada);
             }
 
-            // var  filtro = [];
-            // for (var i = 0; i < facturas.length; i++){
-            //     var factura = facturas[i];
-            //     if (factura.length > 1){
-            //         var sku = factura[6].SKU;
-            //         var info = jsonExcel[0].data.find( item => {
-            //             var key = sku.substring(14, 30).trim();
-            //             return item.RPRDNO == key
-            //         });
-            //         console.log(info);
-            //     }
-            // }
             saveText(facturasProcesadas);
             return res.status(200).send(facturasProcesadas);
     });
+}
+
+function procesarHead(linea){
+    var head = [];
+    var array = linea.split(" ")
+    array = array.filter((a,b,c) =>{return c.indexOf(a,b+1)<0});
+    array = array.filter( item => item != "");
+    for (var i in array){
+        var itemHead = {
+            nombre: array[i],
+            posicion: linea.search(array[i])
+        }
+        head.push(itemHead);
+    }
+    return head;
+}
+
+function procesarRow(linea, head){
+    var row = [];
+    for (var i = 1; i < head.length; i++){
+        var inicio = head[i - 1].posicion;
+        var fin = head[i].posicion;
+        row.push(linea.substring(inicio, fin).trim());
+    }
+    row.push(linea.substring(head[head.length-1].posicion, linea.length).trim());
+    return row;
 }
 
 
@@ -150,7 +170,11 @@ function saveText(facturas) {
             for (var keyItemSeccion in seccion) {
                 var itemSeccion = seccion[keyItemSeccion]
                 for (var keyImteSeccion in itemSeccion) {
-                    texto += keyImteSeccion + white.substring(0, 17 - keyImteSeccion.length) + itemSeccion[keyImteSeccion] + "\r\n";
+                    if (keyImteSeccion == "productos") {
+                        //for ()
+                    } else {
+                        texto += keyImteSeccion + white.substring(0, 17 - keyImteSeccion.length) + itemSeccion[keyImteSeccion] + "\r\n";
+                    }
                 }
                 texto += "\r\n";
             }
