@@ -103,6 +103,11 @@ function getDataFile(req, res) {
                             facturaProcesada.emisor.push(itemFactura);
                             break;
                         case "receptor":
+                            for (var key in  itemFactura) {
+                                if (key == "TpoCodigo1"){
+
+                                }
+                            }
                             facturaProcesada.receptor.push(itemFactura);
                             break;
                         case "otros":
