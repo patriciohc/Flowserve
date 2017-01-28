@@ -27,14 +27,16 @@ function getListTxt(req, res) {
             return res.status(200).send(null);
             console.log(err);
         }
-        var archivos = {};
+        var lista = [];
         for (var i in files) {
+            var archivo = {};
             var nameFile =  dirFiles +"/"+ files[i];
             var texto = fs.readFileSync(nameFile, 'utf8');
-            archivos.nombre = files[i];
-            archivos.cantidad = texto.split("XXXINICIO").length;
+            archivo.nombre = files[i];
+            archivo.cantidad = texto.split("XXXINICIO").length;
+            lista.push(archivo);
         }
-        return res.status(200).send(archivos);
+        return res.status(200).send(lista);
     });
 }
 
