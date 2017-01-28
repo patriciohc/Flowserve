@@ -33,7 +33,7 @@ function getListTxt(req, res) {
             var nameFile =  dirFiles +"/"+ files[i];
             var texto = fs.readFileSync(nameFile, 'utf8');
             archivo.nombre = files[i];
-            archivo.cantidad = texto.split("XXXINICIO").length;
+            archivo.cantidad = texto.split("XXXINICIO").filter(item => item != item.trim()).length;
             lista.push(archivo);
         }
         return res.status(200).send(lista);
@@ -45,11 +45,11 @@ function getFacturas(req, res) {
     //var nameFile = dirFiles + "/" + "33_NPG_Invoices_303479_Thru_303501_On_2016-11-24.txt"
     fs.readFile(nameFile, 'utf8', (err, data) => {
         if (err) throw err;
-            var facturas = data.split("XXXINICIO");
-
-            facturas = facturas.map( item => {
-                return item.split("\r\n\r\n")
-                    .map( item => {
+        var facturas = data.split("XXXINICIO");
+        facturas = facturas.filter(item => item != item.trim());
+        facturas = facturas.map( item => {
+            return item.split("\r\n\r\n")
+                .map( item => {
                         var elementos = item.split("\r\n");
                         var dic = {};
                         for (var i = 0; i < elementos.length; i++) {
@@ -71,8 +71,8 @@ function getFacturas(req, res) {
                             }
                         }
                         return dic;
-                    });
-            });
+                });
+        });
 
             var facturasProcesadas = [];
             for (var i in facturas) {
@@ -119,20 +119,18 @@ function getFacturas(req, res) {
                             break;
                     }
                 }
+                var nuevosDatos = {
+                    cceNExpConfiable: "",
+                    cceCertOrig: "",
+                    cceNCertOrig: "",
+                    cceVersion: "",
+                    cceTipoOp: "",
+                    cceClavePed: "",
+                }
+                facturaProcesada.receptor.push(nuevosDatos);
                 facturasProcesadas.push(facturaProcesada);
             }
 
-            var nuevosDatos = {
-                cceNExpConfiable: "",
-                cceCertOrig: "",
-                cceNCertOrig: "",
-                cceVersion: "",
-                cceTipoOp: "",
-                cceClavePed: "",
-            }
-            facturasProcesadas.emisor.push(nuevosDatos);
-
-            facturasProcesadas.emisor.productos
             return res.status(200).send(facturasProcesadas);
     });
 }
@@ -237,7 +235,7 @@ function complementarInfoPrducto (producto, head) {
     var checkItemExcel = function(key) {
         var tmp = head.find( item => item.nombre == key );
         if (!tmp) {
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 }) // descripcion español
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 })
             producto[key] = infoExcel[match[key]];
         }
     }
@@ -245,14 +243,14 @@ function complementarInfoPrducto (producto, head) {
     var checkItemEIS = function(key) {
         var tmp = head.find( item => item.nombre == key );
         if (!tmp) {
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 }) // descripcion español
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 })
             producto[key] = "";
         }
     }
     // datos excel
-    checkItemExcel("cceDescES");
-    checkItemExcel("cceDescEN");
-    checkItemExcel("cceFraccion");
+    checkItemExcel("cceDescES");// descripcion español
+    checkItemExcel("cceDescEN");// descripcion ingles
+    checkItemExcel("cceFraccion");// fraccion
     // datos EIS
     checkItemEIS("cceMarca");
     checkItemEIS("cceModelo");
