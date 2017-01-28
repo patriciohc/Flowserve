@@ -3,18 +3,18 @@
 const express = require('express');
 const api = express.Router();
 const facturas = require('./controllers/facturas');
-//const users = require('./controllers/users');
+const users = require('./controllers/users');
 
 //const middleware = require('../middleware');
 
 // txt
 api.get('/listText/', facturas.getListTxt);
-api.get('/testDB/',facturas.testDB);
-api.get('/filetext/',facturas.getDataFile);
+//api.get('/testDB/',facturas.testDB);
+api.get('/facturas/',facturas.getFacturas);
 
 // users
-//api.post('/registroUsuarios/',users.createUser);
-//api.post('/login/',users.login);
+api.post('/registroUsuarios/',users.createUser);
+api.post('/login/',users.login);
 
 //api.get('/user/:id', controllers.getUser);
 //api.get('/cat-atributo/:id', catProductoCtrl.getCatProducto);

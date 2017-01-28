@@ -1,27 +1,13 @@
 'use strict'
 
-// configuaraciones de las base de datos
-const configDB = require('../configDB');
-// conexcion sql server
-//const Connection = require('tedious').Connection;
-//var Request = require('tedious').Request;
-//var TYPES = require('tedious').TYPES
+// consulta base de datos sqlServer
+//const EIS = require("./EIS.js");
 // lectura de archivos de directorios y archivos de texto
 const fs = require('fs');
 // lectura de excel
 const XLSX = require('xlsx');
 const excel = require('../excel')
 
-
-// var connection = new Connection(configDB.sqlServer);
-
-// connection.on('connect', function(err) {
-//     if (err){
-//         console.log("error: " + err);
-//     } else {
-//         console.log("Connected");
-//     }
-// });
 
 //const dirFiles = "E:/datos_txt"
 const dirFiles = "./datos_txt";
@@ -38,15 +24,23 @@ var jsonExcel = (function(){
 function getListTxt(req, res) {
     fs.readdir(dirFiles, (err, files) => {
         if (err) {
+            return res.status(200).send(null);
             console.log(err);
-            throw err;
         }
-        return res.status(200).send(files);
+        var archivos = {};
+        for (var i in files) {
+            var nameFile =  dirFiles +"/"+ files[i];
+            var texto = fs.readFileSync(nameFile, 'utf8');
+            archivos.nombre = files[i];
+            archivos.cantidad = texto.split("XXXINICIO").length;
+        }
+        return res.status(200).send(archivos);
     });
 }
 
-function getDataFile(req, res) {
-    var nameFile = dirFiles + "/" + "33_NPG_Invoices_303479_Thru_303501_On_2016-11-24.txt"
+function getFacturas(req, res) {
+    var nameFile = dirFiles + "/" + req.body.nameFile;
+    //var nameFile = dirFiles + "/" + "33_NPG_Invoices_303479_Thru_303501_On_2016-11-24.txt"
     fs.readFile(nameFile, 'utf8', (err, data) => {
         if (err) throw err;
             var facturas = data.split("XXXINICIO");
@@ -126,10 +120,21 @@ function getDataFile(req, res) {
                 facturasProcesadas.push(facturaProcesada);
             }
 
-            saveText(facturasProcesadas);
+            var nuevosDatos = {
+                cceNExpConfiable: "",
+                cceCertOrig: "",
+                cceNCertOrig: "",
+                cceVersion: "",
+                cceTipoOp: "",
+                cceClavePed: "",
+            }
+            facturasProcesadas.emisor.push(nuevosDatos);
+
+            facturasProcesadas.emisor.productos
             return res.status(200).send(facturasProcesadas);
     });
 }
+
 
 function procesarHead(linea){
     var head = [];
@@ -147,19 +152,22 @@ function procesarHead(linea){
 }
 
 function procesarRow(linea, head){
-    var row = [];
-    for (var i = 1; i < head.length; i++){
-        var inicio = head[i - 1].posicion;
-        var fin = head[i].posicion;
-        row.push(linea.substring(inicio, fin).trim());
+    var row = {};
+    for (var i = 0; i < head.length - 1; i++){
+        var inicio = head[i].posicion;
+        var fin = head[i + 1].posicion;
+        row[head[i].nombre] = linea.substring(inicio, fin).trim();
+        //row.push(linea.substring(inicio, fin).trim());
     }
-    row.push(linea.substring(head[head.length-1].posicion, linea.length).trim());
+    row[head[head.length-1].nombre] = linea.substring(head[head.length-1].posicion, linea.length).trim();
+    //row.push(linea.substring(head[head.length-1].posicion, linea.length).trim());
     complementarInfoPrducto(row, head);
     return row;
 }
 
 
-function saveText(facturas) {
+function saveText(req, res) {
+    var facturas = req.body.facturas;
     var white = "                                                                                                                        ";
     var inicio = "XXXINICIO";
     var texto = "";
@@ -186,8 +194,10 @@ function saveText(facturas) {
     }
 /////////////3032
     fs.writeFile( dirFiles + "/" + 'message.txt', texto, (err) => {
-        if (err) throw err;
-        console.log('It\'s saved!');
+        if (err) {
+            res.status(200).send({"message": `error al guardar el archivo ${err}`});
+        };
+        res.status(200).send({"message": "suscces" });
     });
 
 }
@@ -203,11 +213,12 @@ function writeProductos(productos) {
     texto += "\r\n";
     for (var i = 0; i < productos.rows.length; i++) {
         var row = productos.rows[i];
-        for (var j = 0; j < row.length-1; j++) {
+        for (var j = 0; j < productos.head.length-1; j++) {
+            var keys = Object.keys(row)
             var espcioDisponible = productos.head[j+1].posicion - productos.head[j].posicion;
-            texto += row[j] + white.substring(0, espcioDisponible - row[j].length);
+            texto += row[keys[j]] + white.substring(0, espcioDisponible - row[keys[j]].length);
         }
-        texto += row[row.length-1];
+        texto += row[keys[keys.length-1]];
         texto += "\r\n";
     }
     return texto;
@@ -215,66 +226,38 @@ function writeProductos(productos) {
 
 function complementarInfoPrducto (producto, head) {
 
-    var codigo = "";
-    for (var i = 0; i < head.length; i++) {
-        if (head[i].nombre == "VlrCodigo1" ) {
-            codigo = producto[i];
-            break;
+    var codigo = producto.VlrCodigo1
+
+    var infoExcel = jsonExcel.data.find(elemento => elemento.RPRDNO == codigo)
+    || { DESCRIPCION_EN_ESPAnOL: "", DESCRIPCION_EN_INGLES: "", FRACCION: "" };
+
+    var match = {cceDescES: "DESCRIPCION_EN_ESPAnOL", cceDescEN: "DESCRIPCION_EN_INGLES", cceFraccion: "FRACCION"}
+    var checkItemExcel = function(key) {
+        var tmp = head.find( item => item.nombre == key );
+        if (!tmp) {
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 }) // descripcion español
+            producto[key] = infoExcel[match[key]];
         }
     }
 
-    var infoExcel = jsonExcel.data.find(function(elemento){
-        return elemento.RPRDNO == codigo;
-    });
-
-    head.push({ nombre: "DescES", posicion: head[head.length - 1].posicion + 100 }) // descripcion español
-    head.push({ nombre: "DescEN", posicion: head[head.length - 1].posicion + 100 }) // descripcion ingles
-    head.push({ nombre: "Fracion", posicion: head[head.length - 1].posicion + 100 }) // fracion
-
-    if (infoExcel){ 
-        producto.push(infoExcel.DESCRIPCION_EN_ESPAnOL);
-        producto.push(infoExcel.DESCRIPCION_EN_INGLES);
-        producto.push(infoExcel.FRACCION);
-    } else {
-        producto.push("");
-        producto.push("");
-        producto.push("");
+    var checkItemEIS = function(key) {
+        var tmp = head.find( item => item.nombre == key );
+        if (!tmp) {
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 }) // descripcion español
+            producto[key] = "";
+        }
     }
-
-}
-
-function testDB(req, res) {
-    // var request = new Request("fsgTLXPartMaster", function(err, rowCount) {
-    //     if (err) {
-    //         console.log(err);
-    //         throw err;
-    //         return res.status(200).send("error");
-    //     }
-    //     //return res.status(200).send(rowCount);
-    // });
-
-    // request.addParameter('PartCode', TYPES.VarChar, '300000-BASE');
-    // request.addParameter('OrganizationKey', TYPES.Int, '300000-BASE');
-
-    // request.on('row', rows => {
-    //     console.log(rows);
-    //     return res.status(200).send(rows);
-    // });
-
-    // request.on('doneProc', (rowCount, more, returnStatus, rows) => {
-    //     console.log(rows);
-    //     return res.status(200).send(rows);
-    // });
-
-    // //request.on('row', columns => {
-    // //    return res.status(200).send(columns);
-    // //});
-
-    // connection.callProcedure(request);
+    // datos excel
+    checkItemExcel("cceDescES");
+    checkItemExcel("cceDescEN");
+    checkItemExcel("cceFraccion");
+    // datos EIS
+    checkItemEIS("cceMarca");
+    checkItemEIS("cceModelo");
 }
 
 module.exports = {
     getListTxt,
-    testDB,
-    getDataFile,
+    //testDB,
+    getFacturas,
 };
