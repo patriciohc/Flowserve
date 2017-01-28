@@ -8,10 +8,8 @@ const fs = require('fs');
 const XLSX = require('xlsx');
 const excel = require('../excel')
 
-
 //const dirFiles = "E:/datos_txt"
 const dirFiles = "./datos_txt";
-
 
 var jsonExcel = (function(){
     var workbook = XLSX.readFile("./info_excel/Base_avance_para_IT.xlsx");
@@ -19,6 +17,14 @@ var jsonExcel = (function(){
     var sheets = excel.readExcel(workbook);
     return sheets[0];
 })();
+
+
+fs.watch('./datos_txt', {encoding: 'buffer'}, (eventType, filename) => {
+    console.log(eventType);
+  if (filename)
+    console.log(filename);
+    // Prints: <Buffer ...>
+});
 
 
 function getListTxt(req, res) {

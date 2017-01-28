@@ -10,7 +10,7 @@ const users = require('./controllers/users');
 // txt
 api.get('/listText/', facturas.getListTxt);
 //api.get('/testDB/',facturas.testDB);
-api.get('/facturas/',facturas.getFacturas);
+api.post('/facturas/',facturas.getFacturas);
 
 // users
 api.post('/registroUsuarios/',users.createUser);
