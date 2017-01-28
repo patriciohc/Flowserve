@@ -29,7 +29,9 @@ const dirFiles = "./datos_txt";
 
 var jsonExcel = (function(){
     var workbook = XLSX.readFile("./info_excel/Base_avance_para_IT.xlsx");
-    return excel.readExcel(workbook);
+    //return excel.readExcel(workbook);
+    var sheets = excel.readExcel(workbook);
+    return sheets[0];
 })();
 
 
@@ -67,7 +69,7 @@ function getDataFile(req, res) {
                                     rows.push(procesarRow(elementos[i], infoHead));
                                     i++;
                                 }
-                                dic["productos"] = { head: infoHead, rows: rows };
+                                dic["productos"] =  { head: infoHead, rows: rows } ;
                             } else {
                                 dic[key] = value;
                             }
@@ -134,7 +136,7 @@ function procesarHead(linea){
     var array = linea.split(" ")
     array = array.filter((a,b,c) =>{return c.indexOf(a,b+1)<0});
     array = array.filter( item => item != "");
-    for (var i in array){
+    for (var i in array) {
         var itemHead = {
             nombre: array[i],
             posicion: linea.search(array[i])
@@ -152,6 +154,7 @@ function procesarRow(linea, head){
         row.push(linea.substring(inicio, fin).trim());
     }
     row.push(linea.substring(head[head.length-1].posicion, linea.length).trim());
+    complementarInfoPrducto(row, head);
     return row;
 }
 
@@ -171,7 +174,7 @@ function saveText(facturas) {
                 var itemSeccion = seccion[keyItemSeccion]
                 for (var keyImteSeccion in itemSeccion) {
                     if (keyImteSeccion == "productos") {
-                        //for ()
+                        texto += writeProductos(itemSeccion[keyImteSeccion]);
                     } else {
                         texto += keyImteSeccion + white.substring(0, 17 - keyImteSeccion.length) + itemSeccion[keyImteSeccion] + "\r\n";
                     }
@@ -189,7 +192,58 @@ function saveText(facturas) {
 
 }
 
-function testDB(req, res){
+function writeProductos(productos) {
+    var white = "                                                                                                                                                                                                                                                                                          ";
+    var texto = "";
+    for (var i = 0; i < productos.head.length-1; i++) {
+        var espcioDisponible = productos.head[i+1].posicion - productos.head[i].posicion;
+        texto += productos.head[i].nombre + white.substring(0, espcioDisponible - productos.head[i].nombre.length);
+    }
+    texto += productos.head[productos.head.length-1].nombre;
+    texto += "\r\n";
+    for (var i = 0; i < productos.rows.length; i++) {
+        var row = productos.rows[i];
+        for (var j = 0; j < row.length-1; j++) {
+            var espcioDisponible = productos.head[j+1].posicion - productos.head[j].posicion;
+            texto += row[j] + white.substring(0, espcioDisponible - row[j].length);
+        }
+        texto += row[row.length-1];
+        texto += "\r\n";
+    }
+    return texto;
+}
+
+function complementarInfoPrducto (producto, head) {
+
+    var codigo = "";
+    for (var i = 0; i < head.length; i++) {
+        if (head[i].nombre == "VlrCodigo1" ) {
+            codigo = producto[i];
+            break;
+        }
+    }
+
+    var infoExcel = jsonExcel.data.find(function(elemento){
+        return elemento.RPRDNO == codigo;
+    });
+
+    head.push({ nombre: "DescES", posicion: head[head.length - 1].posicion + 100 }) // descripcion español
+    head.push({ nombre: "DescEN", posicion: head[head.length - 1].posicion + 100 }) // descripcion ingles
+    head.push({ nombre: "Fracion", posicion: head[head.length - 1].posicion + 100 }) // fracion
+
+    if (infoExcel){ 
+        producto.push(infoExcel.DESCRIPCION_EN_ESPAnOL);
+        producto.push(infoExcel.DESCRIPCION_EN_INGLES);
+        producto.push(infoExcel.FRACCION);
+    } else {
+        producto.push("");
+        producto.push("");
+        producto.push("");
+    }
+
+}
+
+function testDB(req, res) {
     // var request = new Request("fsgTLXPartMaster", function(err, rowCount) {
     //     if (err) {
     //         console.log(err);
