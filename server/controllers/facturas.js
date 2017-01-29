@@ -19,11 +19,11 @@ var jsonExcel = (function(){
 })();
 
 
-fs.watch('./datos_txt', {encoding: 'buffer'}, (eventType, filename) => {
-    console.log(eventType);
-  if (filename)
-    console.log(filename);
-    // Prints: <Buffer ...>
+fs.watch('./datos_txt', {encoding: 'utf8'}, (eventType, filename) => {
+    if (eventType == "rename")
+        if (filename)
+            procesarFactura(filename);
+        
 });
 
 
@@ -46,6 +46,11 @@ function getListTxt(req, res) {
     });
 }
 
+function procesarFactura(filename){
+
+}
+
+
 function getFacturas(req, res) {
     var nameFile = dirFiles + "/" + req.body.nameFile;
     //var nameFile = dirFiles + "/" + "33_NPG_Invoices_303479_Thru_303501_On_2016-11-24.txt"
@@ -56,88 +61,88 @@ function getFacturas(req, res) {
         facturas = facturas.map( item => {
             return item.split("\r\n\r\n")
                 .map( item => {
-                        var elementos = item.split("\r\n");
-                        var dic = {};
-                        for (var i = 0; i < elementos.length; i++) {
-                            var item = elementos[i].trim();
-                            if (item == "") continue;
-                            var key = item.split(" ")[0];
-                            var value = item.substring(key.length, item.length).trim();
-                            if (key == "TpoCodigo1"){
-                                var infoHead = procesarHead(item);
-                                var rows = [];
+                    var elementos = item.split("\r\n");
+                    var dic = {};
+                    for (var i = 0; i < elementos.length; i++) {
+                        var item = elementos[i].trim();
+                        if (item == "") continue;
+                        var key = item.split(" ")[0];
+                        var value = item.substring(key.length, item.length).trim();
+                        if (key == "TpoCodigo1"){
+                            var infoHead = procesarHead(item);
+                            var rows = [];
+                            i++;
+                            while(i < elementos.length){
+                                rows.push(procesarRow(elementos[i], infoHead));
                                 i++;
-                                while(i < elementos.length){
-                                    rows.push(procesarRow(elementos[i], infoHead));
-                                    i++;
-                                }
-                                dic["productos"] =  { head: infoHead, rows: rows } ;
-                            } else {
-                                dic[key] = value;
                             }
+                            dic["productos"] =  { head: infoHead, rows: rows } ;
+                        } else {
+                            dic[key] = value;
                         }
-                        return dic;
+                    }
+                    return dic;
                 });
         });
 
-            var facturasProcesadas = [];
-            for (var i in facturas) {
-                var factura = facturas[i];
-                if (factura.length < 2) continue;
-                var facturaProcesada = {
-                    factura: [], // datos facutura
-                    emisor:[], // datos emisor
-                    receptor: [], // datos receptor
-                    otros: [] //  XXXFINDETA
-                };
-                var parteAcutal = null;  // indicara la parte actual de la factura
-                for (var j in factura ) {
-                    var itemFactura = factura[j];
-                    var key = Object.keys(itemFactura)[0];
-                    if (typeof key == "undefined") continue;
-                    switch(key){
-                        case "NumeroInterno":
-                            parteAcutal = "factura"
-                            break;
-                        case "RFCEmisor":
-                            parteAcutal = "emisor"
-                            break;
-                        case "RFCRecep":
-                            parteAcutal = "receptor"
-                            break;
-                        case "XXXFINDETA":
-                            parteAcutal = "otros"
-                            break;
-                    }
+        var facturasProcesadas = [];
+        for (var i in facturas) {
+            var factura = facturas[i];
+            if (factura.length < 2) continue;
+            var facturaProcesada = {
+                factura: [], // datos facutura
+                emisor:[], // datos emisor
+                receptor: [], // datos receptor
+                otros: [] //  XXXFINDETA
+            };
+            var parteAcutal = null;  // indicara la parte actual de la factura
+            for (var j in factura ) {
+                var itemFactura = factura[j];
+                var key = Object.keys(itemFactura)[0];
+                if (typeof key == "undefined") continue;
+                switch(key){
+                    case "NumeroInterno":
+                        parteAcutal = "factura"
+                        break;
+                    case "RFCEmisor":
+                        parteAcutal = "emisor"
+                        break;
+                    case "RFCRecep":
+                        parteAcutal = "receptor"
+                        break;
+                    case "XXXFINDETA":
+                        parteAcutal = "otros"
+                        break;
+                }
 
-                    switch(parteAcutal){
-                        case "factura":
-                            facturaProcesada.factura.push(itemFactura);
-                            break;
-                        case "emisor":
-                            facturaProcesada.emisor.push(itemFactura);
-                            break;
-                        case "receptor":
-                            facturaProcesada.receptor.push(itemFactura);
-                            break;
-                        case "otros":
-                            facturaProcesada.otros.push(itemFactura);
-                            break;
-                    }
+                switch(parteAcutal){
+                    case "factura":
+                        facturaProcesada.factura.push(itemFactura);
+                        break;
+                    case "emisor":
+                        facturaProcesada.emisor.push(itemFactura);
+                        break;
+                    case "receptor":
+                        facturaProcesada.receptor.push(itemFactura);
+                        break;
+                    case "otros":
+                        facturaProcesada.otros.push(itemFactura);
+                        break;
                 }
-                var nuevosDatos = {
-                    cceNExpConfiable: "",
-                    cceCertOrig: "",
-                    cceNCertOrig: "",
-                    cceVersion: "",
-                    cceTipoOp: "",
-                    cceClavePed: "",
-                }
-                facturaProcesada.receptor.push(nuevosDatos);
-                facturasProcesadas.push(facturaProcesada);
             }
+            var nuevosDatos = {
+                cceNExpConfiable: "",
+                cceCertOrig: "",
+                cceNCertOrig: "",
+                cceVersion: "",
+                cceTipoOp: "",
+                cceClavePed: "",
+            }
+            facturaProcesada.receptor.push(nuevosDatos);
+            facturasProcesadas.push(facturaProcesada);
+        }
 
-            return res.status(200).send(facturasProcesadas);
+        return res.status(200).send(facturasProcesadas);
     });
 }
 
