@@ -41,7 +41,7 @@ function getDatos(sku) {
     // });
 
     return new Promise((resolve, reject) => {
-        setTimeout(resolve, parseInt(Math.random() * 3000), {marca: sku, modelo: sku});
+        setTimeout(resolve, parseInt(Math.random() * 3000), {marca: "marca"+ sku, modelo: "modelo"+sku});
     });
 
     //connection.callProcedure(request);

@@ -23,33 +23,36 @@ var jsonExcel = (function(){
 fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
     if (eventType == "rename")
         if (filename){
-            var file = dirFacturas + "/" + filename;
-            procesarTxt(filename);
+            procesarTxt(filename, dirFacturas);
         }
 });
 /** procesa los txt que se encuentran en el directorio */
-(function procesarDirectorio(){
-    console.log("procesando");
+function procesarDirectorio(){
     var list = fs.readdirSync(dirFacturas);
-    for (var i in list){
-        var file = dirFacturas + "/" + list[i];
-        console.log(file);
-        procesarTxt(file);
+    for (var i in list) {
+        procesarTxt(list[i], dirFacturas);
     }
-})();
+}
 /**
 * separa en facturas nacionales y extranjeras, en las facturas extranjeras agrega
 * la informacion requerida, las facturas nacionales las guarda en un nuevo txt
-* @param {string} nameTxt - nombre completo del archivo txt, incluyendo la ruta
+* @param {string} nameTxt - nombre completo del archivo txt
+* @param {string} dir - directorio
 */
-function procesarTxt(nameTxt){
-    var facturas = convertTxtToJson(nameTxt);
+function procesarTxt(nameTxt, dir) {
+    var facturas = convertTxtToJson(dir + "/" + nameTxt);
     if (!facturas) return;
     facturas = separarFacturas(facturas);
-    var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
-    writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
-    addInfoFactura(facturas.extranjeras)
-    .then( values => writeFile(facturas.extranjeras, nameTxt, dirFacturas))
+    if (facturas.nacionales.length > 0) {
+        var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
+        console.log("Escribiendo facturas nacionales: "+ nombreNacionales);
+        writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
+    }
+    addInfoFactura(facturas.extranjeras).then( values => {
+        console.log("Escribiendo facturas extranjenar: "+ nameTxt);
+        writeFile(facturas.extranjeras, nameTxt, dirFacturas)
+    });
+    
 }
 /**
 * separa en facturas nacionales y extranjeras
@@ -75,7 +78,7 @@ function separarFacturas(facturas) {
 * @param {Array} - array de facturas
 * @return {Promise} promises
 */
-function addInfoFactura(facturas){
+function addInfoFactura(facturas) {
     var promises = []
     for (var i in facturas){
         addSeccionManual(facturas[i]);
@@ -280,7 +283,8 @@ function convertProductosJsonToTxt(productos) {
         for (var j = 0; j < productos.head.length-1; j++) {
             var keys = Object.keys(row)
             var espcioDisponible = productos.head[j+1].posicion - productos.head[j].posicion;
-            texto += row[keys[j]] + white.substring(0, espcioDisponible - row[keys[j]].length);
+            var value = row[keys[j]].toString();
+            texto += value + white.substring(0, espcioDisponible - value.length);
         }
         texto += row[keys[keys.length-1]];
         texto += "\r\n";
@@ -303,17 +307,19 @@ function complementarInfoPrducto(producto, head) {
     var checkItemExcel = function(key) {
         var tmp = head.find( item => item.nombre == key );
         if (!tmp) {
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 })
-            producto[key] = infoExcel[match[key]];
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
         }
+        if (!producto.hasOwnProperty(key))
+            producto[key] = infoExcel[match[key]];
     }
 
     var checkItemEIS = function(key) {
         var tmp = head.find( item => item.nombre == key );
         if (!tmp) {
             head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 })
-            producto[key] = "";
         }
+        if (!producto.hasOwnProperty(key))
+            producto[key] = ""
     }
     // datos excel
     checkItemExcel("cceDescES");// descripcion español
@@ -333,11 +339,9 @@ function complementarInfoPrductos(productos, arrayPromises){
     for (var i in productos.rows){
         var p = productos.rows[i];
         complementarInfoPrducto(p, productos.head);
-        console.log("solicitando: " + p.VlrCodigo1);
         var promise = EIS.getDatos(p.VlrCodigo1).then(function(datos){
-            console.log(datos);
             p.cceMarca = datos.marca;
-            p.cceModel = datos.modelo;
+            p.cceModelo = datos.modelo;
         });
         arrayPromises.push(promise);
     }
@@ -376,8 +380,14 @@ function getFacturas(req, res) {
     res.status(200).send(facturas);
 }
 
+function procesarCarpeta(req, res){
+    procesarDirectorio();
+}
+
 module.exports = {
     getListTxt,
     //testDB,
     getFacturas,
+    //tmp
+    procesarCarpeta
 };

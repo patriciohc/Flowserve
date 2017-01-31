@@ -11,6 +11,7 @@ const facturas = require('./controllers/facturas');
 api.get('/listText/', facturas.getListTxt);
 //api.get('/testDB/',facturas.testDB);
 api.post('/facturas/',facturas.getFacturas);
+api.get('/procesar/', facturas.procesarCarpeta);
 
 // users
 //api.post('/registroUsuarios/',users.createUser);

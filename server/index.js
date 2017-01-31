@@ -14,6 +14,6 @@ app.use(bodyParser.json());
 
 app.use('/api', api);
 
-app.listen('8080', () => {
+app.listen('8880', () => {
     console.log("servidor corriendo en http://localhost:8080");
 });
