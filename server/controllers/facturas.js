@@ -52,7 +52,7 @@ function procesarTxt(nameTxt, dir) {
         console.log("Escribiendo facturas extranjenar: "+ nameTxt);
         writeFile(facturas.extranjeras, nameTxt, dirFacturas)
     });
-    
+
 }
 /**
 * separa en facturas nacionales y extranjeras
@@ -256,12 +256,13 @@ function writeFile(facturas, nombreTxt, directorio) {
         }
     }
 /////////////3032
-    fs.writeFile( directorio + "/" + nombreTxt, texto, (err) => {
-        if (err) {
-            console.log(`error al guardar el archivo ${err}`);
-        };
-            console.log("archivo se guardo correctamente");
+    return new Promise( (resolve, reject) => {
+        fs.writeFile( directorio + "/" + nombreTxt, texto, (err) => {
+            if (err) reject(err);
+            resolve();
+        });
     });
+
 }
 /**
 * convierte lo productos que se encuentran en formato json a texto para ser escritos
@@ -379,6 +380,29 @@ function getFacturas(req, res) {
     var facturas = convertTxtToJson(nameFile);
     res.status(200).send(facturas);
 }
+/**
+* guardas las facturas en el txt
+*/
+function guardarTxt(req, res){
+    var facturas = req.body.facturas;
+    var nameTxt = req.body.nameFile;
+    if (!facturas)
+        res.status(200).send({message: "no hay facturas por guardar"});
+
+    writeFile(facturas, nombreTxt, dirFacturas)
+    .then( () => {
+        res.status(200).send({message: "success"});
+    })
+    .catch( err => {
+        res.status(500).send({error: err});
+    });
+}
+/**
+* turnar
+*/
+function turnar(req, res) {
+
+}
 
 function procesarCarpeta(req, res){
     procesarDirectorio();
@@ -388,6 +412,8 @@ module.exports = {
     getListTxt,
     //testDB,
     getFacturas,
+    guardarTxt,
+    turnar,
     //tmp
-    procesarCarpeta
+    procesarCarpeta,
 };
