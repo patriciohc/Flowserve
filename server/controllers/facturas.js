@@ -51,6 +51,8 @@ function procesarTxt(nameTxt, dir) {
     addInfoFactura(facturas.extranjeras).then( values => {
         console.log("Escribiendo facturas extranjenar: "+ nameTxt);
         writeFile(facturas.extranjeras, nameTxt, dirFacturas)
+    }).catch( err => {
+        console.log(err);
     });
 
 }
@@ -284,7 +286,10 @@ function convertProductosJsonToTxt(productos) {
         for (var j = 0; j < productos.head.length-1; j++) {
             var keys = Object.keys(row)
             var espcioDisponible = productos.head[j+1].posicion - productos.head[j].posicion;
-            var value = row[keys[j]].toString();
+           // var value = row[keys[j]].toString();
+              var value = "";
+            if (row[keys[j]])
+                value = row[keys[j]].toString();
             texto += value + white.substring(0, espcioDisponible - value.length);
         }
         texto += row[keys[keys.length-1]];
