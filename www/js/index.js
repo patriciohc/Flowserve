@@ -12,8 +12,10 @@ $(document).ready(function(){
     $( "#loguinbtn" ).click(function() {
         logueo();
     });
+    
 })
 
+//funcion encargada de logueo
 function logueo(){
    var usuario = $("#userid").val();
    var contraseña = $("#passid").val();
@@ -35,8 +37,10 @@ function logueo(){
                 dataType: "json",
                 success: function (result) {
                     if (result != null && typeof result != 'undefined') {
+                            $("body").css("background", "white")
                             document.getElementById("idloguin").style.display = "none";
                             document.getElementById("divPrincipal").style.display = "block";
+                            cargarTxt();
                     }
 
                 },
@@ -45,8 +49,91 @@ function logueo(){
                    // alert(result.responseText);
                    window.location.href = 'index.html';
                 },
-                async: true
+                //async: true
             });
     }
     
+}
+
+//funcion encargada de obtener txt a cargar
+function cargarTxt(){
+    $.ajax({
+                type: "get",
+                url: "/api/listText",
+                //contentType: "application/json; charset=utf-8",
+                //data: {},
+                dataType: "json",
+                success: function (result) {
+                    if (result) {
+                        var tableTxt = document.getElementById("ul-txt");
+                        tableTxt.innerHTML = "";
+                        for(i=0; i < result.length; i++)
+                            {
+                                
+                                var li = document.createElement("li")
+                                li.className="list-group-item";
+                                li.id = result[i].nombre;
+                                li.style.cursor="pointer";
+                                li.onclick=cargarFacturas;
+                                li.innerHTML = result[i].nombre+"<span class='badge'>"+result[i].cantidad+"</span>";
+                                tableTxt.appendChild(li);
+                            }
+                    }else{
+                        alert("No hay archivos pendientes.");
+                    }
+
+                },
+                error: function (result) {
+                    alert('Hubo un error con la carga de txt, favor de reportar al area de sistemas.');
+                   // alert(result.responseText);
+                   window.location.href = 'index.html';
+                },
+                //async: true
+            });
+}
+
+//funcion que carga las facturas del txt elegido.
+function cargarFacturas(){
+    var idtxt = this.id;
+    
+    $.ajax({
+                type: "post",
+                url: "/api/facturas",
+                //contentType: "application/json; charset=utf-8",
+                data: {"nameFile": idtxt},
+                dataType: "json",
+                success: function (result) {
+                   if(result){
+                       for(i=0; i<result.length;i++){
+                           var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+                           var tr = document.createElement("tr");
+                           tr.style.cursor="pointer";
+                           tr.onclick=formularioData;
+                           var td = document.createElement("td");
+                           td.innerHTML=result[i].factura[0].Serie;
+                           tr.appendChild(td);
+                           td = document.createElement("td");
+                           td.innerHTML=result[i].factura[0].Folio;
+                           tr.appendChild(td);
+                           td = document.createElement("td");
+                           td.innerHTML=result[i].factura[0].FechaEmis;
+                           tr.appendChild(td);
+                           cuerpoTableFacturas.appendChild(tr);
+                       }
+                   }else{
+                       alert("No existen datos relacionados con el txt.");
+                   }
+
+                },
+                error: function (result) {
+                    alert('Error, notifique al area de sistemas.');
+                   // alert(result.responseText);
+                   //window.location.href = 'index.html';
+                },
+            });
+}
+
+function formularioData(){
+    $("#idcontenedorestxt").css("display", "none");
+    $("#idformulario").css("display", "");
 }

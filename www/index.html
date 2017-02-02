@@ -5,11 +5,29 @@
   <title>login form</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="css/style.css">    
 
-  
-      <style>
+    
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <!-- Versión compilada y comprimida del CSS de Bootstrap -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+ 
+<!-- Tema opcional -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+ 
+<!-- Versión compilada y comprimida del JavaScript de Bootstrap -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
+    
+<script src="js/index.js"></script>
+    
+<style>
       /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-      * {
+  * {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -166,37 +184,277 @@ body {
   border-left-color: orange;
 }
 
-    </style>
+</style>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
 </head>
 
 <body>
-  
-<div id="idloguin" class="login">
+
+<div id="idloguin" class="login" style="display:block;">
   <header class="login-header"><span class="text">LOGIN</span><span class="loader"></span></header>
-  <form class="login-form">
+  <div role="form" class="login-form">
     <input id="userid" class="login-input" type="text" placeholder="Usuario"/>
     <input id="passid" class="login-input" type="password" placeholder="Contraseña"/>
-    <button id="loguinbtn" class="login-btn" type="submit">Entrar</button>
-  </form>
+    <button id="loguinbtn" class="login-btn" type="button">Entrar</button>
+  </div>
 </div>
-    <div id="divPrincipal" style="display:none;">
-        <div>
-            <form>
-                 <fieldset>
-                  <legend>Personalia:</legend>
-                  Name: <input type="text"><br>
-                  Email: <input type="text"><br>
-                  Date of birth: <input type="text">
-                 </fieldset>
-            </form>
+<div id="divPrincipal" style="display:none;">
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="https://www.flowserve.com/">Flowserve</a>
+        </div>
+        <!--<ul class="nav navbar-nav">
+          <li class="activar-link"><a href="#">Home</a></li>
+          <li class="activar-link"><a href="#">Page 1</a></li>
+          <li class="activar-link"><a href="#">Page 2</a></li>
+        </ul>-->
+        <ul class="nav navbar-nav navbar-right">
+          <li><a data-toggle="modal" data-target="#myModal" href="#"><span class="glyphicon glyphicon-user"></span> Registro</a></li>
+          <li><a data-toggle="confirmation" data-placement="bottom" href="#"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
+        </ul>
+      </div>
+    </nav><br>
+    <div id="idcontenedorestxt" class="container">
+        <div class="row">
+            <h2>Archivos txt.</h2>
+           <div class="col-md-4 well list-group">
+               <ul class="list-group" id="ul-txt">          
+               </ul>
+           </div>
+           <div class="col-md-8">
+               <div>
+                  <h2>Facturas de archivo txt.</h2>
+                  <p>Selecciona la factura a modificar:</p>            
+                  <table class="table table-hover table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Serie</th>
+                        <th>Folio</th>
+                        <th>Fecha de emision</th>
+                      </tr>
+                    </thead>
+                    <tbody id="idtbodyfac">
+                        
+                    </tbody>
+                  </table>
+                </div>
+           </div>
         </div>
     </div>
-  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <div id="idformulario" style="display:none;">
+        <ul class="tab">
+          <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'encabezado')" id="defaultOpen">Encabezado</a></li>
+          <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'emisor')">Emisor</a></li>
+          <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'receptor')">Receptor</a></li>
+        </ul>
 
-    <script src="js/index.js"></script>
+        <div id="encabezado" class="tabcontent">
+            <div class="container">
+              <form class="form-horizontal">
+                    <fieldset>
+                        <legend>Identificadores:</legend>
+                            <div class="form-group">
+                                <label for="email">Numero Interno:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Numero de aprobación:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Año de aprobación:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Tipo:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Serie:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                 <label for="email">Folio:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                 <label for="email">Fecha de emision:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                 <label for="email">Forma de pago:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                 <label for="email">Condicion de pago:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                 <label for="email">Termino de pago en dias:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                                 <label for="email">Fecha Venimiento:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                             </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Direccion Santa clara:</legend>
+                        <div class="form-group">
+                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                    </div></fieldset>
+                    <fieldset>
+                        <legend>Direccion Tlaxcala:</legend>
+                       <div class="form-group">
+                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                    </div>
+                    </fieldset>
+              </form>  
+            </div>
+        </div>
 
+        <div id="emisor" class="tabcontent">
+            <div class="container">
+              <form class="form-horizontal">
+                    <fieldset>
+                    <legend>Datos Emisor:</legend>
+                    <div class="form-group">
+                        <label for="email">RFC Emisor:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Nombre Emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Tipo de codigo de emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Codigo de emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Sucursal:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                     </div></fieldset><br>
+                    <fieldset>
+                        <legend>Direccion 1 emisor:</legend>
+                        <div class="form-group">
+                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                    </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Direccion 2 emisor:</legend>
+                       <div class="form-group">
+                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                    </div>
+                    </fieldset>
+              </form>  
+            </div>
+        </div>
+
+        <div id="receptor" class="tabcontent">
+            <div class="container">
+              <form class="form-horizontal">
+                    <fieldset>
+                    <legend>Datos receptor:</legend>
+                    <div class="form-group">
+                        <label for="email">RFC Receptor:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Nombre Receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Codigo GLN Receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Tipo de codigo interno receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Codigo interno receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Codigo cliente:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                     </div></fieldset><br>
+                    <fieldset>
+                        <legend>Direccion 1 receptor:</legend>
+                        <div class="form-group">
+                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Localidad:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Referencia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                    </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Direccion 2 receptor:</legend>
+                       <div class="form-group">
+                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Localidad:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Referencia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Numero de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       <label for="email">Metodo de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        <label for="email">Numero de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                    </div>
+                    </fieldset>
+              </form>  
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Registro Usuario</h4>
+        </div>
+        <div class="modal-body">
+           <form>
+              <div class="form-group">
+                <div class="form-group">
+                    <label for="inputlg">Nombre Completo:</label>
+                    <input class="form-control input-lg" id="inputlg" placeholder="Nombre Completo" type="text">
+                </div>
+                <label for="inputdefault">Usuario:</label>
+                <input class="form-control" id="inputdefault"
+                placeholder="Usuario" type="text">
+              </div>
+              <div class="form-group">
+                  <label for="pwd">Contraseña:</label>
+                  <input type="password" class="form-control" id="pwd" placeholder="Contraseña">
+              </div>
+              <div class="form-group">
+                <label for="inputsm">Area:</label>
+                <input class="form-control input-sm" id="inputsm" placeholder="Area" type="text">
+              </div>
+              <div class="form-group">
+                <label for="inputsm">Rol de Usuario:</label><br>
+                <select class="selectpicker" data-style="btn-info">
+                  <option>Administrador</option>
+                  <option>Usuario</option>
+                </select>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+         <input class="btn btn-primary" type="submit" value="Eliminar">
+         <input class="btn btn-primary" type="submit" value="Agregar">
+         <input class="btn btn-primary" type="submit" value="Actualizar">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
 </body>
 </html>
