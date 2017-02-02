@@ -360,7 +360,7 @@ function complementarInfoPrductos(productos, arrayPromises){
 * @return lista de archivos txt en el directorio { nombre, cantidad: cantidad de facturas }
 */
 function getListTxt(req, res) {
-    fs.readdir(dirFiles, (err, files) => {
+    fs.readdir(dirFacturas, (err, files) => {
         if (err) {
             return res.status(200).send(null);
             console.log(err);
@@ -368,7 +368,7 @@ function getListTxt(req, res) {
         var lista = [];
         for (var i in files) {
             var archivo = {};
-            var nameFile =  dirFiles +"/"+ files[i];
+            var nameFile =  dirFacturas +"/"+ files[i];
             var texto = fs.readFileSync(nameFile, 'utf8');
             archivo.nombre = files[i];
             archivo.cantidad = texto.split("XXXINICIO").filter(item => item != item.trim()).length;
