@@ -12,7 +12,7 @@ $(document).ready(function(){
     $( "#loguinbtn" ).click(function() {
         logueo();
     });
-    
+
 })
 
 //funcion encargada de logueo
@@ -23,7 +23,7 @@ function logueo(){
                 "userName":usuario,
                 "password": contraseña
             };
-    
+
     if(usuario == "" && contraseña == ""){
         alert("Debe completar los datos requeridos.");
         window.location.href = 'index.html';
@@ -52,7 +52,7 @@ function logueo(){
                 //async: true
             });
     }
-    
+
 }
 
 //funcion encargada de obtener txt a cargar
@@ -69,7 +69,7 @@ function cargarTxt(){
                         tableTxt.innerHTML = "";
                         for(i=0; i < result.length; i++)
                             {
-                                
+
                                 var li = document.createElement("li")
                                 li.className="list-group-item";
                                 li.id = result[i].nombre;
@@ -95,7 +95,7 @@ function cargarTxt(){
 //funcion que carga las facturas del txt elegido.
 function cargarFacturas(){
     var idtxt = this.id;
-    
+
     $.ajax({
                 type: "post",
                 url: "/api/facturas",
@@ -109,6 +109,7 @@ function cargarFacturas(){
                            var tr = document.createElement("tr");
                            tr.style.cursor="pointer";
                            tr.onclick=formularioData;
+                           tr.data = result[i];
                            var td = document.createElement("td");
                            td.innerHTML=result[i].factura[0].Serie;
                            tr.appendChild(td);
@@ -134,6 +135,20 @@ function cargarFacturas(){
 }
 
 function formularioData(){
+    var data = this.data;
+    
+    $("txtEncNumInter").val()
+    $("#txtEncNumApro").val()
+    $("#txtEncAñoAprobacion").val()
+    $("#txtEncTipo").val()
+    $("#txtEncSerie").val()
+    $("#txtEncFolio").val()
+    $("#txtEncFechaEmision").val()
+    $("#txtEncFormaPago").val()
+    $("#txtEncCondicionesPago").val()
+    $("#txtEncTerminoPago").val()
+    $("#txtEncFechaVencimiento").val()
+
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
 }
