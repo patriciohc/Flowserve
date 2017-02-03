@@ -13,6 +13,9 @@ $(document).ready(function(){
         logueo();
     });
 
+     $( "#idbtnhideForms" ).click(function() {
+        hideForms();
+    });
 })
 
 //funcion encargada de logueo
@@ -134,9 +137,10 @@ function cargarFacturas(){
             });
 }
 
+//mostrar formularios
 function formularioData(){
     var data = this.data;
-    
+
     $("txtEncNumInter").val()
     $("#txtEncNumApro").val()
     $("#txtEncAñoAprobacion").val()
@@ -151,4 +155,10 @@ function formularioData(){
 
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
+}
+
+//ocultar forms
+function hideForms(){
+    $("#idcontenedorestxt").css("display", "");
+    $("#idformulario").css("display", "none");
 }
