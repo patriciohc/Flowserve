@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>login form</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-  <link rel="stylesheet" href="css/style.css">    
 
-    
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
   <!-- Versión compilada y comprimida del CSS de Bootstrap -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
- 
+
 <!-- Tema opcional -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
- 
+
 <!-- Versión compilada y comprimida del JavaScript de Bootstrap -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
-    
+
 <script src="js/index.js"></script>
-    
+
 <style>
       /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
   * {
@@ -221,13 +221,13 @@ body {
         <div class="row">
             <h2>Archivos txt.</h2>
            <div class="col-md-4 well list-group">
-               <ul class="list-group" id="ul-txt">          
+               <ul class="list-group" id="ul-txt">
                </ul>
            </div>
            <div class="col-md-8">
                <div>
                   <h2>Facturas de archivo txt.</h2>
-                  <p>Selecciona la factura a modificar:</p>            
+                  <p>Selecciona la factura a modificar:</p>
                   <table class="table table-hover table-bordered">
                     <thead>
                       <tr>
@@ -237,14 +237,16 @@ body {
                       </tr>
                     </thead>
                     <tbody id="idtbodyfac">
-                        
+
                     </tbody>
                   </table>
                 </div>
            </div>
         </div>
     </div>
-    <div id="idformulario" style="display:none;">
+
+    <div class="container">
+        <div id="idformulario" style="display:none;">
         <ul class="tab">
           <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'encabezado')" id="defaultOpen">Encabezado</a></li>
           <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'emisor')">Emisor</a></li>
@@ -252,148 +254,205 @@ body {
         </ul>
 
         <div id="encabezado" class="tabcontent">
-            <div class="container row">
-                <div class="col">
-                    <fieldset>
+            <div class="row">
+                <div class="col-md-4">
+                    <div role="form" class="">
+                        <!-- <fieldset> -->
                         <legend>Identificadores:</legend>
                             <div class="form-group">
-                                <label for="email">Numero Interno:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                                <label for="email">Numero de aprobación:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                <label for="email">Año de aprobación:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                <label for="email">Tipo:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                <label for="email">Serie:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                 <label for="email">Folio:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                 <label for="email">Fecha de emision:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                 <label for="email">Forma de pago:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                 <label for="email">Condicion de pago:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                 <label for="email">Termino de pago en dias:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                                 <label for="email">Fecha Venimiento:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                             </div>
-                    </fieldset>
+                                <label for="email">Numero Interno:</label>
+                                <input class="form-control" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Numero de aprobación:</label>
+                                <input class="form-control" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Año de aprobación:</label>
+                                <input class="form-control" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Tipo:</label>
+                                <input class="form-control" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Serie:</label>
+                                <input class="form-control" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Folio:</label>
+                                <input class="form-control" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                 <label for="email">Fecha de emision:</label>
+                                 <input class="form-control mx-sm-3" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                 <label for="email">Forma de pago:</label>
+                                 <input class="form-control mx-sm-3" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                 <label for="email">Condicion de pago:</label>
+                                 <input class="form-control mx-sm-3" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                 <label for="email">Termino de pago en dias:</label>
+                                 <input class="form-control mx-sm-3" id="ex3" type="text">
+                            </div>
+                            <div class="form-group">
+                                 <label for="email">Fecha Venimiento:</label>
+                                 <input class="form-control mx-sm-3" id="ex3" type="text">
+                            </div>
+                    <!-- </fieldset> -->
+                    </div>
                 </div>
-               <div class="col">
-                    <fieldset>
+                <div class="col-md-4">
+                    <div role="form" class="">
+                        <!-- <fieldset> -->
                         <legend>Direccion Santa clara:</legend>
                         <div class="form-group">
-                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                    </div></fieldset>
-                </div>
-                <div class="col">
-                    <fieldset>
-                        <legend>Direccion Tlaxcala:</legend>
-                       <div class="form-group">
-                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Calle:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero exterior:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero interior:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Colonia:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Municipio:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Estado:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Pais:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Codigo postal:</label>
+                            <input class="form-control mx-sm-3" id="ex3" type="text">
+                        </div>
+                        <!-- </fieldset> -->
                     </div>
-                    </fieldset>
+                </div>
+                <div class="col-md-4">
+                    <div role="form" class="">
+                        <!-- <fieldset> -->
+                        <legend>Direccion Tlaxcala:</legend>
+                        <div class="form-group">
+                            <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        </div>
+                        <!-- </fieldset> -->
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="emisor" class="tabcontent">
-            <div class="container">
-              <form class="form-horizontal">
-                    <fieldset>
-                    <legend>Datos Emisor:</legend>
-                    <div class="form-group">
-                        <label for="email">RFC Emisor:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Nombre Emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Tipo de codigo de emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Codigo de emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Sucursal:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                     </div></fieldset><br>
-                    <fieldset>
-                        <legend>Direccion 1 emisor:</legend>
+            <div class="row">
+                <div class="col-md-4">
+                     <div role="form" class="">
+                        <legend>Datos Emisor:</legend>
                         <div class="form-group">
-                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">RFC Emisor:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Nombre Emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Tipo de codigo de emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Codigo de emisor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Sucursal:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                         </div>
+                      </div>
+                </div>
+                <div class="col-md-4">
+                 <div role="form" class="">
+                    <legend>Direccion 1 emisor:</legend>
+                        <div class="form-group">
+                            <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        </div>
                     </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Direccion 2 emisor:</legend>
-                       <div class="form-group">
-                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                </div>
+                <div class="col-md-4">
+                 <div role="form" class="">
+                    <legend>Direccion 2 emisor:</legend>
+                        <div class="form-group">
+                            <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                        </div>
                     </div>
-                    </fieldset>
-              </form>  
+                </div>
             </div>
         </div>
-
-        <div id="receptor" class="tabcontent">
-            <div class="container">
-              <form class="form-horizontal">
-                    <fieldset>
-                    <legend>Datos receptor:</legend>
-                    <div class="form-group">
-                        <label for="email">RFC Receptor:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Nombre Receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Codigo GLN Receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Tipo de codigo interno receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Codigo interno receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Codigo cliente:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
-                     </div></fieldset><br>
-                    <fieldset>
-                        <legend>Direccion 1 receptor:</legend>
+        
+         <div id="receptor" class="tabcontent">
+            <div class="row">
+                <div class="col-md-4">
+                     <div role="form" class="">
+                        <legend>Datos receptor:</legend>
                         <div class="form-group">
-                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Localidad:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Referencia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">RFC Receptor:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Nombre Receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Codigo GLN Receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Tipo de codigo interno receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Codigo interno receptor:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Codigo cliente:</label> <input class="form-control mx-sm-3" id="ex3" type="text">
+                         </div>
                     </div>
-                    </fieldset>
-                    <fieldset>
+                </div>
+                <div class="col-md-4">
+                     <div role="form" class="">
+                            <legend>Direccion 1 receptor:</legend>
+                            <div class="form-group">
+                                <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Localidad:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Referencia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                               <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                               <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                               <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                     <div role="form" class="">
                         <legend>Direccion 2 receptor:</legend>
                        <div class="form-group">
-                        <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Localidad:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Referencia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Numero de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                       <label for="email">Metodo de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        <label for="email">Numero de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Localidad:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Referencia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Numero de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                           <label for="email">Metodo de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            <label for="email">Numero de pago:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                       </div>
                     </div>
-                    </fieldset>
-              </form>  
+                </div>
             </div>
-        </div>
+         </div>
+        </div> 
     </div>
     <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
