@@ -139,19 +139,47 @@ function cargarFacturas(){
 
 //mostrar formularios
 function formularioData(){
-    var data = this.data;
+    var datos = this.data;
+// datos encabezado
+    $("#txtEncNumInter").val(datos.factura[0].NumeroInterno)
+    $("#txtEncNumApro").val(datos.factura[0].NroAprob)
+    $("#txtEncAñoAprobacion").val(datos.factura[0].AnoAprob)
+    $("#txtEncTipo").val(datos.factura[0].Tipo)
+    $("#txtEncSerie").val(datos.factura[0].Serie)
+    $("#txtEncFolio").val(datos.factura[0].Folio)
+    $("#txtEncFechaEmision").val(datos.factura[0].FechaEmis)
+    $("#txtEncFormaPago").val(datos.factura[0].FormaPago)
+    $("#txtEncCondicionesPago").val(datos.factura[0].CondPago)
+    $("#txtEncTerminoPago").val(datos.factura[0].TermPagoDias)
+    $("#txtEncFechaVencimiento").val(datos.factura[0].FechaVenc);
 
-    $("txtEncNumInter").val()
-    $("#txtEncNumApro").val()
-    $("#txtEncAñoAprobacion").val()
-    $("#txtEncTipo").val()
-    $("#txtEncSerie").val()
-    $("#txtEncFolio").val()
-    $("#txtEncFechaEmision").val()
-    $("#txtEncFormaPago").val()
-    $("#txtEncCondicionesPago").val()
-    $("#txtEncTerminoPago").val()
-    $("#txtEncFechaVencimiento").val()
+// datos emisor col 1
+    $("#txtEmiRFC").val(datos.emisor[0].RFCEmisor);
+    $("#txtEmiNombreEmisor").val(datos.emisor[0].NmbEmisor);
+    $("#txtEmiTipoCod").val(datos.emisor[0].TpoCdgIntEmisor1);
+    $("#txtEmiCod").val(datos.emisor[0].CdgIntEmisor1);
+    $("#txtEmiSucursal").val(datos.emisor[0].Sucursal);
+    //CdgVendedor
+// col 2
+    $("#txtEmiD1Calle").val(datos.emisor[1].Calle);
+    $("#txtEmiD1NumExt").val(datos.emisor[1].NroExterior);
+    $("#txtEmiD1NumInt").val(datos.emisor[1].NroInterior);
+    $("#txtEmiD1Colonia").val(datos.emisor[1].Colonia);
+    $("#txtEmiD1Municipio").val(datos.emisor[1].Municipio);
+    $("#txtEmiD1Estado").val(datos.emisor[1].Estado);
+    $("#txtEmiD1Pais").val(datos.emisor[1].Pais);
+    $("#txtEmiD1CP").val(datos.emisor[1].CodigoPostal);
+// col 3
+    $("#txtEmiD2Calle").val(datos.emisor[2].Calle);
+    $("#txtEmiD2NumExt").val(datos.emisor[2].NroExterior);
+    $("#txtEmiD2NumInt").val(datos.emisor[2].NroInterior);
+    $("#txtEmiD2Colonia").val(datos.emisor[2].Colonia);
+    $("#txtEmiD2Municipo").val(datos.emisor[2].Municipio);
+    $("#txtEmiD2Estado").val(datos.emisor[2].Estado);
+    $("#txtEmiD2Pais").val(datos.emisor[2].Pais);
+    $("#txtEmiD2CP").val(datos.emisor[2].CodigoPostal);
+
+// datos receptor
 
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
