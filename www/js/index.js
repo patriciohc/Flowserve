@@ -180,6 +180,35 @@ function formularioData(){
     $("#txtEmiD2CP").val(datos.emisor[2].CodigoPostal);
 
 // datos receptor
+// txtRecepRFC
+// txtRecepNombre
+// txtRecepCodGLN
+// txtRecepTipoCod
+// txtRecepCodInter
+// txtRecepCodCliente
+// txtRecepD1Calle
+// txtRecepD1NumExt
+// txtRecepD1NumInt
+// txtRecepD1Colonia
+// txtRecepD1Localidad
+// txtRecepD1Referencia
+// txtRecepD1Municipio
+// txtRecepD1Estado
+// txtRecepD1Pais
+// txtRecepD1CP
+// txtRecepD2Calle
+// txtRecepD2NumExt
+// txtRecepD2NumInt
+// txtRecepD2Colonia
+// txtRecepD2Localidad
+// txtRecepD2Referencia
+// txtRecepD2Municipio
+// txtRecepD2Estado
+// txtRecepD2Pais
+// txtRecepD2CP
+// txtRecepD2NumPago
+// txtRecepD2MetodoPago
+// txtRecepD2NumPago
 
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
