@@ -179,36 +179,39 @@ function formularioData(){
     $("#txtEmiD2Pais").val(datos.emisor[2].Pais);
     $("#txtEmiD2CP").val(datos.emisor[2].CodigoPostal);
 
-// datos receptor
-// txtRecepRFC
-// txtRecepNombre
-// txtRecepCodGLN
-// txtRecepTipoCod
-// txtRecepCodInter
-// txtRecepCodCliente
-// txtRecepD1Calle
-// txtRecepD1NumExt
-// txtRecepD1NumInt
-// txtRecepD1Colonia
-// txtRecepD1Localidad
-// txtRecepD1Referencia
-// txtRecepD1Municipio
-// txtRecepD1Estado
-// txtRecepD1Pais
-// txtRecepD1CP
-// txtRecepD2Calle
-// txtRecepD2NumExt
-// txtRecepD2NumInt
-// txtRecepD2Colonia
-// txtRecepD2Localidad
-// txtRecepD2Referencia
-// txtRecepD2Municipio
-// txtRecepD2Estado
-// txtRecepD2Pais
-// txtRecepD2CP
-// txtRecepD2NumPago
-// txtRecepD2MetodoPago
-// txtRecepD2NumPago
+//datos receptor
+    $("#txtRecepRFC").val(datos.receptor[0].RFCRecep);
+    $("#txtRecepNombre").val(datos.receptor[0].NmbRecep);
+    $("#txtRecepCodGLN").val(datos.receptor[0].CdgGLNRecep);
+    $("#txtRecepTipoCod").val(datos.receptor[0].TpoCdgIntRecep1);
+    $("#txtRecepCodInter").val(datos.receptor[0].CdgIntRecep1);
+    $("#txtRecepCodCliente").val(datos.receptor[0].CdgCliente);
+// col 2
+    $("#txtRecepD1Calle").val(datos.receptor[1].Calle);
+    $("#txtRecepD1NumExt").val(datos.receptor[1].NroExterior);
+    $("#txtRecepD1NumInt").val(datos.receptor[1].NroInterior);
+    $("#txtRecepD1Colonia").val(datos.receptor[1].Colonia);
+    $("#txtRecepD1Localidad").val(datos.receptor[1].Localidad);
+    $("#txtRecepD1Referencia").val(datos.receptor[1].Referencia);
+    $("#txtRecepD1Municipio").val(datos.receptor[1].Municipio);
+    $("#txtRecepD1Estado").val(datos.receptor[1].Estado);
+    $("#txtRecepD1Pais").val(datos.receptor[1].Pais);
+    $("#txtRecepD1CP").val(datos.receptor[1].CodigoPostal);
+// col 3
+    $("#txtRecepD2Calle").val(datos.receptor[2].Calle);
+    $("#txtRecepD2NumExt").val(datos.receptor[2].NroExterior);
+    $("#txtRecepD2NumInt").val(datos.receptor[2].NroInterior);
+    $("#txtRecepD2Colonia").val(datos.receptor[2].Colonia);
+    $("#txtRecepD2Localidad").val(datos.receptor[2].Localidad);
+    $("#txtRecepD2Referencia").val(datos.receptor[2].Referencia);
+    $("#txtRecepD2Municipio").val(datos.receptor[2].Municipio);
+    $("#txtRecepD2Estado").val(datos.receptor[2].Estado);
+    $("#txtRecepD2Pais").val(datos.receptor[2].Pais);
+    $("#txtRecepD2CP").val(datos.receptor[2].CodigoPostal);
+    $("#txtRecepD2NumPago").val(datos.receptor[2].NumCtaPago);
+    $("#txtRecepD2MetodoPago").val(datos.receptor[2].methodoDePago);
+    //$("#txtRecepD2NumPago").val(dato.receptor[2].);
+
 
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
