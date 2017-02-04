@@ -9,6 +9,13 @@ $('.login').on('submit', function(e) {
 });
 
 $(document).ready(function(){
+    var infoUser = localStorage.getItem("infoUser");
+    if (infoUser) {
+        $("body").css("background", "white")
+        document.getElementById("idloguin").style.display = "none";
+        document.getElementById("divPrincipal").style.display = "block";
+        cargarTxt();
+    }
     $( "#loguinbtn" ).click(function() {
         logueo();
     });
@@ -18,44 +25,44 @@ $(document).ready(function(){
     });
 })
 
+function salir(){
+    localStorage.clear();
+    $("body").css("background", "#333")
+    document.getElementById("idloguin").style.display = "block";
+    document.getElementById("divPrincipal").style.display = "none";
+}
+
 //funcion encargada de logueo
 function logueo(){
-   var usuario = $("#userid").val();
-   var contraseña = $("#passid").val();
-   var ObjPriData={
-                "userName":usuario,
-                "password": contraseña
-            };
+    var usuario = $("#userid").val();
+    var contraseña = $("#passid").val();
+    var ObjPriData = {
+        "userName":usuario,
+        "password": contraseña
+    };
 
-    if(usuario == "" && contraseña == ""){
+    if ( usuario == "" || contraseña == "") {
         alert("Debe completar los datos requeridos.");
         window.location.href = 'index.html';
-    }else
-        {
-             $.ajax({
-                type: "post",
-                url: "/api/login",
-                //contentType: "application/json; charset=utf-8",
-                data: ObjPriData,
-                dataType: "json",
-                success: function (result) {
-                    if (result != null && typeof result != 'undefined') {
-                            $("body").css("background", "white")
-                            document.getElementById("idloguin").style.display = "none";
-                            document.getElementById("divPrincipal").style.display = "block";
-                            cargarTxt();
-                    }
-
-                },
-                error: function (result) {
-                    alert('Error, verifique sus datos.');
-                   // alert(result.responseText);
-                   window.location.href = 'index.html';
-                },
-                //async: true
-            });
+        return;
     }
-
+    General.post("/api/login", ObjPriData)
+    .then( result => {
+        if (!result) {
+            alert('Error, verifique sus datos.');
+            return;
+        }
+        localStorage.setItem("infoUser", JSON.stringify(result));
+        $("body").css("background", "white")
+        document.getElementById("idloguin").style.display = "none";
+        document.getElementById("divPrincipal").style.display = "block";
+        cargarTxt();
+    })
+    .catch(err => {
+        alert('Error, verifique sus datos.');
+        // console.log(result.responseText);
+        window.location.href = 'index.html';
+    });
 }
 
 //funcion encargada de obtener txt a cargar
@@ -212,6 +219,39 @@ function formularioData(){
     $("#txtRecepD2MetodoPago").val(datos.receptor[2].methodoDePago);
     //$("#txtRecepD2NumPago").val(dato.receptor[2].);
 
+// datos productos
+    var item = datos.receptor.find( item => item.hasOwnProperty("productos"));
+    var tb = document.getElementById("tbSku");
+    tb.innerHTML = "";
+    if (!item) return; // no hay apartado de productos
+    var productos = item.productos;
+    for (var i in productos.rows) {
+        var p = productos.rows[i];
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        td.innerHTML = p.VlrCodigo1;
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerHTML = p.cceDescES;
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerHTML = p.cceDescEN;
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerHTML = p.cceFraccion;
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerHTML = p.cceMarca;
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerHTML = p.cceModelo;
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerHTML = "";
+        tr.appendChild(td);
+
+        tb.appendChild(tr);
+    }
 
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
