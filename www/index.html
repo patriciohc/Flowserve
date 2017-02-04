@@ -9,12 +9,15 @@
 
 
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.js"></script>
   <!-- Versión compilada y comprimida del CSS de Bootstrap -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 
 <!-- Tema opcional -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    
 
 <!-- Versión compilada y comprimida del JavaScript de Bootstrap -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
@@ -213,7 +216,7 @@ body {
         </ul>-->
         <ul class="nav navbar-nav navbar-right">
           <li><a data-toggle="modal" data-target="#myModal" href="#"><span class="glyphicon glyphicon-user"></span> Registro</a></li>
-          <li><a data-toggle="confirmation" data-placement="bottom" href="#"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
+          <li><a id="idbtnSalir" href="#"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
         </ul>
       </div>
     </nav><br>

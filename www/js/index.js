@@ -16,6 +16,11 @@ $(document).ready(function(){
      $( "#idbtnhideForms" ).click(function() {
         hideForms();
     });
+    
+    $("#idbtnSalir").click(function(){
+        confirm();
+    });
+  
 })
 
 //funcion encargada de logueo
@@ -221,4 +226,30 @@ function formularioData(){
 function hideForms(){
     $("#idcontenedorestxt").css("display", "");
     $("#idformulario").css("display", "none");
+}
+
+//confirm
+function confirm(){
+    $.confirm({
+    title: 'Seguro que desea salir?',
+    content: 'Seleccione cancelar si desea permanecer en la pagina.',
+    buttons: {
+        confirmar: function () {
+            $.alert('Hasta pronto!');
+            window.location.href="index.html";
+        },
+        cancelar: function () {
+           
+        },
+       /* somethingElse: {
+            text: 'Something else',
+            btnClass: 'btn-primary',
+            keys: ['enter', 'shift'],
+            action: function(){
+                $.alert('Something else?');
+            }
+        }*/
+    }
+});
+    
 }
