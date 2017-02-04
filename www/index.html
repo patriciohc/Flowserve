@@ -247,242 +247,301 @@ body {
 
     <div class="container">
         <div id="idformulario" style="display:none;">
-        <div>
-            <button id="idbtnhideForms" type="button" class="btn btn-link">Volver a facturas <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
-            <button type="button" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
-        </div>
-        <ul class="tab">
-          <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'encabezado')" id="defaultOpen">Encabezado</a></li>
-          <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'emisor')">Emisor</a></li>
-          <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'receptor')">Receptor</a></li>
-        </ul>
+            <div>
+                <button id="idbtnhideForms" type="button" class="btn btn-link">Volver a facturas <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
+            </div>
+            <ul class="tab">
+              <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'encabezado')" id="defaultOpen">Encabezado</a></li>
+              <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'emisor')">Emisor</a></li>
+              <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'receptor')">Receptor</a></li>
+              <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'complemento')">Productos y complemento</a></li>
+            </ul>
 
-        <div id="encabezado" class="tabcontent">
-            <div class="row">
-                <div class="col-md-4">
-                    <div role="form" class="">
-                        <!-- <fieldset> -->
-                        <legend>Identificadores:</legend>
-                        <div class="form-group">
-                            <label for="txtEncNumInter">Numero Interno:</label>
-                            <input class="form-control" id="txtEncNumInter" type="text">
-                            <label for="txtEncNumApro">Numero de aprobación:</label>
-                            <input class="form-control" id="txtEncNumApro" type="text">
-                            <label for="txtEncAñoAprobacion">Año de aprobación:</label>
-                            <input class="form-control" id="txtEncAñoAprobacion" type="text">
-                            <label for="txtEncTipo">Tipo:</label>
-                            <input class="form-control" id="txtEncTipo" type="text">
-                            <label for="txtEncSerie">Serie:</label>
-                            <input class="form-control" id="txtEncSerie" type="text">
+            <div id="encabezado" class="tabcontent">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div role="form" class="">
+                            <!-- <fieldset> -->
+                            <legend>Identificadores:</legend>
+                            <div class="form-group">
+                                <label for="txtEncNumInter">Numero Interno:</label>
+                                <input class="form-control" id="txtEncNumInter" type="text">
+                                <label for="txtEncNumApro">Numero de aprobación:</label>
+                                <input class="form-control" id="txtEncNumApro" type="text">
+                                <label for="txtEncAñoAprobacion">Año de aprobación:</label>
+                                <input class="form-control" id="txtEncAñoAprobacion" type="text">
+                                <label for="txtEncTipo">Tipo:</label>
+                                <input class="form-control" id="txtEncTipo" type="text">
+                                <label for="txtEncSerie">Serie:</label>
+                                <input class="form-control" id="txtEncSerie" type="text">
+                            </div>
+                            <!-- </fieldset> -->
                         </div>
-                        <!-- </fieldset> -->
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div role="form" class="">
-                        <label for="txtEncFolio">Folio:</label>
-                        <input class="form-control" id="txtEncFolio" type="text">
-                        <label for="txtEncFechaEmision">Fecha de emision:</label>
-                        <input class="form-control" id="txtEncFechaEmision" type="text">
-                        <label for="txtEncFormaPago">Forma de pago:</label>
-                        <input class="form-control" id="txtEncFormaPago" type="text">
-                        <label for="txtEncCondicionesPago">Condicion de pago:</label>
-                        <input class="form-control" id="txtEncCondicionesPago" type="text">
-                        <label for="txtEncTerminoPago">Termino de pago en dias:</label>
-                        <input class="form-control" id="txtEncTerminoPago" type="text">
-                        <label for="txtEncFechaVencimiento">Fecha Venimiento:</label>
-                        <input class="form-control" id="txtEncFechaVencimiento" type="text">
-                        <!-- <legend>Direccion Santa clara:</legend>
-                        <div class="form-group">
-                            <label for="txtEncCalle">Calle:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Numero exterior:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Numero interior:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Colonia:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Municipio:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Estado:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Pais:</label>
-                            <input class="form-control" id="txtEnc" type="text">
-                            <label for="txtEnc">Codigo postal:</label>
-                            <input class="form-control" id="txtEnc" type="text">
+                    <div class="col-md-4">
+                        <div role="form" class="">
+                            <label for="txtEncFolio">Folio:</label>
+                            <input class="form-control" id="txtEncFolio" type="text">
+                            <label for="txtEncFechaEmision">Fecha de emision:</label>
+                            <input class="form-control" id="txtEncFechaEmision" type="text">
+                            <label for="txtEncFormaPago">Forma de pago:</label>
+                            <input class="form-control" id="txtEncFormaPago" type="text">
+                            <label for="txtEncCondicionesPago">Condicion de pago:</label>
+                            <input class="form-control" id="txtEncCondicionesPago" type="text">
+                            <label for="txtEncTerminoPago">Termino de pago en dias:</label>
+                            <input class="form-control" id="txtEncTerminoPago" type="text">
+                            <label for="txtEncFechaVencimiento">Fecha Venimiento:</label>
+                            <input class="form-control" id="txtEncFechaVencimiento" type="text">
+                            <!-- <legend>Direccion Santa clara:</legend>
+                            <div class="form-group">
+                                <label for="txtEncCalle">Calle:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Numero exterior:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Numero interior:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Colonia:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Municipio:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Estado:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Pais:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                                <label for="txtEnc">Codigo postal:</label>
+                                <input class="form-control" id="txtEnc" type="text">
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <!-- <div role="form" class="">
+                            <legend>Direccion Tlaxcala:</legend>
+                            <div class="form-group">
+                                <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                                <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
+                            </div>
                         </div> -->
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <!-- <div role="form" class="">
-                        <legend>Direccion Tlaxcala:</legend>
-                        <div class="form-group">
-                            <label for="email">Calle:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Numero exterior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Numero interior:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Colonia:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Municipio:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Estado:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Pais:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                            <label for="email">Codigo postal:</label><input class="form-control mx-sm-3" id="ex3" type="text">
-                        </div>
-                    </div> -->
-                </div>
             </div>
-        </div>
 
-        <div id="emisor" class="tabcontent">
-            <div class="row">
-                <div class="col-md-4">
-                     <div role="form" class="">
-                        <legend>Datos Emisor:</legend>
-                        <div class="form-group">
-                            <label for="txtEmiRFC">RFC Emisor:</label>
-                            <input class="form-control" id="txtEmiRFC" type="text">
-                            <label for="txtEmiNombreEmisor">Nombre Emisor:</label>
-                            <input class="form-control" id="txtEmiNombreEmisor" type="text">
-                            <label for="txtEmiTipoCod">Tipo de codigo de emisor:</label>
-                            <input class="form-control" id="txtEmiTipoCod" type="text">
-                            <label for="txtEmiCod">Codigo de emisor:</label>
-                            <input class="form-control" id="txtEmiCod" type="text">
-                            <label for="txtEmiSucursal">Sucursal:</label>
-                            <input class="form-control" id="txtEmiSucursal" type="text">
-                         </div>
-                      </div>
-                </div>
-                <div class="col-md-4">
-                 <div role="form" class="">
-                    <legend>Direccion 1 emisor:</legend>
-                        <div class="form-group">
-                            <label for="txtEmiD1Calle">Calle:</label>
-                            <input class="form-control" id="txtEmiD1Calle" type="text">
-                            <label for="txtEmiD1NumExt">Numero exterior:</label>
-                            <input class="form-control" id="txtEmiD1NumExt" type="text">
-                            <label for="txtEmiD1NumInt">Numero interior:</label>
-                            <input class="form-control" id="txtEmiD1NumInt" type="text">
-                            <label for="txtEmiD1Colonia">Colonia:</label>
-                            <input class="form-control" id="txtEmiD1Colonia" type="text">
-                            <label for="txtEmiD1Municipio">Municipio:</label>
-                            <input class="form-control" id="txtEmiD1Municipio" type="text">
-                            <label for="txtEmiD1Estado">Estado:</label>
-                            <input class="form-control" id="txtEmiD1Estado" type="text">
-                            <label for="txtEmiD1Pais">Pais:</label>
-                            <input class="form-control" id="txtEmiD1Pais" type="text">
-                           <label for="txtEmiD1CP">Codigo postal:</label>
-                           <input class="form-control" id="txtEmiD1CP" type="text">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                 <div role="form" class="">
-                    <legend>Direccion 2 emisor:</legend>
-                        <div class="form-group">
-                            <label for="txtEmiD2Calle">Calle:</label>
-                            <input class="form-control" id="txtEmiD2Calle" type="text">
-                            <label for="txtEmiD2NumExt">Numero exterior:</label>
-                            <input class="form-control" id="txtEmiD2NumExt" type="text">
-                            <label for="txtEmiD2NumInt">Numero interior:</label>
-                            <input class="form-control" id="txtEmiD2NumInt" type="text">
-                            <label for="txtEmiD2Colonia">Colonia:</label>
-                            <input class="form-control" id="txtEmiD2Colonia" type="text">
-                            <label for="txtEmiD2Municipo">Municipio:</label>
-                            <input class="form-control" id="txtEmiD2Municipo" type="text">
-                            <label for="txtEmiD2Estado">Estado:</label>
-                            <input class="form-control" id="txtEmiD2Estado" type="text">
-                            <label for="txtEmiD2Pais">Pais:</label>
-                            <input class="form-control" id="txtEmiD2Pais" type="text">
-                           <label for="txtEmiD2CP">Codigo postal:</label>
-                           <input class="form-control" id="txtEmiD2CP" type="text">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-         <div id="receptor" class="tabcontent">
-            <div class="row">
-                <div class="col-md-4">
-                     <div role="form" class="">
-                        <legend>Datos receptor:</legend>
-                        <div class="form-group">
-                            <label for="txtRecepRFC">RFC Receptor:</label>
-                            <input class="form-control" id="txtRecepRFC" type="text">
-                            <label for="txtRecepNombre">Nombre Receptor:</label>
-                            <input class="form-control" id="txtRecepNombre" type="text">
-                            <label for="txtRecepCodGLN">Codigo GLN Receptor:</label>
-                            <input class="form-control" id="txtRecepCodGLN" type="text">
-                            <label for="txtRecepTipoCod">Tipo de codigo interno receptor:</label>
-                            <input class="form-control" id="txtRecepTipoCod" type="text">
-                            <label for="txtRecepCodInter">Codigo interno receptor:</label>
-                            <input class="form-control" id="txtRecepCodInter" type="text">
-                            <label for="txtRecepCodCliente">Codigo cliente:</label>
-                            <input class="form-control" id="txtRecepCodCliente" type="text">
-                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                     <div role="form" class="">
-                            <legend>Direccion 1 receptor:</legend>
+            <div id="emisor" class="tabcontent">
+                <div class="row">
+                    <div class="col-md-4">
+                         <div role="form" class="">
+                            <legend>Datos Emisor:</legend>
                             <div class="form-group">
-                                <label for="txtRecepD1Calle">Calle:</label>
-                                <input class="form-control" id="txtRecepD1Calle" type="text">
-                                <label for="txtRecepD1NumExt">Numero exterior:</label>
-                                <input class="form-control" id="txtRecepD1NumExt" type="text">
-                                <label for="txtRecepD1NumInt">Numero interior:</label>
-                                <input class="form-control" id="txtRecepD1NumInt" type="text">
-                                <label for="txtRecepD1Colonia">Colonia:</label>
-                                <input class="form-control" id="txtRecepD1Colonia" type="text">
-                                <label for="txtRecepD1Localidad">Localidad:</label>
-                                <input class="form-control" id="txtRecepD1Localidad" type="text">
-                                <label for="txtRecepD1Referencia">Referencia:</label>
-                                <input class="form-control" id="txtRecepD1Referencia" type="text">
-                                <label for="txtRecepD1Municipio">Municipio:</label>
-                                <input class="form-control" id="txtRecepD1Municipio" type="text">
-                               <label for="txtRecepD1Estado">Estado:</label>
-                               <input class="form-control" id="txtRecepD1Estado" type="text">
-                               <label for="txtRecepD1Pais">Pais:</label>
-                               <input class="form-control" id="txtRecepD1Pais" type="text">
-                               <label for="txtRecepD1CP">Codigo postal:</label>
-                               <input class="form-control" id="txtRecepD1CP" type="text">
-                           </div>
+                                <label for="txtEmiRFC">RFC Emisor:</label>
+                                <input class="form-control" id="txtEmiRFC" type="text">
+                                <label for="txtEmiNombreEmisor">Nombre Emisor:</label>
+                                <input class="form-control" id="txtEmiNombreEmisor" type="text">
+                                <label for="txtEmiTipoCod">Tipo de codigo de emisor:</label>
+                                <input class="form-control" id="txtEmiTipoCod" type="text">
+                                <label for="txtEmiCod">Codigo de emisor:</label>
+                                <input class="form-control" id="txtEmiCod" type="text">
+                                <label for="txtEmiSucursal">Sucursal:</label>
+                                <input class="form-control" id="txtEmiSucursal" type="text">
+                             </div>
+                          </div>
                     </div>
-                </div>
-                <div class="col-md-4">
+                    <div class="col-md-4">
                      <div role="form" class="">
-                        <legend>Direccion 2 receptor:</legend>
-                       <div class="form-group">
-                            <label for="txtRecepD2Calle">Calle:</label>
-                            <input class="form-control" id="txtRecepD2Calle" type="text">
-                            <label for="txtRecepD2NumExt">Numero exterior:</label>
-                            <input class="form-control" id="txtRecepD2NumExt" type="text">
-                            <label for="txtRecepD2NumInt">Numero interior:</label>
-                            <input class="form-control" id="txtRecepD2NumInt" type="text">
-                            <label for="txtRecepD2Colonia">Colonia:</label>
-                            <input class="form-control" id="txtRecepD2Colonia" type="text">
-                            <label for="txtRecepD2Localidad">Localidad:</label>
-                            <input class="form-control" id="txtRecepD2Localidad" type="text">
-                            <label for="txtRecepD2Referencia">Referencia:</label>
-                            <input class="form-control" id="txtRecepD2Referencia" type="text">
-                            <label for="txtRecepD2Municipio">Municipio:</label>
-                            <input class="form-control" id="txtRecepD2Municipio" type="text">
-                           <label for="txtRecepD2Estado">Estado:</label>
-                           <input class="form-control" id="txtRecepD2Estado" type="text">
-                           <label for="txtRecepD2Pais">Pais:</label>
-                           <input class="form-control" id="txtRecepD2Pais" type="text">
-                           <label for="txtRecepD2CP">Codigo postal:</label>
-                           <input class="form-control" id="txtRecepD2CP" type="text">
-                           <label for="txtRecepD2NumPago">Numero de pago:</label>
-                           <input class="form-control" id="txtRecepD2NumPago" type="text">
-                           <label for="txtRecepD2MetodoPago">Metodo de pago:</label>
-                           <input class="form-control" id="txtRecepD2MetodoPago" type="text">
-                            <label for="txtRecepD2NumPago">Numero de pago:</label>
-                            <input class="form-control" id="txtRecepD2NumPago" type="text">
-                       </div>
+                        <legend>Direccion 1 emisor:</legend>
+                            <div class="form-group">
+                                <label for="txtEmiD1Calle">Calle:</label>
+                                <input class="form-control" id="txtEmiD1Calle" type="text">
+                                <label for="txtEmiD1NumExt">Numero exterior:</label>
+                                <input class="form-control" id="txtEmiD1NumExt" type="text">
+                                <label for="txtEmiD1NumInt">Numero interior:</label>
+                                <input class="form-control" id="txtEmiD1NumInt" type="text">
+                                <label for="txtEmiD1Colonia">Colonia:</label>
+                                <input class="form-control" id="txtEmiD1Colonia" type="text">
+                                <label for="txtEmiD1Municipio">Municipio:</label>
+                                <input class="form-control" id="txtEmiD1Municipio" type="text">
+                                <label for="txtEmiD1Estado">Estado:</label>
+                                <input class="form-control" id="txtEmiD1Estado" type="text">
+                                <label for="txtEmiD1Pais">Pais:</label>
+                                <input class="form-control" id="txtEmiD1Pais" type="text">
+                               <label for="txtEmiD1CP">Codigo postal:</label>
+                               <input class="form-control" id="txtEmiD1CP" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                     <div role="form" class="">
+                        <legend>Direccion 2 emisor:</legend>
+                            <div class="form-group">
+                                <label for="txtEmiD2Calle">Calle:</label>
+                                <input class="form-control" id="txtEmiD2Calle" type="text">
+                                <label for="txtEmiD2NumExt">Numero exterior:</label>
+                                <input class="form-control" id="txtEmiD2NumExt" type="text">
+                                <label for="txtEmiD2NumInt">Numero interior:</label>
+                                <input class="form-control" id="txtEmiD2NumInt" type="text">
+                                <label for="txtEmiD2Colonia">Colonia:</label>
+                                <input class="form-control" id="txtEmiD2Colonia" type="text">
+                                <label for="txtEmiD2Municipo">Municipio:</label>
+                                <input class="form-control" id="txtEmiD2Municipo" type="text">
+                                <label for="txtEmiD2Estado">Estado:</label>
+                                <input class="form-control" id="txtEmiD2Estado" type="text">
+                                <label for="txtEmiD2Pais">Pais:</label>
+                                <input class="form-control" id="txtEmiD2Pais" type="text">
+                               <label for="txtEmiD2CP">Codigo postal:</label>
+                               <input class="form-control" id="txtEmiD2CP" type="text">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-         </div>
+
+            <div id="receptor" class="tabcontent">
+                <div class="row">
+                    <div class="col-md-4">
+                         <div role="form" class="">
+                            <legend>Datos receptor:</legend>
+                            <div class="form-group">
+                                <label for="txtRecepRFC">RFC Receptor:</label>
+                                <input class="form-control" id="txtRecepRFC" type="text">
+                                <label for="txtRecepNombre">Nombre Receptor:</label>
+                                <input class="form-control" id="txtRecepNombre" type="text">
+                                <label for="txtRecepCodGLN">Codigo GLN Receptor:</label>
+                                <input class="form-control" id="txtRecepCodGLN" type="text">
+                                <label for="txtRecepTipoCod">Tipo de codigo interno receptor:</label>
+                                <input class="form-control" id="txtRecepTipoCod" type="text">
+                                <label for="txtRecepCodInter">Codigo interno receptor:</label>
+                                <input class="form-control" id="txtRecepCodInter" type="text">
+                                <label for="txtRecepCodCliente">Codigo cliente:</label>
+                                <input class="form-control" id="txtRecepCodCliente" type="text">
+                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                         <div role="form" class="">
+                                <legend>Direccion 1 receptor:</legend>
+                                <div class="form-group">
+                                    <label for="txtRecepD1Calle">Calle:</label>
+                                    <input class="form-control" id="txtRecepD1Calle" type="text">
+                                    <label for="txtRecepD1NumExt">Numero exterior:</label>
+                                    <input class="form-control" id="txtRecepD1NumExt" type="text">
+                                    <label for="txtRecepD1NumInt">Numero interior:</label>
+                                    <input class="form-control" id="txtRecepD1NumInt" type="text">
+                                    <label for="txtRecepD1Colonia">Colonia:</label>
+                                    <input class="form-control" id="txtRecepD1Colonia" type="text">
+                                    <label for="txtRecepD1Localidad">Localidad:</label>
+                                    <input class="form-control" id="txtRecepD1Localidad" type="text">
+                                    <label for="txtRecepD1Referencia">Referencia:</label>
+                                    <input class="form-control" id="txtRecepD1Referencia" type="text">
+                                    <label for="txtRecepD1Municipio">Municipio:</label>
+                                    <input class="form-control" id="txtRecepD1Municipio" type="text">
+                                   <label for="txtRecepD1Estado">Estado:</label>
+                                   <input class="form-control" id="txtRecepD1Estado" type="text">
+                                   <label for="txtRecepD1Pais">Pais:</label>
+                                   <input class="form-control" id="txtRecepD1Pais" type="text">
+                                   <label for="txtRecepD1CP">Codigo postal:</label>
+                                   <input class="form-control" id="txtRecepD1CP" type="text">
+                               </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                         <div role="form" class="">
+                            <legend>Direccion 2 receptor:</legend>
+                           <div class="form-group">
+                                <label for="txtRecepD2Calle">Calle:</label>
+                                <input class="form-control" id="txtRecepD2Calle" type="text">
+                                <label for="txtRecepD2NumExt">Numero exterior:</label>
+                                <input class="form-control" id="txtRecepD2NumExt" type="text">
+                                <label for="txtRecepD2NumInt">Numero interior:</label>
+                                <input class="form-control" id="txtRecepD2NumInt" type="text">
+                                <label for="txtRecepD2Colonia">Colonia:</label>
+                                <input class="form-control" id="txtRecepD2Colonia" type="text">
+                                <label for="txtRecepD2Localidad">Localidad:</label>
+                                <input class="form-control" id="txtRecepD2Localidad" type="text">
+                                <label for="txtRecepD2Referencia">Referencia:</label>
+                                <input class="form-control" id="txtRecepD2Referencia" type="text">
+                                <label for="txtRecepD2Municipio">Municipio:</label>
+                                <input class="form-control" id="txtRecepD2Municipio" type="text">
+                               <label for="txtRecepD2Estado">Estado:</label>
+                               <input class="form-control" id="txtRecepD2Estado" type="text">
+                               <label for="txtRecepD2Pais">Pais:</label>
+                               <input class="form-control" id="txtRecepD2Pais" type="text">
+                               <label for="txtRecepD2CP">Codigo postal:</label>
+                               <input class="form-control" id="txtRecepD2CP" type="text">
+                               <label for="txtRecepD2NumPago">Numero de pago:</label>
+                               <input class="form-control" id="txtRecepD2NumPago" type="text">
+                               <label for="txtRecepD2MetodoPago">Metodo de pago:</label>
+                               <input class="form-control" id="txtRecepD2MetodoPago" type="text">
+                                <label for="txtRecepD2NumPago">Numero de pago:</label>
+                                <input class="form-control" id="txtRecepD2NumPago" type="text">
+                           </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+            
+            <div id="complemento" class="tabcontent">
+                  <h2>Productos</h2>
+                  <p>Lista de productos e informacion adicional:</p>            
+                  <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Descripcion Español</th>
+                        <th>Decripcion Ingles</th>
+                        <th>Fraccion Arancelaria</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>No. Serie</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>john@example.com</td>
+                      </tr>
+                      <tr>
+                        <td>Mary</td>
+                        <td>Moe</td>
+                        <td>mary@example.com</td>
+                      </tr>
+                      <tr>
+                        <td>July</td>
+                        <td>Dooley</td>
+                        <td>july@example.com</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                      <div class="col-xs-4">
+                        <label for="ex1">Version:</label>
+                        <input class="form-control" id="ex1" type="text">
+                      </div>
+                      <div class="col-xs-4">
+                        <label for="ex2">Tipo de operacion:</label>
+                        <input class="form-control" id="ex2" type="text">
+                      </div>
+                      <div class="col-xs-4">
+                        <label for="ex3">Clave de pedimento:</label>
+                        <input class="form-control" id="ex3" type="text">
+                      </div>
+                      <div class="col-xs-4">
+                        <label for="ex1">No. exportador confiable:</label>
+                        <input class="form-control" id="ex1" type="text">
+                      </div>
+                      <div class="col-xs-4">
+                        <label for="ex2">Certificado de origen:</label>
+                        <input class="form-control" id="ex2" type="text">
+                      </div>
+                      <div class="col-xs-4">
+                        <label for="ex3">No. de certificador de origen:</label>
+                        <input class="form-control" id="ex3" type="text">
+                      </div>
         </div>
     </div>
     <!-- Modal -->
