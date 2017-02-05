@@ -17,6 +17,8 @@
 <!-- Tema opcional -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     
 
 <!-- Versión compilada y comprimida del JavaScript de Bootstrap -->
@@ -254,6 +256,10 @@ body {
         <div id="idformulario" style="display:none;">
             <div>
                 <button id="idbtnhideForms" type="button" class="btn btn-link">Volver a facturas <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span></button>
+                  <label>
+                     Habilitar todos los campos para edicion.
+                    <input id="idSwitchHab" type="checkbox" data-onstyle="success" data-toggle="toggle" data-on="SI" data-off="NO">
+                  </label>
                 <button type="button" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
                 <button type="button" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
             </div>
@@ -272,15 +278,15 @@ body {
                             <legend>Identificadores:</legend>
                             <div class="form-group">
                                 <label for="txtEncNumInter">Numero Interno:</label>
-                                <input class="form-control" id="txtEncNumInter" type="text">
+                                <input class="form-control editSwich" id="txtEncNumInter" type="text"  disabled="disabled">
                                 <label for="txtEncNumApro">Numero de aprobación:</label>
-                                <input class="form-control" id="txtEncNumApro" type="text">
+                                <input class="form-control editSwich" id="txtEncNumApro" type="text" disabled="disabled">
                                 <label for="txtEncAñoAprobacion">Año de aprobación:</label>
-                                <input class="form-control" id="txtEncAñoAprobacion" type="text">
+                                <input class="form-control editSwich" id="txtEncAñoAprobacion" type="text" disabled="disabled">
                                 <label for="txtEncTipo">Tipo:</label>
-                                <input class="form-control" id="txtEncTipo" type="text">
+                                <input class="form-control editSwich" id="txtEncTipo" type="text" disabled="disabled">
                                 <label for="txtEncSerie">Serie:</label>
-                                <input class="form-control" id="txtEncSerie" type="text">
+                                <input class="form-control editSwich" id="txtEncSerie" type="text" disabled="disabled">
                             </div>
                             <!-- </fieldset> -->
                         </div>
@@ -288,18 +294,18 @@ body {
                     <div class="col-md-4">
                         <div role="form" class="">
                             <label for="txtEncFolio">Folio:</label>
-                            <input class="form-control" id="txtEncFolio" type="text">
+                            <input class="form-control editSwich" id="txtEncFolio" type="text" disabled="disabled">
                             <label for="txtEncFechaEmision">Fecha de emision:</label>
-                            <input class="form-control" id="txtEncFechaEmision" type="text">
+                            <input class="form-control editSwich" id="txtEncFechaEmision" type="text" disabled="disabled">
                             <label for="txtEncFormaPago">Forma de pago:</label>
-                            <input class="form-control" id="txtEncFormaPago" type="text">
+                            <input class="form-control editSwich" id="txtEncFormaPago" type="text" disabled="disabled">
                             <label for="txtEncCondicionesPago">Condicion de pago:</label>
-                            <input class="form-control" id="txtEncCondicionesPago" type="text">
+                            <input class="form-control editSwich" id="txtEncCondicionesPago" type="text" disabled="disabled">
                             <label for="txtEncTerminoPago">Termino de pago en dias:</label>
-                            <input class="form-control" id="txtEncTerminoPago" type="text">
+                            <input class="form-control editSwich" id="txtEncTerminoPago" type="text" disabled="disabled">
                             <label for="txtEncFechaVencimiento">Fecha Venimiento:</label>
-                            <input class="form-control" id="txtEncFechaVencimiento" type="text">
-                            <!-- <legend>Direccion Santa clara:</legend>
+                            <input class="form-control editSwich" id="txtEncFechaVencimiento" type="text" disabled="disabled">
+                            <!-- <legend>Direccion Santa clara:</legend> disabled="disabled"
                             <div class="form-group">
                                 <label for="txtEncCalle">Calle:</label>
                                 <input class="form-control" id="txtEnc" type="text">
@@ -345,15 +351,15 @@ body {
                             <legend>Datos Emisor:</legend>
                             <div class="form-group">
                                 <label for="txtEmiRFC">RFC Emisor:</label>
-                                <input class="form-control" id="txtEmiRFC" type="text">
+                                <input class="form-control editSwich" id="txtEmiRFC" type="text" disabled="disabled">
                                 <label for="txtEmiNombreEmisor">Nombre Emisor:</label>
-                                <input class="form-control" id="txtEmiNombreEmisor" type="text">
+                                <input class="form-control editSwich" id="txtEmiNombreEmisor" type="text" disabled="disabled">
                                 <label for="txtEmiTipoCod">Tipo de codigo de emisor:</label>
-                                <input class="form-control" id="txtEmiTipoCod" type="text">
+                                <input class="form-control editSwich" id="txtEmiTipoCod" type="text" disabled="disabled">
                                 <label for="txtEmiCod">Codigo de emisor:</label>
-                                <input class="form-control" id="txtEmiCod" type="text">
+                                <input class="form-control editSwich" id="txtEmiCod" type="text" disabled="disabled">
                                 <label for="txtEmiSucursal">Sucursal:</label>
-                                <input class="form-control" id="txtEmiSucursal" type="text">
+                                <input class="form-control editSwich" id="txtEmiSucursal" type="text" disabled="disabled">
                              </div>
                           </div>
                     </div>
@@ -362,22 +368,22 @@ body {
                         <legend>Direccion 1 emisor:</legend>
                             <div class="form-group">
                                 <label for="txtEmiD1Calle">Calle:</label>
-                                <input class="form-control" id="txtEmiD1Calle" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1Calle" type="text" disabled="disabled">
                                 <label for="txtEmiD1NumExt">Numero exterior:</label>
-                                <input class="form-control" id="txtEmiD1NumExt" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1NumExt" type="text" disabled="disabled">
                                 <label for="txtEmiD1NumInt">Numero interior:</label>
-                                <input class="form-control" id="txtEmiD1NumInt" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1NumInt" type="text" disabled="disabled">
                                 <label for="txtEmiD1Colonia">Colonia:</label>
-                                <input class="form-control" id="txtEmiD1Colonia" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1Colonia" type="text" disabled="disabled">
                                 <label for="txtEmiD1Municipio">Municipio:</label>
-                                <input class="form-control" id="txtEmiD1Municipio" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1Municipio" type="text" disabled="disabled">
                                 <label for="txtEmiD1Estado">Estado:</label>
-                                <input class="form-control" id="txtEmiD1Estado" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1Estado" type="text" disabled="disabled">
                                 <label for="txtEmiD1Pais">Pais:</label>
-                                <input class="form-control" id="txtEmiD1Pais" type="text">
+                                <input class="form-control editSwich" id="txtEmiD1Pais" type="text" disabled="disabled">
                                <label for="txtEmiD1CP">Codigo postal:</label>
-                               <input class="form-control" id="txtEmiD1CP" type="text">
-                            </div>
+                               <input class="form-control editSwich" id="txtEmiD1CP" type="text" disabled="disabled">
+                            </div> 
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -385,21 +391,21 @@ body {
                         <legend>Direccion 2 emisor:</legend>
                             <div class="form-group">
                                 <label for="txtEmiD2Calle">Calle:</label>
-                                <input class="form-control" id="txtEmiD2Calle" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2Calle" type="text" disabled="disabled">
                                 <label for="txtEmiD2NumExt">Numero exterior:</label>
-                                <input class="form-control" id="txtEmiD2NumExt" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2NumExt" type="text" disabled="disabled">
                                 <label for="txtEmiD2NumInt">Numero interior:</label>
-                                <input class="form-control" id="txtEmiD2NumInt" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2NumInt" type="text" disabled="disabled">
                                 <label for="txtEmiD2Colonia">Colonia:</label>
-                                <input class="form-control" id="txtEmiD2Colonia" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2Colonia" type="text" disabled="disabled">
                                 <label for="txtEmiD2Municipo">Municipio:</label>
-                                <input class="form-control" id="txtEmiD2Municipo" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2Municipo" type="text" disabled="disabled">
                                 <label for="txtEmiD2Estado">Estado:</label>
-                                <input class="form-control" id="txtEmiD2Estado" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2Estado" type="text" disabled="disabled">
                                 <label for="txtEmiD2Pais">Pais:</label>
-                                <input class="form-control" id="txtEmiD2Pais" type="text">
+                                <input class="form-control editSwich" id="txtEmiD2Pais" type="text" disabled="disabled">
                                <label for="txtEmiD2CP">Codigo postal:</label>
-                               <input class="form-control" id="txtEmiD2CP" type="text">
+                               <input class="form-control editSwich" id="txtEmiD2CP" type="text" disabled="disabled">
                             </div>
                         </div>
                     </div>
@@ -413,17 +419,17 @@ body {
                             <legend>Datos receptor:</legend>
                             <div class="form-group">
                                 <label for="txtRecepRFC">RFC Receptor:</label>
-                                <input class="form-control" id="txtRecepRFC" type="text">
+                                <input class="form-control editSwich" id="txtRecepRFC" type="text" disabled="disabled">
                                 <label for="txtRecepNombre">Nombre Receptor:</label>
-                                <input class="form-control" id="txtRecepNombre" type="text">
+                                <input class="form-control editSwich" id="txtRecepNombre" type="text" disabled="disabled">
                                 <label for="txtRecepCodGLN">Codigo GLN Receptor:</label>
-                                <input class="form-control" id="txtRecepCodGLN" type="text">
+                                <input class="form-control editSwich" id="txtRecepCodGLN" type="text" disabled="disabled">
                                 <label for="txtRecepTipoCod">Tipo de codigo interno receptor:</label>
-                                <input class="form-control" id="txtRecepTipoCod" type="text">
+                                <input class="form-control editSwich" id="txtRecepTipoCod" type="text" disabled="disabled">
                                 <label for="txtRecepCodInter">Codigo interno receptor:</label>
-                                <input class="form-control" id="txtRecepCodInter" type="text">
+                                <input class="form-control editSwich" id="txtRecepCodInter" type="text" disabled="disabled">
                                 <label for="txtRecepCodCliente">Codigo cliente:</label>
-                                <input class="form-control" id="txtRecepCodCliente" type="text">
+                                <input class="form-control editSwich" id="txtRecepCodCliente" type="text" disabled="disabled">
                              </div>
                         </div>
                     </div>
@@ -432,25 +438,25 @@ body {
                                 <legend>Direccion 1 receptor:</legend>
                                 <div class="form-group">
                                     <label for="txtRecepD1Calle">Calle:</label>
-                                    <input class="form-control" id="txtRecepD1Calle" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1Calle" type="text" disabled="disabled">
                                     <label for="txtRecepD1NumExt">Numero exterior:</label>
-                                    <input class="form-control" id="txtRecepD1NumExt" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1NumExt" type="text" disabled="disabled">
                                     <label for="txtRecepD1NumInt">Numero interior:</label>
-                                    <input class="form-control" id="txtRecepD1NumInt" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1NumInt" type="text" disabled="disabled">
                                     <label for="txtRecepD1Colonia">Colonia:</label>
-                                    <input class="form-control" id="txtRecepD1Colonia" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1Colonia" type="text" disabled="disabled">
                                     <label for="txtRecepD1Localidad">Localidad:</label>
-                                    <input class="form-control" id="txtRecepD1Localidad" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1Localidad" type="text" disabled="disabled">
                                     <label for="txtRecepD1Referencia">Referencia:</label>
-                                    <input class="form-control" id="txtRecepD1Referencia" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1Referencia" type="text" disabled="disabled">
                                     <label for="txtRecepD1Municipio">Municipio:</label>
-                                    <input class="form-control" id="txtRecepD1Municipio" type="text">
+                                    <input class="form-control editSwich" id="txtRecepD1Municipio" type="text" disabled="disabled">
                                    <label for="txtRecepD1Estado">Estado:</label>
-                                   <input class="form-control" id="txtRecepD1Estado" type="text">
+                                   <input class="form-control editSwich" id="txtRecepD1Estado" type="text" disabled="disabled">
                                    <label for="txtRecepD1Pais">Pais:</label>
-                                   <input class="form-control" id="txtRecepD1Pais" type="text">
+                                   <input class="form-control editSwich" id="txtRecepD1Pais" type="text" disabled="disabled">
                                    <label for="txtRecepD1CP">Codigo postal:</label>
-                                   <input class="form-control" id="txtRecepD1CP" type="text">
+                                   <input class="form-control editSwich" id="txtRecepD1CP" type="text" disabled="disabled">
                                </div>
                         </div>
                     </div>
@@ -459,31 +465,31 @@ body {
                             <legend>Direccion 2 receptor:</legend>
                            <div class="form-group">
                                 <label for="txtRecepD2Calle">Calle:</label>
-                                <input class="form-control" id="txtRecepD2Calle" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2Calle" type="text" disabled="disabled">
                                 <label for="txtRecepD2NumExt">Numero exterior:</label>
-                                <input class="form-control" id="txtRecepD2NumExt" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2NumExt" type="text" disabled="disabled">
                                 <label for="txtRecepD2NumInt">Numero interior:</label>
-                                <input class="form-control" id="txtRecepD2NumInt" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2NumInt" type="text" disabled="disabled">
                                 <label for="txtRecepD2Colonia">Colonia:</label>
-                                <input class="form-control" id="txtRecepD2Colonia" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2Colonia" type="text" disabled="disabled">
                                 <label for="txtRecepD2Localidad">Localidad:</label>
-                                <input class="form-control" id="txtRecepD2Localidad" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2Localidad" type="text" disabled="disabled">
                                 <label for="txtRecepD2Referencia">Referencia:</label>
-                                <input class="form-control" id="txtRecepD2Referencia" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2Referencia" type="text" disabled="disabled">
                                 <label for="txtRecepD2Municipio">Municipio:</label>
-                                <input class="form-control" id="txtRecepD2Municipio" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2Municipio" type="text" disabled="disabled">
                                <label for="txtRecepD2Estado">Estado:</label>
-                               <input class="form-control" id="txtRecepD2Estado" type="text">
+                               <input class="form-control editSwich" id="txtRecepD2Estado" type="text" disabled="disabled">
                                <label for="txtRecepD2Pais">Pais:</label>
-                               <input class="form-control" id="txtRecepD2Pais" type="text">
+                               <input class="form-control editSwich" id="txtRecepD2Pais" type="text" disabled="disabled">
                                <label for="txtRecepD2CP">Codigo postal:</label>
-                               <input class="form-control" id="txtRecepD2CP" type="text">
+                               <input class="form-control editSwich" id="txtRecepD2CP" type="text" disabled="disabled">
                                <label for="txtRecepD2NumPago">Numero de pago:</label>
-                               <input class="form-control" id="txtRecepD2NumPago" type="text">
+                               <input class="form-control editSwich" id="txtRecepD2NumPago" type="text" disabled="disabled">
                                <label for="txtRecepD2MetodoPago">Metodo de pago:</label>
-                               <input class="form-control" id="txtRecepD2MetodoPago" type="text">
+                               <input class="form-control editSwich" id="txtRecepD2MetodoPago" type="text" disabled="disabled">
                                 <label for="txtRecepD2NumPago">Numero de pago:</label>
-                                <input class="form-control" id="txtRecepD2NumPago" type="text">
+                                <input class="form-control editSwich" id="txtRecepD2NumPago" type="text" disabled="disabled">
                            </div>
                         </div>
                     </div>
@@ -515,15 +521,15 @@ body {
                  <div class="row">
                      <div class="col-xs-4">
                          <label for="ex1">Version:</label>
-                         <input class="form-control" id="ex1" type="text">
+                         <input class="form-control" id="ex1" type="text" disabled="disabled">
                      </div>
                      <div class="col-xs-4">
                          <label for="ex2">Tipo de operacion:</label>
-                         <input class="form-control" id="ex2" type="text">
+                         <input class="form-control" id="ex2" type="text" disabled="disabled">
                      </div>
                      <div class="col-xs-4">
                          <label for="ex3">Clave de pedimento:</label>
-                         <input class="form-control" id="ex3" type="text">
+                         <input class="form-control" id="ex3" type="text" disabled="disabled">
                      </div>
                      <div class="col-xs-4">
                          <label for="ex1">No. exportador confiable:</label>

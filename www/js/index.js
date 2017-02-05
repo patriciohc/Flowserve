@@ -27,6 +27,10 @@ $(document).ready(function(){
     $("#idbtnSalir").click(function(){
         confirm();
     });
+    
+    $('#idSwitchHab').change(function() {
+        swichForms();
+    })
   
 })
 
@@ -257,6 +261,10 @@ function formularioData(){
 
         tb.appendChild(tr);
     }
+    
+    $("#ex1").val("1.1");
+    $("#ex2").val("Exportacion");
+    $("#ex3").val("A1");
 
     $("#idcontenedorestxt").css("display", "none");
     $("#idformulario").css("display", "");
@@ -276,7 +284,7 @@ function confirm(){
     buttons: {
         confirmar: function () {
             $.alert('Hasta pronto!');
-            window.location.href="index.html";
+            salir();
         },
         cancelar: function () {
            
@@ -292,4 +300,14 @@ function confirm(){
     }
 });
     
+}
+
+//validacion habilitar campos
+function swichForms(){
+    var valueswHab =  $('#idSwitchHab').prop('checked');
+    var inputsForms = $('input.editSwich');
+    if(valueswHab){
+        inputsForms.prop('disabled', false);
+    }else
+         inputsForms.prop('disabled', true);
 }
