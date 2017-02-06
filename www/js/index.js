@@ -65,7 +65,6 @@ function logueo(){
     General.post("/api/login", ObjPriData)
     .then( result => {
         if (!result) {
-             alertErrorLogin();
             //alert('Error, verifique sus datos.');
             return;
         }
@@ -93,7 +92,7 @@ function cargarTxt(){
                 //data: {},
                 dataType: "json",
                 success: function (result) {
-                    if (result) {
+                    if (result && result.length > 0) {
                         var tableTxt = document.getElementById("ul-txt");
                         tableTxt.innerHTML = "";
                         for(i=0; i < result.length; i++)
