@@ -227,11 +227,11 @@ body {
     <div id="idcontenedorestxt" class="container">
         <div class="row">
            <div class="col-md-4 well list-group">
-           <h2>Archivos txt.</h2>
-               <ul class="list-group" id="ul-txt">
-               </ul>
+               <h2>Archivos txt.</h2>
+               <ul class="list-group" id="ul-txt"></ul>
            </div>
-           <div class="col-md-8">
+           <div class="col-md-1"></div>
+           <div class="col-md-6">
                <div>
                   <h2>Facturas de archivo txt.</h2>
                   <p>Selecciona la factura a modificar:</p>
@@ -260,8 +260,8 @@ body {
                      Habilitar todos los campos para edicion.
                     <input id="idSwitchHab" type="checkbox" data-onstyle="success" data-toggle="toggle" data-on="SI" data-off="NO">
                   </label>
-                <button type="button" onclick="timbrar()" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
-                <button type="button" onclick="guardarTxt()" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
+                <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                <button type="button" onclick="guardarTxt()" style="margin:2px;" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
             </div>
             <ul class="tab">
               <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'encabezado')" id="defaultOpen">Encabezado</a></li>
@@ -496,7 +496,7 @@ body {
                 </div>
              </div>
 
-             <div id="complemento" class="tabcontent">
+            <div id="complemento" class="tabcontent">
                  <div class="row">
                      <div class="col-md-12">
                          <h2>Productos</h2>
@@ -557,11 +557,17 @@ body {
         </div>
         <div class="modal-body">
            <form>
-              <div class="form-group">
+                <div class="form-group">
+                    <label for="inputsm">Usuarios existentes:</label><br>
+                    <select class="selectpicker" data-style="btn-info">
+                      <option>--select--</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label for="inputlg">Nombre Completo:</label>
-                    <input class="form-control input-lg" id="inputlg" placeholder="Nombre Completo" type="text">
+                    <input class="form-control" id="inputlg" placeholder="Nombre Completo" type="text">
                 </div>
+              <div class="form-group">
                 <label for="inputdefault">Usuario:</label>
                 <input class="form-control" id="inputdefault"
                 placeholder="Usuario" type="text">
@@ -584,9 +590,10 @@ body {
             </form>
         </div>
         <div class="modal-footer">
-         <input class="btn btn-primary" type="submit" value="Eliminar">
-         <input class="btn btn-primary" type="submit" value="Agregar">
-         <input class="btn btn-primary" type="submit" value="Actualizar">
+
+         <input class="btn btn-success" type="submit" value="Agregar">
+         <input class="btn btn-warning" type="submit" value="Actualizar">
+         <input class="btn btn-danger" type="submit" value="Eliminar">
 
         </div>
       </div>

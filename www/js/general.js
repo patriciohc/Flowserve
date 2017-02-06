@@ -4,11 +4,11 @@ var General = {
 
     _getToken: function (){
         var token = "token ";
-        // var infoUser = localStorage.getItem("infoUser");
-        // if (infoUser) {
-        //     var infoUser = JSON.parse(infoUser);
-        //     token += infoUser.token;
-        // }
+        var infoUser = localStorage.getItem("infoUser");
+        if (infoUser) {
+            var infoUser = JSON.parse(infoUser);
+            token += infoUser.token;
+        }
         return token;
     },
 
