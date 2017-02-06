@@ -418,6 +418,7 @@ function timbrar(){
         .then(function (result) {
             alertSucces();
             console.log(result);
+            cargarTxt();
         })
         .catch(function (err) {
             errorAlert();
