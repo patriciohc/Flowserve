@@ -43,6 +43,8 @@ $(document).ready(function(){
 function salir(){
     localStorage.clear();
     $("body").css("background", "#333")
+    $("#userid").val("");
+    $("#passid").val("");
     document.getElementById("idloguin").style.display = "block";
     document.getElementById("divPrincipal").style.display = "none";
 }
@@ -57,14 +59,14 @@ function logueo(){
     };
 
     if ( usuario == "" || contraseña == "") {
-        alert("Debe completar los datos requeridos.");
-        window.location.href = 'index.html';
-        return;
-    }
+        //alert("Debe completar los datos requeridos.");
+        alertErrorLogin();
+    }else{
     General.post("/api/login", ObjPriData)
     .then( result => {
         if (!result) {
-            alert('Error, verifique sus datos.');
+             alertErrorLogin();
+            //alert('Error, verifique sus datos.');
             return;
         }
         localStorage.setItem("infoUser", JSON.stringify(result));
@@ -74,10 +76,12 @@ function logueo(){
         cargarTxt();
     })
     .catch(err => {
-        alert('Error, verifique sus datos.');
+         alertErrorLogin();
+        //alert('Error, verifique sus datos.');
         // console.log(result.responseText);
-        window.location.href = 'index.html';
+        //window.location.href = 'index.html';
     });
+   }
 }
 
 //funcion encargada de obtener txt a cargar
@@ -104,13 +108,18 @@ function cargarTxt(){
                                 tableTxt.appendChild(li);
                             }
                     }else{
-                        alert("No hay archivos pendientes.");
+                        //alert("No hay archivos pendientes.");
+                        $.alert({
+                            title: 'Alerta!',
+                            content: 'No hay archivos pendientes.!',
+                        });
                     }
 
                 },
                 error: function (result) {
-                    alert('Hubo un error con la carga de txt, favor de reportar al area de sistemas.');
+                    //alert('Hubo un error con la carga de txt, favor de reportar al area de sistemas.');
                    // alert(result.responseText);
+                   errorAlert();
                    window.location.href = 'index.html';
                 },
                 //async: true
@@ -392,9 +401,11 @@ function guardarTxt() {
     setDatosFactura();
     General.put("/api/facturas", txtSelected)
     .then(function (result) {
+        alertSucces();
         console.log(result);
     })
     .catch(function (err) {
+        errorAlert();
          console.log(err);
     });
 }
@@ -406,13 +417,16 @@ function timbrar(){
     .then(function (result) {
         General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
         .then(function (result) {
+            alertSucces();
             console.log(result);
         })
         .catch(function (err) {
+            errorAlert();
              console.log(err);
         });
     })
     .catch(function (err) {
+         errorAlert();
          console.log(err);
     });
 }
@@ -430,7 +444,7 @@ function confirm(){
     content: 'Seleccione cancelar si desea permanecer en la pagina.',
     buttons: {
         confirmar: function () {
-            $.alert('Hasta pronto!');
+           // $.alert('Hasta pronto!');
             salir();
         },
         cancelar: function () {
@@ -447,6 +461,54 @@ function confirm(){
     }
 });
 
+}
+
+//alert Errorlogin
+function alertErrorLogin(){
+   $.alert({
+    title: 'Error!',
+    content: 'Revisa tus datos de acceso!',
+});
+    // window.location.href = 'index.html';
+    //return;
+}
+
+//alert succes
+function alertSucces(){
+    $.confirm({
+    title: 'Terminado!',
+    content: 'Proceso generado con exito.',
+    type: 'green',
+    typeAnimated: true,
+    buttons: {
+        tryAgain: {
+            text: 'Ok',
+            btnClass: 'btn-green',
+            action: function(){
+            }
+        },
+    }
+});
+}
+
+//alert error
+function errorAlert(){
+     $.confirm({
+    title: 'Error!',
+    content: 'Hubo un error, intenta de nuevo o notifica al area de sistemas',
+    type: 'red',
+    typeAnimated: true,
+    buttons: {
+        tryAgain: {
+            text: 'Ok',
+            btnClass: 'btn-red',
+            action: function(){
+            }
+        },
+       /* close: function () {
+        }*/
+    }
+});
 }
 
 //validacion habilitar campos
