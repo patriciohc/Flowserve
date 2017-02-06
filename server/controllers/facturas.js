@@ -11,6 +11,7 @@ const excel = require('../excel')
 //const dirFiles = "E:/datos_txt"
 const dirFacturas = "./datos_txt";
 const dirFacturasNacionales = "./facturas_nacionales";
+const dirFacturasTimbradas = "./timbradas"
 
 // carga informacion del excel en formato json
 var jsonExcel = (function(){
@@ -32,7 +33,8 @@ function procesarDirectorio(){
     for (var i in list) {
         procesarTxt(list[i], dirFacturas);
     }
-}
+};
+(function(){procesarDirectorio()})();
 /**
 * separa en facturas nacionales y extranjeras, en las facturas extranjeras agrega
 * la informacion requerida, las facturas nacionales las guarda en un nuevo txt
@@ -49,7 +51,7 @@ function procesarTxt(nameTxt, dir) {
         writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
     }
     addInfoFactura(facturas.extranjeras).then( values => {
-        console.log("Escribiendo facturas extranjenar: "+ nameTxt);
+        console.log("Escribiendo facturas extranjeras: "+ nameTxt);
         writeFile(facturas.extranjeras, nameTxt, dirFacturas)
     }).catch( err => {
         console.log(err);
@@ -180,11 +182,14 @@ function addSeccionManual(factura){
         cceNExpConfiable: "",
         cceCertOrig: "",
         cceNCertOrig: "",
-        cceVersion: "",
-        cceTipoOp: "",
-        cceClavePed: "",
+        cceVersion: "1.1",
+        cceTipoOp: "Exportacion",
+        cceClavePed: "A1",
     }
-    factura.receptor.push(nuevosDatos);
+    // busca si ya fueron agregados los nuevos datos
+    var nuevosDatosTest = factura.receptor.find( item => item.hasOwnProperty("cceNExpConfiable"));
+    if (!nuevosDatosTest)
+        factura.receptor.push(nuevosDatos);
 }
 /**
 * dentro de cada factura hay un aparatado donde se encuetran los productos con
@@ -390,11 +395,11 @@ function getFacturas(req, res) {
 */
 function guardarTxt(req, res){
     var facturas = req.body.facturas;
-    var nameTxt = req.body.nameFile;
+    var nameTxt = req.body.nameTxt;
     if (!facturas)
         res.status(200).send({message: "no hay facturas por guardar"});
 
-    writeFile(facturas, nombreTxt, dirFacturas)
+    writeFile(facturas, nameTxt, dirFacturas)
     .then( () => {
         res.status(200).send({message: "success"});
     })
@@ -405,12 +410,15 @@ function guardarTxt(req, res){
 /**
 * turnar
 */
-function turnar(req, res) {
-
+function timbrar(req, res) {
+    var nameTxt = req.body.nameTxt;
+    fs.renameSync(dirFacturas + "/" + nameTxt, dirFacturasTimbradas + "/" + nameTxt);
+    return es.status(200).send();
 }
 
 function procesarCarpeta(req, res){
     procesarDirectorio();
+    res.status(200).send();
 }
 
 module.exports = {
@@ -418,7 +426,7 @@ module.exports = {
     //testDB,
     getFacturas,
     guardarTxt,
-    turnar,
+    timbrar,
     //tmp
     procesarCarpeta,
 };
