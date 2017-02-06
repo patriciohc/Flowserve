@@ -38,24 +38,40 @@ $(document).ready(function(){
         swichForms();
     });
     
-    $('#dateRangePicker')
-        .datepicker({
-            format: 'mm/dd/yyyy',
-            startDate: '01/01/2010',
-            endDate: '12/30/2020'
-        });
+    $.datepicker.regional['es'] = {
+     closeText: 'Cerrar',
+     prevText: '< Ant',
+     nextText: 'Sig >',
+     currentText: 'Hoy',
+     monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+     monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+     dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+     dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+     weekHeader: 'Sm',
+     dateFormat: 'dd/mm/yy',
+     firstDay: 1,
+     isRTL: false,
+     showMonthAfterYear: false,
+     yearSuffix: ''
+     };
+     $.datepicker.setDefaults($.datepicker.regional['es']);
     
-    $('#dateRangePicker2')
-        .datepicker({
-            format: 'mm/dd/yyyy',
-            startDate: '01/01/2010',
-            endDate: '12/30/2020'
-        })
-        .on('changeDate', function(e) {
-            // Revalidate the date field
-            //$('#dateRangeForm').formValidation('revalidateField', 'date');
-            onchangeDate();
-        });
+    $("#from").datepicker({
+        dateFormat: 'dd-mm-yy',
+        onClose: function (selectedDate) {
+        $("#to").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#to").datepicker({
+        dateFormat: 'dd-mm-yy',
+        onClose: function (selectedDate) {
+        $("#from").datepicker("option", "maxDate", selectedDate);
+        }
+    }).on("change", function (e) {
+    //console.log("Date changed: ", e.target.value);
+    onchangeDate();
+});
     
 
 })
