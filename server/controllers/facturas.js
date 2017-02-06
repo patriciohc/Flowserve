@@ -96,7 +96,7 @@ function addInfoFactura(facturas) {
 * @param {string} nameFile - nombre completo de archivo
 */
 function convertTxtToJson(nameFile) {
-    if(!fs.existsSync(filename)) return [];
+    if(!fs.existsSync(nameFile)) return [];
     var texto = fs.readFileSync(nameFile, 'utf8');
     if (!texto) return;
     var facturas = texto.split("XXXINICIO");
