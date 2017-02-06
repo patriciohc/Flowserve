@@ -23,7 +23,8 @@ var jsonExcel = (function(){
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
     if (eventType == "rename")
-        if (filename){
+        console.log(filename);
+        if (fs.existsSync(filename)){
             procesarTxt(filename, dirFacturas);
         }
 });
@@ -95,7 +96,7 @@ function addInfoFactura(facturas) {
 * @param {string} nameFile - nombre completo de archivo
 */
 function convertTxtToJson(nameFile) {
-    //var nameFile = dirFiles + "/" + "33_NPG_Invoices_303479_Thru_303501_On_2016-11-24.txt";
+    if(!fs.existsSync(nameFile)) return [];
     var texto = fs.readFileSync(nameFile, 'utf8');
     if (!texto) return;
     var facturas = texto.split("XXXINICIO");
@@ -413,7 +414,7 @@ function guardarTxt(req, res){
 function timbrar(req, res) {
     var nameTxt = req.body.nameTxt;
     fs.renameSync(dirFacturas + "/" + nameTxt, dirFacturasTimbradas + "/" + nameTxt);
-    return es.status(200).send();
+    return res.status(200).send({message:"success"});
 }
 
 function procesarCarpeta(req, res){

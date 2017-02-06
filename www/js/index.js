@@ -84,45 +84,33 @@ function logueo(){
 }
 
 //funcion encargada de obtener txt a cargar
-function cargarTxt(){
-    $.ajax({
-                type: "get",
-                url: "/api/listText",
-                //contentType: "application/json; charset=utf-8",
-                //data: {},
-                dataType: "json",
-                success: function (result) {
-                    if (result && result.length > 0) {
-                        var tableTxt = document.getElementById("ul-txt");
-                        tableTxt.innerHTML = "";
-                        for(i=0; i < result.length; i++)
-                            {
-
-                                var li = document.createElement("li")
-                                li.className="list-group-item";
-                                li.id = result[i].nombre;
-                                li.style.cursor="pointer";
-                                li.onclick=cargarFacturas;
-                                li.innerHTML = result[i].nombre+"<span class='badge'>"+result[i].cantidad+"</span>";
-                                tableTxt.appendChild(li);
-                            }
-                    }else{
-                        //alert("No hay archivos pendientes.");
-                        $.alert({
-                            title: 'Alerta!',
-                            content: 'No hay archivos pendientes.!',
-                        });
-                    }
-
-                },
-                error: function (result) {
-                    //alert('Hubo un error con la carga de txt, favor de reportar al area de sistemas.');
-                   // alert(result.responseText);
-                   errorAlert();
-                   window.location.href = 'index.html';
-                },
-                //async: true
+function cargarTxt() {
+    General.get("/api/listText")
+    .then(function(result){
+        if (result && result.length > 0) {
+            var tableTxt = document.getElementById("ul-txt");
+            tableTxt.innerHTML = "";
+            for (i=0; i < result.length; i++) {
+                var li = document.createElement("li")
+                li.className="list-group-item";
+                li.id = result[i].nombre;
+                li.style.cursor = "pointer";
+                li.style.height = "50px";
+                li.onclick=cargarFacturas;
+                li.innerHTML = "<div class='col-md-10'>"+result[i].nombre+"</div><div class='badge'>"+result[i].cantidad+"</div>";
+                tableTxt.appendChild(li);
+            }
+        } else {
+            $.alert({
+                title: 'Alerta!',
+                content: 'No hay archivos pendientes.!',
             });
+        }
+    })
+    .catch(function (err){
+        console.log(err);
+        errorAlert();
+    });
 }
 
 //funcion que carga las facturas del txt elegido.
@@ -137,8 +125,9 @@ function cargarFacturas(){
                 success: function (result) {
                    if(result){
                        txtSelected.facturas = result;
+                       var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+                       cuerpoTableFacturas.innerHTML = "";
                        for(i=0; i<result.length;i++){
-                           var cuerpoTableFacturas = document.getElementById("idtbodyfac");
                            var tr = document.createElement("tr");
                            tr.style.cursor="pointer";
                            tr.onclick=formularioData;
@@ -410,19 +399,20 @@ function guardarTxt() {
 }
 
 function timbrar(){
-
     setDatosFactura();
     General.put("/api/facturas", txtSelected)
     .then(function (result) {
         General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
         .then(function (result) {
+            cargarTxt();
+            hideForms();
             alertSucces();
             console.log(result);
             cargarTxt();
         })
         .catch(function (err) {
             errorAlert();
-             console.log(err);
+            console.log(err);
         });
     })
     .catch(function (err) {

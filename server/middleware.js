@@ -9,7 +9,17 @@ exports.ensureAuthenticated = function(req, res, next) {
     }
 
     var token = req.headers.authorization.split(" ")[1];
-    var payload = jwt.decode(token, config.TOKEN_SECRET);
+    if (!token)
+        return res.status(401).send({message: "token no valido"});
+
+    try {
+        var payload = jwt.decode(token, config.TOKEN_SECRET);
+    } catch(err){
+        return res.status(401).send({message: "token no valido"});
+    }
+
+    if (!payload.exp)
+        return res.status(401).send({message: "token no valido"});
 
     if(payload.exp <= moment().unix()) {
         return res.status(401).send({message: "El token ha expirado"});
