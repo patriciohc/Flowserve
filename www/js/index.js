@@ -81,7 +81,7 @@ function logueo(){
 }
 
 //funcion encargada de obtener txt a cargar
-function cargarTxt(){
+function cargarTxt() {
     $.ajax({
                 type: "get",
                 url: "/api/listText",
@@ -129,8 +129,9 @@ function cargarFacturas(){
                 success: function (result) {
                    if(result){
                        txtSelected.facturas = result;
+                       var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+                       cuerpoTableFacturas.innerHTML = "";
                        for(i=0; i<result.length;i++){
-                           var cuerpoTableFacturas = document.getElementById("idtbodyfac");
                            var tr = document.createElement("tr");
                            tr.style.cursor="pointer";
                            tr.onclick=formularioData;
@@ -406,6 +407,7 @@ function timbrar(){
     .then(function (result) {
         General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
         .then(function (result) {
+            cargarTxt();
             console.log(result);
         })
         .catch(function (err) {
