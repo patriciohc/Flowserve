@@ -36,7 +36,27 @@ $(document).ready(function(){
 
     $('#idSwitchHab').change(function() {
         swichForms();
-    })
+    });
+    
+    $('#dateRangePicker')
+        .datepicker({
+            format: 'mm/dd/yyyy',
+            startDate: '01/01/2010',
+            endDate: '12/30/2020'
+        });
+    
+    $('#dateRangePicker2')
+        .datepicker({
+            format: 'mm/dd/yyyy',
+            startDate: '01/01/2010',
+            endDate: '12/30/2020'
+        })
+        .on('changeDate', function(e) {
+            // Revalidate the date field
+            //$('#dateRangeForm').formValidation('revalidateField', 'date');
+            onchangeDate();
+        });
+    
 
 })
 
@@ -509,4 +529,8 @@ function swichForms(){
         inputsForms.prop('disabled', false);
     }else
          inputsForms.prop('disabled', true);
+}
+
+function onchangeDate(){
+   
 }
