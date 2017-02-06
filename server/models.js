@@ -12,6 +12,7 @@ var User = sequelize.define('user',
         },
         userName: {
             type: Sequelize.STRING,
+            unique: true,
             field: 'user_name' // Will result in an attribute that is firstName when user facing but first_name in the database
         },
         area: {
