@@ -453,11 +453,11 @@ function timbrar(req, res) {
 * @param {string} nameTxt - nombre del txt timbrado
 */
 function reEditar(req, res) {
-    var nameTxt = dirFacturasTimbradas + "/" +  req.body.nameTxt;
-    if(!fs.existsSync(nameTxt))
-        return res.status(404).send({message:"no exisite la factura especificada"});
-
-    fs.renameSync(dirFacturasTimbradas + "/" + nameTxt, dirFacturas + "/" + nameTxt);
+    var nameTxts = dirFacturasTimbradas + "/" +  req.body.nameTxts;
+    for (var i in nameTxts){
+        if(fs.existsSync(nameTxt))
+            fs.renameSync(dirFacturasTimbradas + "/" + nameTxt, dirFacturas + "/" + nameTxt);        
+    }
     return res.status(200).send({message:"success"});
 }
 

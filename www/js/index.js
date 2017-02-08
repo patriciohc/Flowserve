@@ -499,6 +499,14 @@ function alertErrorLogin(){
     //return;
 }
 
+//alert mensaje
+function alerMensaje(texto){
+   $.alert({
+       title: 'Aviso!',
+       content: texto,
+   });
+}
+
 //alert succes
 function alertSucces(){
     $.confirm({
@@ -561,13 +569,33 @@ function onchangeDate() {
             var td = document.createElement("td");
             td.innerHTML = result[i].nombre;
             tr.appendChild(td);
-            var check =  document.createElement("input");
-            check.setAttribute("type", "checkbox");
-            tr.appendChild(check);
+            td = document.createElement("td");
+            td.innerHTML = `<input type='checkbox' value=${result[i].nombre} class='checkRestaurar'></input>`;
+            tr.appendChild(td);
             tbHistorial.appendChild(tr);
 
         }
     }).catch(function(err){
+        console.log(err);
+    });
+}
+
+function restaurarTxt(){
+    var checks = [];
+    $(".checkRestaurar").each( function (index){
+        if($(this).is(":checked")){
+            checks.push($(this).val());
+        }
+    });
+    if (checks.length == 0) {
+        alerMensaje("Seleccione un elemento!");
+        return;
+    }
+    General.post("reeditar", checks)
+    .then(function (result){
+        console.log(result);
+    })
+    .catch(function (err){
         console.log(err);
     });
 }
