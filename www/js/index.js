@@ -37,7 +37,7 @@ $(document).ready(function(){
     $('#idSwitchHab').change(function() {
         swichForms();
     });
-    
+
     $.datepicker.regional['es'] = {
      closeText: 'Cerrar',
      prevText: '< Ant',
@@ -56,7 +56,7 @@ $(document).ready(function(){
      yearSuffix: ''
      };
      $.datepicker.setDefaults($.datepicker.regional['es']);
-    
+
     $("#from").datepicker({
         dateFormat: 'dd-mm-yy',
         onClose: function (selectedDate) {
@@ -72,7 +72,7 @@ $(document).ready(function(){
     //console.log("Date changed: ", e.target.value);
     onchangeDate();
 });
-    
+
 
 })
 
@@ -121,7 +121,7 @@ function logueo(){
 
 //funcion encargada de obtener txt a cargar
 function cargarTxt() {
-    General.get("/api/listText")
+    General.get("/api/listText?directorio=pendientes")
     .then(function(result){
         if (result && result.length > 0) {
             var tableTxt = document.getElementById("ul-txt");
@@ -547,6 +547,27 @@ function swichForms(){
          inputsForms.prop('disabled', true);
 }
 
-function onchangeDate(){
-   
+function onchangeDate() {
+    var fIni = $("#from").val().split("-");
+    var fFin = $("#to").val().split("-");
+    fIni = `${fIni[2]}-${fIni[1]}-${fIni[0]}`
+    fFin = `${fFin[2]}-${fFin[1]}-${fFin[0]}`
+    General.get(`/api/listText?directorio=timbradas&fIni=${fIni}&fFin=${fFin}`)
+    .then(function (result){
+        var tbHistorial = document.getElementById("tbHistorial");
+        tbHistorial.innerHTML = "";
+        for (var i in result) {
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            td.innerHTML = result[i].nombre;
+            tr.appendChild(td);
+            var check =  document.createElement("input");
+            check.setAttribute("type", "checkbox");
+            tr.appendChild(check);
+            tbHistorial.appendChild(tr);
+
+        }
+    }).catch(function(err){
+        console.log(err);
+    });
 }

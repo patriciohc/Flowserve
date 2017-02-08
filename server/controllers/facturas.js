@@ -363,10 +363,39 @@ function complementarInfoPrductos(productos, arrayPromises){
 
 /**
 * obtiene una lista de txt en el directorio
+* @param {string} directorio - pendientes, timbradas
 * @return lista de archivos txt en el directorio { nombre, cantidad: cantidad de facturas }
 */
 function getListTxt(req, res) {
-    fs.readdir(dirFacturas, (err, files) => {
+    var nameTxtToDate = function (nameTxt){
+        var fechaArchivo = nameTxt.split(".")[0];
+        var fechaArchivo = fechaArchivo.split("_");
+        var fechaArchivo = fechaArchivo[fechaArchivo.length-1];
+        return new Date(fechaArchivo);
+    };
+    var dir = "";
+    if (req.query.directorio == "pendientes")
+        dir = dirFacturas;
+    else if (req.query.directorio == "timbradas")
+        dir = dirFacturasTimbradas;
+    else
+        return res.status(404).send({message:"directorio no valido"});
+
+    var fIni, fFin;
+    if (req.query.fIni) {
+        fIni = new Date(req.query.fIni);
+    } else {
+        fIni = new Date("2015-01-01");
+        //fIni.setDate(1);
+    }
+    if (req.query.fFin) {
+        fFin = new Date(req.query.fFin);
+    } else {
+        fFin = new Date("2020-01-01");
+        //fFins.setDate(30);
+    }
+
+    fs.readdir(dir, (err, files) => {
         if (err) {
             return res.status(200).send(null);
             console.log(err);
@@ -374,11 +403,14 @@ function getListTxt(req, res) {
         var lista = [];
         for (var i in files) {
             var archivo = {};
-            var nameFile =  dirFacturas +"/"+ files[i];
-            var texto = fs.readFileSync(nameFile, 'utf8');
-            archivo.nombre = files[i];
-            archivo.cantidad = texto.split("XXXINICIO").filter(item => item != item.trim()).length;
-            lista.push(archivo);
+            var fechaArchivo = nameTxtToDate(files[i]);
+            if (fIni.getTime() < fechaArchivo.getTime() &&  fechaArchivo.getTime() < fFin.getTime() ) {
+                var nameFile =  dir +"/"+ files[i];
+                var texto = fs.readFileSync(nameFile, 'utf8');
+                archivo.nombre = files[i];
+                archivo.cantidad = texto.split("XXXINICIO").filter(item => item != item.trim()).length;
+                lista.push(archivo);
+            }
         }
         return res.status(200).send(lista);
     });
@@ -416,6 +448,18 @@ function timbrar(req, res) {
     fs.renameSync(dirFacturas + "/" + nameTxt, dirFacturasTimbradas + "/" + nameTxt);
     return res.status(200).send({message:"success"});
 }
+/**
+* reeditar, regresa de facturas timbradas a facturas pendientes
+* @param {string} nameTxt - nombre del txt timbrado
+*/
+function reEditar(req, res) {
+    var nameTxt = dirFacturasTimbradas + "/" +  req.body.nameTxt;
+    if(!fs.existsSync(nameTxt))
+        return res.status(404).send({message:"no exisite la factura especificada"});
+
+    fs.renameSync(dirFacturasTimbradas + "/" + nameTxt, dirFacturas + "/" + nameTxt);
+    return res.status(200).send({message:"success"});
+}
 
 function procesarCarpeta(req, res){
     procesarDirectorio();
@@ -424,7 +468,7 @@ function procesarCarpeta(req, res){
 
 module.exports = {
     getListTxt,
-    //testDB,
+    reEditar,
     getFacturas,
     guardarTxt,
     timbrar,
