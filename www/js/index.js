@@ -126,18 +126,18 @@ function cargarTxt() {
         facturas: null, // facturas en json
         indexSelected: null, // factura seleccionada
     }
+    var tableTxt = document.getElementById("ul-txt");
+    tableTxt.innerHTML = "";
     General.get("/api/listText?directorio=pendientes")
     .then(function(result){
         if (result && result.length > 0) {
-            var tableTxt = document.getElementById("ul-txt");
-            tableTxt.innerHTML = "";
             for (i=0; i < result.length; i++) {
                 var li = document.createElement("li")
                 li.className="list-group-item item-list-txt";
                 li.id = result[i].nombre;
                 li.style.cursor = "pointer";
                 //li.style.height = "50px";
-                li.onclick = cargarFacturas;
+                li.onclick = onClickCargarFacturas;
                 li.innerHTML = "<span>"+result[i].nombre+"</span><span class='badge'>"+result[i].cantidad+"</span>";
                 tableTxt.appendChild(li);
             }
@@ -155,10 +155,15 @@ function cargarTxt() {
 }
 
 //funcion que carga las facturas del txt elegido en la tabla
-function cargarFacturas(){
+function onClickCargarFacturas(){
     $(".item-list-txt").removeClass("active");
     $(this).addClass("active");
     txtSelected.nameTxt = this.id;
+    cargarFacturas();
+}
+
+function cargarFacturas() {
+    hideForms();
     var getClassRow = function(factura){
         var datosFaltantes = validarFactura(factura);
         if (datosFaltantes.length == 0) {
@@ -196,7 +201,7 @@ function cargarFacturas(){
             alert("No existen datos relacionados con el txt.");
         }
     })
-    .catch(function (){
+    .catch(function (err){
         alert('Error, notifique al area de sistemas.');
     });
 
@@ -471,16 +476,21 @@ function guardarTxt() {
     setDatosFactura();
     General.put("/api/facturas", txtSelected)
     .then(function (result) {
+        cargarFacturas();
         alertSucces();
         console.log(result);
     })
     .catch(function (err) {
         errorAlert();
-         console.log(err);
+        console.log(err);
     });
 }
 
 function timbrar() {
+    if (txtSelected.nameTxt == null) {
+        alertMensaje("Seleccione un elemento de la lista de archivos pendientes");
+        return;
+    }
     General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
     .then(function (result) {
         var cuerpoTableFacturas = document.getElementById("idtbodyfac");
@@ -592,6 +602,19 @@ function swichForms(){
          inputsForms.prop('disabled', true);
 }
 
+function onClickHistorial(){
+    initFechasBusquedaHistorial();
+    onchangeDate();
+}
+
+function initFechasBusquedaHistorial(){
+    var toDay = new Date();
+    var fIni = "01-01-" +(toDay.getFullYear() - 1)
+    var fFin = toDay.getDate() + "-" + (toDay.getMonth() + 1) + "-" + toDay.getFullYear()
+    $("#from").val(fIni);
+    $("#to").val(fFin);
+}
+
 function onchangeDate() {
     var fIni = $("#from").val().split("-");
     var fFin = $("#to").val().split("-");
@@ -607,6 +630,7 @@ function onchangeDate() {
         }
         for (var i in result) {
             var tr = document.createElement("tr");
+            tr.id = "tablaHistorial_" + result[i].nombre;
             var td = document.createElement("td");
             td.innerHTML = result[i].nombre;
             tr.appendChild(td);
@@ -633,9 +657,10 @@ function restaurarTxt(){
         return;
     }
     General.post("/api/reeditar", {nameTxts: checks})
-    .then(function (result){
-        onchangeDate();
+    .then(function (result) {
         cargarTxt()
+        $('#myModalHistorial').modal('hide');
+
         console.log(result);
     })
     .catch(function (err){
