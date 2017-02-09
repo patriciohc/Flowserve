@@ -325,7 +325,7 @@ function complementarInfoPrducto(producto, head) {
             producto[key] = infoExcel[match[key]];
     }
 
-    var checkItemEIS = function(key) {
+    var checkItemVacio = function(key) {
         var tmp = head.find( item => item.nombre == key );
         if (!tmp) {
             head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 })
@@ -337,9 +337,10 @@ function complementarInfoPrducto(producto, head) {
     checkItemExcel("cceDescES");// descripcion español
     checkItemExcel("cceDescEN");// descripcion ingles
     checkItemExcel("cceFraccion");// fraccion
-    // datos EIS
-    checkItemEIS("cceMarca");
-    checkItemEIS("cceModelo");
+    // campos vacios
+    checkItemVacio("cceMarca");
+    checkItemVacio("cceModelo");
+    checkItemVacio("cceSerie");
 }
 /**
 * complementa la informacion para los productos recibidos
@@ -453,10 +454,14 @@ function timbrar(req, res) {
 * @param {string} nameTxt - nombre del txt timbrado
 */
 function reEditar(req, res) {
-    var nameTxts = dirFacturasTimbradas + "/" +  req.body.nameTxts;
-    for (var i in nameTxts){
-        if(fs.existsSync(nameTxt))
-            fs.renameSync(dirFacturasTimbradas + "/" + nameTxt, dirFacturas + "/" + nameTxt);        
+    var nameTxts = req.body.nameTxts;
+    console.log(nameTxts);
+    for (var i = 0; i < nameTxts.length; i++) {
+        var nameTxt = dirFacturasTimbradas + "/" + nameTxts[i]
+        if(fs.existsSync(nameTxt)){
+            console.log("nameTxt -> " + nameTxt);
+            fs.renameSync(nameTxt, dirFacturas + "/" + nameTxts[i]);
+        }
     }
     return res.status(200).send({message:"success"});
 }
