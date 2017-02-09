@@ -119,8 +119,13 @@ function logueo(){
    }
 }
 
-//funcion encargada de obtener txt a cargar
+//funcion encargada de obtener txt a cargar en la lista de archivo pendientes
 function cargarTxt() {
+    txtSelected = { // inicializa, ya que al crear una nueva lista no hay ningun elemento seleccionado
+        nameTxt: null, // nombre del txt
+        facturas: null, // facturas en json
+        indexSelected: null, // factura seleccionada
+    }
     General.get("/api/listText?directorio=pendientes")
     .then(function(result){
         if (result && result.length > 0) {
@@ -149,7 +154,7 @@ function cargarTxt() {
     });
 }
 
-//funcion que carga las facturas del txt elegido.
+//funcion que carga las facturas del txt elegido en la tabla
 function cargarFacturas(){
     $(".item-list-txt").removeClass("active");
     $(this).addClass("active");
@@ -478,11 +483,10 @@ function guardarTxt() {
 function timbrar() {
     General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
     .then(function (result) {
+        var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+        cuerpoTableFacturas.innerHTML = ""; // limpia tabla de facturas
         cargarTxt();
-        hideForms();
         alertSucces();
-        console.log(result);
-        cargarTxt();
     })
     .catch(function (err) {
         errorAlert();
@@ -593,14 +597,14 @@ function onchangeDate() {
     var fFin = $("#to").val().split("-");
     fIni = `${fIni[2]}-${fIni[1]}-${fIni[0]}`
     fFin = `${fFin[2]}-${fFin[1]}-${fFin[0]}`
+    var tbHistorial = document.getElementById("tbHistorial");
+    tbHistorial.innerHTML = "";
     General.get(`/api/listText?directorio=timbradas&fIni=${fIni}&fFin=${fFin}`)
     .then(function (result) {
         if (!result || result.length == 0){
             alertMensaje("No hay facturas timbradas en el rango seleccionado");
             return;
         }
-        var tbHistorial = document.getElementById("tbHistorial");
-        tbHistorial.innerHTML = "";
         for (var i in result) {
             var tr = document.createElement("tr");
             var td = document.createElement("td");
