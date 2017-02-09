@@ -39,42 +39,47 @@ $(document).ready(function(){
     });
 
     $.datepicker.regional['es'] = {
-     closeText: 'Cerrar',
-     prevText: '< Ant',
-     nextText: 'Sig >',
-     currentText: 'Hoy',
-     monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-     monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-     dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-     dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-     dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-     weekHeader: 'Sm',
-     dateFormat: 'dd/mm/yy',
-     firstDay: 1,
-     isRTL: false,
-     showMonthAfterYear: false,
-     yearSuffix: ''
+        closeText: 'Cerrar',
+        prevText: '< Ant',
+        nextText: 'Sig >',
+        currentText: 'Hoy',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+        dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
      };
      $.datepicker.setDefaults($.datepicker.regional['es']);
 
-    $("#from").datepicker({
-        dateFormat: 'dd-mm-yy',
-        onClose: function (selectedDate) {
-        $("#to").datepicker("option", "minDate", selectedDate);
+     $("#from").datepicker({
+         dateFormat: 'dd-mm-yy',
+         onClose: function (selectedDate) {
+             $("#to").datepicker("option", "minDate", selectedDate);
         }
     });
+
     $("#to").datepicker({
         dateFormat: 'dd-mm-yy',
         onClose: function (selectedDate) {
-        $("#from").datepicker("option", "maxDate", selectedDate);
+            $("#from").datepicker("option", "maxDate", selectedDate);
         }
-    }).on("change", function (e) {
-    //console.log("Date changed: ", e.target.value);
-    onchangeDate();
-});
+    })
+    .on("change", function (e) {
+        //console.log("Date changed: ", e.target.value);
+        onchangeDate();
+    });
 
+    var urlServer = "http://localhost:8880";
+    var socket = io.connect( urlServer, {"forceNew": true});
+    socket.on('newTxt', agregarElementoListaTxt);
 
-})
+}); // fin ready
 
 function salir(){
     localStorage.clear();
@@ -119,13 +124,20 @@ function logueo(){
    }
 }
 
+// agrega un nuevo elemento a la lista de txt
+function agregarElementoListaTxt(txt) {
+        var tableTxt = document.getElementById("ul-txt");
+        var li = document.createElement("li")
+        li.className="list-group-item item-list-txt";
+        li.id = txt.nombre;
+        li.style.cursor = "pointer";
+        //li.style.height = "50px";
+        li.onclick = onClickCargarFacturas;
+        li.innerHTML = "<span>"+txt.nombre+"</span><span class='badge'>"+txt.cantidad+"</span>";
+        tableTxt.appendChild(li);
+}
 //funcion encargada de obtener txt a cargar en la lista de archivo pendientes
 function cargarTxt() {
-    txtSelected = { // inicializa, ya que al crear una nueva lista no hay ningun elemento seleccionado
-        nameTxt: null, // nombre del txt
-        facturas: null, // facturas en json
-        indexSelected: null, // factura seleccionada
-    }
     var tableTxt = document.getElementById("ul-txt");
     tableTxt.innerHTML = "";
     General.get("/api/listText?directorio=pendientes")
@@ -495,6 +507,11 @@ function timbrar() {
     .then(function (result) {
         var cuerpoTableFacturas = document.getElementById("idtbodyfac");
         cuerpoTableFacturas.innerHTML = ""; // limpia tabla de facturas
+        txtSelected = { // inicializa, ya que al timbrar no hay ningun elemento seleccionado
+            nameTxt: null, // nombre del txt
+            facturas: null, // facturas en json
+            indexSelected: null, // factura seleccionada
+        }
         cargarTxt();
         alertSucces();
     })
