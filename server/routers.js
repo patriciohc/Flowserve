@@ -2,10 +2,9 @@
 
 const express = require('express');
 const api = express.Router();
-const facturas = require('./controllers/facturas');
 const users = require('./controllers/users');
 const middleware = require('./middleware');
-
+const facturas = require('./controllers/facturas');
 // middleware.ensureAuthenticated,
 // txt
 api.get('/listText/', middleware.ensureAuthenticated, facturas.getListTxt);
@@ -25,3 +24,8 @@ api.get('/obtainUsers', users.obtainUsers);
 //api.get('/cat-atributo/:id', catProductoCtrl.getCatProducto);
 
 module.exports = api;
+
+module.exports = function(sockeIO) {
+    facturas.setSocketIO(sockeIO);
+    return api;
+}
