@@ -37,6 +37,10 @@ $(document).ready(function(){
     $('#idSwitchHab').change(function() {
         swichForms();
     });
+    
+    $('#idbtnReguser').click(function(){
+       cargarUsuariosExis(); 
+    });
 
     $.datepicker.regional['es'] = {
      closeText: 'Cerrar',
@@ -669,5 +673,19 @@ function restaurarTxt(){
 }
 
 function cargarUsuariosExis(){
-    
+    General.get("/api/obtainUsers")
+    .then(function(result){
+        for(i = 0; i < result.length; i++)
+            {
+              var selectUsers = document.getElementById("idselectUsers");
+              var option = document.createElement('option');
+              // añadir el elemento option y sus valores
+              selectUsers.options.add(option, i);
+              //selectUsers.options[i].value = "valor";
+              selectUsers.options[i].innerText = result[i].name;
+            }
+    })
+    .catch(function(err){
+        console.log(err);
+    });
 }

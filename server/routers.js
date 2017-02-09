@@ -19,6 +19,7 @@ api.get('/procesar/', facturas.procesarCarpeta); // temporal
 // users
 api.post('/registroUsuarios/', users.createUser);
 api.post('/login/', users.login);
+api.get('/obtainUsers', users.obtainUsers);
 
 //api.get('/user/:id', controllers.getUser);
 //api.get('/cat-atributo/:id', catProductoCtrl.getCatProducto);

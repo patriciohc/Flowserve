@@ -22,6 +22,10 @@ var User = sequelize.define('user',
         password: {
             type: Sequelize.STRING,
             field: 'password' // Will result in an attribute that is firstName when user facing but first_name in the database
+        },
+        rolUser: {
+            type: Sequelize.STRING,
+            field: 'rol_user' // Will result in an attribute that is firstName when user facing but first_name in the database
         }
     }, {
         freezeTableName: true // Model tableName will be the same as the model name
