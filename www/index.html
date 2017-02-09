@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.css">
-    <!-- Versión compilada y comprimida del CSS de Bootstrap -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <!-- Tema opcional -->
-    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <!-- <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" >
     <!-- Include Datepicker -->
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
-
+    <!-- Versión compilada y comprimida del CSS de Bootstrap -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css">
     <!-- jquery -->
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.js"></script>
@@ -28,175 +28,13 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
     <script src="js/index.js"></script>
     <script src="js/general.js"></script>
-
-<style>
-  /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
-* {
--moz-box-sizing: border-box;
-box-sizing: border-box;
-}
-
-body {
-background: #333;
-font: 100%/1 "Helvetica Neue", Arial, sans-serif;
-}
-
-.login {
-position: absolute;
-top: 50%;
-left: 50%;
-margin: -10rem 0 0 -10rem;
-width: 20rem;
-height: 20rem;
-padding: 20px;
-background: #fff;
-border-radius: 5px;
-overflow: hidden;
-}
-.login:hover > .login-header, .login.focused > .login-header {
-width: 2rem;
-}
-.login:hover > .login-header > .text, .login.focused > .login-header > .text {
-font-size: 1rem;
-transform: rotate(-90deg);
-}
-.login.loading > .login-header {
-width: 20rem;
-}
-.login.loading > .login-header > .text {
-display: none;
-}
-.login.loading > .login-header > .loader {
-display: block;
-}
-
-.login-header {
-position: absolute;
-left: 0;
-top: 0;
-z-index: 1;
-width: 20rem;
-height: 20rem;
-background: orange;
-transition: width 0.5s ease-in-out;
-}
-.login-header > .text {
-display: block;
-width: 100%;
-height: 100%;
-font-size: 5rem;
-text-align: center;
-line-height: 20rem;
-color: #fff;
-transition: all 0.5s ease-in-out;
-}
-.login-header > .loader {
-display: none;
-position: absolute;
-left: 5rem;
-top: 5rem;
-width: 10rem;
-height: 10rem;
-border: 2px solid #fff;
-border-radius: 50%;
-animation: loading 2s linear infinite;
-}
-.login-header > .loader:after {
-content: "";
-position: absolute;
-left: 4.5rem;
-top: -0.5rem;
-width: 1rem;
-height: 1rem;
-background: #fff;
-border-radius: 50%;
-border-right: 2px solid orange;
-}
-.login-header > .loader:before {
-content: "";
-position: absolute;
-left: 4rem;
-top: -0.5rem;
-width: 0;
-height: 0;
-border-right: 1rem solid #fff;
-border-top: 0.5rem solid transparent;
-border-bottom: 0.5rem solid transparent;
-}
-
-@keyframes loading {
-50% {
-opacity: 0.5;
-}
-100% {
-transform: rotate(360deg);
-}
-}
-.login-form {
-margin: 0 0 0 2rem;
-padding: 0.5rem;
-}
-
-.login-input {
-display: block;
-width: 100%;
-font-size: 2rem;
-padding: 0.5rem 1rem;
-box-shadow: none;
-border-color: #ccc;
-border-width: 0 0 2px 0;
-}
-.login-input + .login-input {
-margin: 10px 0 0;
-}
-.login-input:focus {
-outline: none;
-border-bottom-color: orange;
-}
-
-.login-btn {
-position: absolute;
-right: 1rem;
-bottom: 1rem;
-width: 5rem;
-height: 5rem;
-border: none;
-background: orange;
-border-radius: 50%;
-font-size: 0;
-border: 0.6rem solid transparent;
-transition: all 0.3s ease-in-out;
-}
-.login-btn:after {
-    content: "";
-    position: absolute;
-    left: 1rem;
-    top: 0.8rem;
-    width: 0;
-    height: 0;
-    border-left: 2.4rem solid #fff;
-    border-top: 1.2rem solid transparent;
-    border-bottom: 1.2rem solid transparent;
-    transition: border 0.3s ease-in-out 0s;
-}
-.login-btn:hover, .login-btn:focus, .login-btn:active {
-    background: #fff;
-    border-color: orange;
-    outline: none;
-}
-.login-btn:hover:after, .login-btn:focus:after, .login-btn:active:after {
-    border-left-color: orange;
-}
-
-</style>
 
 </head>
 
@@ -231,29 +69,46 @@ transition: all 0.3s ease-in-out;
 
     <div id="idcontenedorestxt" class="container">
         <div class="row">
-           <div class="col-md-4 well list-group">
-               <h2>Archivos txt.</h2>
-               <ul class="list-group" id="ul-txt"></ul>
-           </div>
-           <div class="col-md-1"></div>
-           <div class="col-md-6">
-               <div>
-                  <h2>Facturas de archivo txt.</h2>
-                  <p>Selecciona la factura a modificar:</p>
-                  <table class="table table-hover table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Serie</th>
-                        <th>Folio</th>
-                        <th>Fecha de emision</th>
-                      </tr>
-                    </thead>
-                    <tbody id="idtbodyfac">
-
-                    </tbody>
-                  </table>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Lista de archivos pendientes</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <ul class="list-group" id="ul-txt"></ul>
+                        </div>
+                    </div>
                 </div>
-           </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Facturas de archivo txt.</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div style="height:40px;">
+                            <div style="margin-top: 10px; display:inline-block;">
+                                <p>Selecciona la factura a modificar:</p>
+                            </div>
+                            <div style="margin-top: 2px; display:inline-block; float:right;">
+                                <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs">Timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                            </div>
+                        </div>
+                        <table class="table table-hover table-bordered">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <th style="width:33%">Serie</th>
+                                    <th style="width:33%">Folio</th>
+                                    <th style="width:34%">Fecha de emision</th>
+                                </tr>
+                            </thead>
+                            <tbody id="idtbodyfac"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -265,7 +120,7 @@ transition: all 0.3s ease-in-out;
                      Habilitar todos los campos para edicion.
                     <input id="idSwitchHab" type="checkbox" data-onstyle="success" data-toggle="toggle" data-on="SI" data-off="NO">
                   </label>
-                <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                <!-- <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button> -->
                 <button type="button" onclick="guardarTxt()" style="margin:2px;" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
             </div>
             <ul class="tab">
@@ -506,7 +361,7 @@ transition: all 0.3s ease-in-out;
                      <div class="col-md-12">
                          <h2>Productos</h2>
                          <p>Lista de productos e informacion adicional:</p>
-                         <table class="table table-striped table-bordered table-hover">
+                         <table id="tablaProductos" class="table table-striped table-bordered table-hover">
                              <thead>
                                  <tr>
                                      <th>Producto</th>

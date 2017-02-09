@@ -128,12 +128,12 @@ function cargarTxt() {
             tableTxt.innerHTML = "";
             for (i=0; i < result.length; i++) {
                 var li = document.createElement("li")
-                li.className="list-group-item";
+                li.className="list-group-item item-list-txt";
                 li.id = result[i].nombre;
                 li.style.cursor = "pointer";
-                li.style.height = "50px";
-                li.onclick=cargarFacturas;
-                li.innerHTML = "<div class='col-md-10'>"+result[i].nombre+"</div><div class='badge'>"+result[i].cantidad+"</div>";
+                //li.style.height = "50px";
+                li.onclick = cargarFacturas;
+                li.innerHTML = "<span>"+result[i].nombre+"</span><span class='badge'>"+result[i].cantidad+"</span>";
                 tableTxt.appendChild(li);
             }
         } else {
@@ -151,45 +151,82 @@ function cargarTxt() {
 
 //funcion que carga las facturas del txt elegido.
 function cargarFacturas(){
+    $(".item-list-txt").removeClass("active");
+    $(this).addClass("active");
     txtSelected.nameTxt = this.id;
-    $.ajax({
-                type: "post",
-                url: "/api/facturas",
-                //contentType: "application/json; charset=utf-8",
-                data: {"nameFile": txtSelected.nameTxt},
-                dataType: "json",
-                success: function (result) {
-                   if(result){
-                       txtSelected.facturas = result;
-                       var cuerpoTableFacturas = document.getElementById("idtbodyfac");
-                       cuerpoTableFacturas.innerHTML = "";
-                       for(i=0; i<result.length;i++){
-                           var tr = document.createElement("tr");
-                           tr.style.cursor="pointer";
-                           tr.onclick=formularioData;
-                           tr.IndexData = i;
-                           var td = document.createElement("td");
-                           td.innerHTML=result[i].factura[0].Serie;
-                           tr.appendChild(td);
-                           td = document.createElement("td");
-                           td.innerHTML=result[i].factura[0].Folio;
-                           tr.appendChild(td);
-                           td = document.createElement("td");
-                           td.innerHTML=result[i].factura[0].FechaEmis;
-                           tr.appendChild(td);
-                           cuerpoTableFacturas.appendChild(tr);
-                       }
-                   }else{
-                       alert("No existen datos relacionados con el txt.");
-                   }
+    var getClassRow = function(factura){
+        var datosFaltantes = validarFactura(factura);
+        if (datosFaltantes.length == 0) {
+            return "bg-success";
+        } else if (datosFaltantes.length < 7 ) {
+            return "bg-warning";
+        } else {
+            return "bg-danger";
+        }
+    }
+    General.post("/api/facturas", {"nameFile": txtSelected.nameTxt})
+    .then(function (result){
+        if(result){
+            txtSelected.facturas = result;
+            var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+            cuerpoTableFacturas.innerHTML = "";
+            for(i=0; i<result.length;i++){
+                var tr = document.createElement("tr");
+                tr.className = getClassRow(result[i]);
+                tr.style.cursor="pointer";
+                tr.onclick=formularioData;
+                tr.IndexData = i;
+                var td = document.createElement("td");
+                td.innerHTML=result[i].factura[0].Serie;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.innerHTML=result[i].factura[0].Folio;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.innerHTML=result[i].factura[0].FechaEmis;
+                tr.appendChild(td);
+                cuerpoTableFacturas.appendChild(tr);
+            }
+        }else{
+            alert("No existen datos relacionados con el txt.");
+        }
+    })
+    .catch(function (){
+        alert('Error, notifique al area de sistemas.');
+    });
 
-                },
-                error: function (result) {
-                    alert('Error, notifique al area de sistemas.');
-                   // alert(result.responseText);
-                   //window.location.href = 'index.html';
-                },
-            });
+}
+
+function validarFactura(factura) {
+    var faltantes = [];
+    if (factura.receptor[3].cceVersion == "") faltantes.push("Version");
+    if (factura.receptor[3].cceTipoOp == "") faltantes.push("Tipo operación")
+    if (factura.receptor[3].cceClavePed == "") faltantes.push("Clave pediemento");
+    if (factura.receptor[3].cceNExpConfiable == "") faltantes.push("No. exportador confiable");
+    if (factura.receptor[3].cceCertOrig == "") faltantes.push("Certificado de origen");
+    if (factura.receptor[3].cceNCertOrig == "") faltantes.push("No. de certificador de origen");
+
+    var bloque = factura.receptor.find( item => item.hasOwnProperty("productos"));
+    var rows = [];
+    if (bloque)
+        rows = bloque.productos.rows;
+    if (rows){
+        var ban = false;
+        var keys = ["cceDescES", "cceDescEN", "cceFraccion", "cceMarca", "cceModelo", "cceSerie"];
+        for (var i = 0; i < rows.length; i++) {
+            var item = rows[i];
+            for (var j in keys){
+                var clave = keys[j];
+                if (item[clave].trim() == ""){
+                    ban = true;
+                    faltantes.push("Datos en productos");
+                    break;
+                }
+            }
+            if (ban) break;
+        }
+    }
+    return faltantes;
 }
 
 //mostrar formularios
@@ -303,7 +340,8 @@ function formularioData(){
         td.innerHTML = p.cceModelo;
         tr.appendChild(td);
         td = document.createElement("td");
-        td.innerHTML = "";
+        td.innerHTML = p.cceSerie;
+        td.setAttribute("contenteditable", "true");
         tr.appendChild(td);
 
         tb.appendChild(tr);
@@ -396,8 +434,11 @@ function setDatosFactura(){
     datos.receptor[3].cceNCertOrig = $("#txt_cceNCertOrig").val();
 
 // datos productos
-    var rows = datos.receptor.find( item => item.hasOwnProperty("productos")).rows;
-    $("#tabla tbody tr").each(function (index) {
+    var bloque = datos.receptor.find( item => item.hasOwnProperty("productos"));
+    var rows = [];
+    if (bloque)
+        rows = bloque.productos.rows;
+    $("#tablaProductos tbody tr").each(function (index) {
         var p = rows[index];
         //var campo1, campo2, campo3;
         $(this).children("td").each(function (index2) {
@@ -414,8 +455,8 @@ function setDatosFactura(){
                     break;
                 case 5: p.cceModelo = $(this).text();
                     break;
-                //case 6: p.serie = $(this).text();
-                //    break;
+                case 6: p.cceSerie = $(this).text();
+                    break;
             }
         })
     });
@@ -434,26 +475,18 @@ function guardarTxt() {
     });
 }
 
-function timbrar(){
-    setDatosFactura();
-    General.put("/api/facturas", txtSelected)
+function timbrar() {
+    General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
     .then(function (result) {
-        General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
-        .then(function (result) {
-            cargarTxt();
-            hideForms();
-            alertSucces();
-            console.log(result);
-            cargarTxt();
-        })
-        .catch(function (err) {
-            errorAlert();
-            console.log(err);
-        });
+        cargarTxt();
+        hideForms();
+        alertSucces();
+        console.log(result);
+        cargarTxt();
     })
     .catch(function (err) {
-         errorAlert();
-         console.log(err);
+        errorAlert();
+        console.log(err);
     });
 }
 
@@ -500,7 +533,7 @@ function alertErrorLogin(){
 }
 
 //alert mensaje
-function alerMensaje(texto){
+function alertMensaje(texto){
    $.alert({
        title: 'Aviso!',
        content: texto,
@@ -561,7 +594,11 @@ function onchangeDate() {
     fIni = `${fIni[2]}-${fIni[1]}-${fIni[0]}`
     fFin = `${fFin[2]}-${fFin[1]}-${fFin[0]}`
     General.get(`/api/listText?directorio=timbradas&fIni=${fIni}&fFin=${fFin}`)
-    .then(function (result){
+    .then(function (result) {
+        if (!result || result.length == 0){
+            alertMensaje("No hay facturas timbradas en el rango seleccionado");
+            return;
+        }
         var tbHistorial = document.getElementById("tbHistorial");
         tbHistorial.innerHTML = "";
         for (var i in result) {
@@ -588,11 +625,13 @@ function restaurarTxt(){
         }
     });
     if (checks.length == 0) {
-        alerMensaje("Seleccione un elemento!");
+        alertMensaje("Seleccione un elemento!");
         return;
     }
-    General.post("reeditar", checks)
+    General.post("/api/reeditar", {nameTxts: checks})
     .then(function (result){
+        onchangeDate();
+        cargarTxt()
         console.log(result);
     })
     .catch(function (err){
