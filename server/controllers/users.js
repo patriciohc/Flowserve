@@ -14,6 +14,7 @@ function createUser(req, res) {
         userName: req.body.userName,
         area: req.body.area,
         password: sha1(req.body.password),
+        rolUser: req.body.rolUser
     }
 
     models.User.create(user).then(function(user) {
@@ -42,7 +43,14 @@ function login(req, res) {
     });
 }
 
+function obtainUsers(req, res){
+    models.User.findAll({attributes:["name","userName","area","rolUser"]}).then(function(users) { 
+        return res.status(200).send(users);
+    });
+}
+
 module.exports = {
     createUser,
-    login
+    login,
+    obtainUsers
 };
