@@ -642,3 +642,7 @@ function restaurarTxt(){
         console.log(err);
     });
 }
+
+function cargarUsuariosExis(){
+    
+}
