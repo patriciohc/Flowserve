@@ -41,6 +41,10 @@ $(document).ready(function(){
     $('#idbtnReguser').click(function(){
        cargarUsuariosExis(); 
     });
+    
+    $('#idselectUsers').change(function(){
+       infoUserSelect(); 
+    });
 
     $.datepicker.regional['es'] = {
      closeText: 'Cerrar',
@@ -673,19 +677,30 @@ function restaurarTxt(){
 }
 
 function cargarUsuariosExis(){
+    $("#idselectUsers").children().remove();
+    var selectUsers = document.getElementById("idselectUsers");
+    var optiondef = document.createElement("option");
+    optiondef.textContent = "Elige una opcion";
+    optiondef.value=null;
+    optiondef.selected = true;
+    selectUsers.appendChild(optiondef);
     General.get("/api/obtainUsers")
     .then(function(result){
         for(i = 0; i < result.length; i++)
             {
-              var selectUsers = document.getElementById("idselectUsers");
               var option = document.createElement('option');
               // añadir el elemento option y sus valores
               selectUsers.options.add(option, i);
-              //selectUsers.options[i].value = "valor";
+              selectUsers.options[i].value = result[i].id;
               selectUsers.options[i].innerText = result[i].name;
             }
     })
     .catch(function(err){
         console.log(err);
     });
+}
+
+function infoUserSelect(){
+    var valorSelect = $( "#idselectUsers" ).val();
+    alert(valorSelect);
 }
