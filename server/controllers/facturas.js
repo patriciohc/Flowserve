@@ -11,7 +11,9 @@ const excel = require('../excel')
 //const dirFiles = "E:/datos_txt"
 const dirFacturas = "./datos_txt";
 const dirFacturasNacionales = "./facturas_nacionales";
-const dirFacturasTimbradas = "./timbradas"
+const dirFacturasTimbradas = "./timbradas";
+
+var io; // websockets
 
 // carga informacion del excel en formato json
 var jsonExcel = (function(){
@@ -22,11 +24,17 @@ var jsonExcel = (function(){
 })();
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
-    if (eventType == "rename")
-        console.log(filename);
-        if (fs.existsSync(filename)){
-            procesarTxt(filename, dirFacturas);
+    if (eventType == "rename") {
+        console.log("nuevo archivo -> " + filename);
+        if (fs.existsSync(dirFacturas + "/" +filename)){
+            console.log("procesando nuevo archivo");
+            procesarTxt(filename, dirFacturas).then( function (){
+                console.log("proceso terminado");
+                var txt = getNumFacturasTxt(filename, dirFacturas)
+                io.emit('newTxt', txt);
+            });
         }
+    }
 });
 /** procesa los txt que se encuentran en el directorio */
 function procesarDirectorio(){
@@ -48,16 +56,16 @@ function procesarTxt(nameTxt, dir) {
     facturas = separarFacturas(facturas);
     if (facturas.nacionales.length > 0) {
         var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
-        console.log("Escribiendo facturas nacionales: "+ nombreNacionales);
         writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
     }
-    addInfoFactura(facturas.extranjeras).then( values => {
-        console.log("Escribiendo facturas extranjeras: "+ nameTxt);
-        writeFile(facturas.extranjeras, nameTxt, dirFacturas)
-    }).catch( err => {
-        console.log(err);
+    return new Promise( function (resolv, reject) {
+        addInfoFactura(facturas.extranjeras).then( values => {
+            writeFile(facturas.extranjeras, nameTxt, dirFacturas).then(() => resolv());
+        }).catch( err => {
+            console.log(err);
+            reject(err);
+        });
     });
-
 }
 /**
 * separa en facturas nacionales y extranjeras
@@ -360,6 +368,20 @@ function complementarInfoPrductos(productos, arrayPromises){
     }
 }
 
+/**
+* @param {string} nameTxt - nombre del txt
+* @param {string} dir - directorio
+* @return nombre y numero de facturas contenidas en el archivo
+*/
+function getNumFacturasTxt(nameFile, dir) {
+    var archivo = {};
+    var nameFileCompleto =  dir +"/"+ nameFile;
+    var texto = fs.readFileSync(nameFileCompleto, 'utf8');
+    archivo.nombre = nameFile;
+    archivo.cantidad = texto.split("XXXINICIO").filter(item => item != item.trim()).length;
+    return archivo;
+}
+
 //////// funciones en escucha de peticiones http ///////
 
 /**
@@ -398,18 +420,15 @@ function getListTxt(req, res) {
 
     fs.readdir(dir, (err, files) => {
         if (err) {
-            return res.status(200).send(null);
             console.log(err);
+            return res.status(500).send(err);
         }
         var lista = [];
         for (var i in files) {
             var archivo = {};
             var fechaArchivo = nameTxtToDate(files[i]);
             if (fIni.getTime() <= fechaArchivo.getTime() &&  fechaArchivo.getTime() <= fFin.getTime() ) {
-                var nameFile =  dir +"/"+ files[i];
-                var texto = fs.readFileSync(nameFile, 'utf8');
-                archivo.nombre = files[i];
-                archivo.cantidad = texto.split("XXXINICIO").filter(item => item != item.trim()).length;
+                var archivo = getNumFacturasTxt(files[i], dir)
                 lista.push(archivo);
             }
         }
@@ -471,12 +490,17 @@ function procesarCarpeta(req, res){
     res.status(200).send();
 }
 
+function setSocketIO (socketIO) {
+    io = socketIO;
+}
+
 module.exports = {
-    getListTxt,
-    reEditar,
-    getFacturas,
-    guardarTxt,
-    timbrar,
-    //tmp
-    procesarCarpeta,
-};
+        getListTxt,
+        reEditar,
+        getFacturas,
+        guardarTxt,
+        timbrar,
+        //tmp
+        procesarCarpeta,
+        setSocketIO
+}
