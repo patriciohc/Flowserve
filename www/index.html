@@ -60,7 +60,7 @@
           <li class="activar-link"><a href="#">Page 2</a></li>
         </ul>-->
         <ul class="nav navbar-nav navbar-right">
-          <li><a data-toggle="modal" data-target="#myModalHistorial" href="#"><span class="glyphicon glyphicon-folder-close"></span> Historial</a></li>
+          <li><a data-toggle="modal" onclick="onClickHistorial()" data-target="#myModalHistorial" href="#"><span class="glyphicon glyphicon-folder-close"></span> Historial</a></li>
           <li><a data-toggle="modal" data-target="#myModal" href="#"><span class="glyphicon glyphicon-user"></span> Registro</a></li>
           <li><a id="idbtnSalir" href="#"><span class="glyphicon glyphicon-log-in"></span> Salir</a></li>
         </ul>
@@ -482,7 +482,7 @@
             </p>
         </div>
         <div class="row">
-            <table class="table table-striped table-bordered table-hover">
+            <table id="tablaHistorial" class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>Nombre archivo</th>

@@ -405,7 +405,7 @@ function getListTxt(req, res) {
         for (var i in files) {
             var archivo = {};
             var fechaArchivo = nameTxtToDate(files[i]);
-            if (fIni.getTime() < fechaArchivo.getTime() &&  fechaArchivo.getTime() < fFin.getTime() ) {
+            if (fIni.getTime() <= fechaArchivo.getTime() &&  fechaArchivo.getTime() <= fFin.getTime() ) {
                 var nameFile =  dir +"/"+ files[i];
                 var texto = fs.readFileSync(nameFile, 'utf8');
                 archivo.nombre = files[i];
