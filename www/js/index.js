@@ -37,9 +37,9 @@ $(document).ready(function(){
     $('#idSwitchHab').change(function() {
         swichForms();
     });
-    
+
     $('#idbtnReguser').click(function(){
-       cargarUsuariosExis(); 
+       cargarUsuariosExis();
     });
     
     $('#idselectUsers').change(function(){
@@ -683,9 +683,8 @@ function restaurarTxt(){
     }
     General.post("/api/reeditar", {nameTxts: checks})
     .then(function (result) {
-        cargarTxt()
+        //cargarTxt()
         $('#myModalHistorial').modal('hide');
-
         console.log(result);
     })
     .catch(function (err){
