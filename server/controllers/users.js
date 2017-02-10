@@ -44,13 +44,26 @@ function login(req, res) {
 }
 
 function obtainUsers(req, res){
-    models.User.findAll({attributes:["name","userName","area","rolUser"]}).then(function(users) { 
+    models.User.findAll({attributes:["id","name","userName","area","rolUser"]}).then(function(users) { 
         return res.status(200).send(users);
     });
+}
+
+function getInfoUsers(req, res){
+    var id = req.body.id;
+    models.User.findOne({
+        attributes: ['name', 'userName', 'area', 'password', 'rolUser'],
+        where: {id: id}
+    })
+    .then(function(user){
+        if(!user) return res.status(404).send({message: "Error al intentar buscar"});
+        return res.status(200).send({user});
+    })
 }
 
 module.exports = {
     createUser,
     login,
-    obtainUsers
+    obtainUsers,
+    getInfoUsers
 };

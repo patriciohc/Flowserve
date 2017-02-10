@@ -717,6 +717,33 @@ function cargarUsuariosExis(){
 }
 
 function infoUserSelect(){
-    var valorSelect = $( "#idselectUsers" ).val();
-    alert(valorSelect);
+    var valorSelect = $("#idselectUsers" ).val();
+    if(valorSelect != "null"){
+        General.post("/api/getInfoUsers", {id: valorSelect})
+        .then(function(result){
+            $("#inputlg").val(result.user.name);
+            $("#inputdefault").val(result.user.userName);
+            $("#inputsm").val(result.user.area);
+            $("#idbtnAddUser").css("display", "none");
+            $("#idbtnUpdateuser").css("display", "block");
+            $( "#btnDeletuser" ).prop( "disabled", false );
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+    }else{
+            $("#inputlg").val("");
+            $("#inputdefault").val("");
+            $("#pwd").val("");
+            $("#inputsm").val("");
+            $("#idbtnAddUser").css("display", "block");
+            $("#idbtnUpdateuser").css("display", "none");
+            $( "#btnDeletuser" ).prop( "disabled", true );
+        return;
+    }
+    
+}
+
+function saveuserNew(){
+    
 }
