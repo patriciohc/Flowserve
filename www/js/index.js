@@ -511,22 +511,39 @@ function timbrar() {
         alertMensaje("Seleccione un elemento de la lista de archivos pendientes");
         return;
     }
-    General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
-    .then(function (result) {
-        var cuerpoTableFacturas = document.getElementById("idtbodyfac");
-        cuerpoTableFacturas.innerHTML = ""; // limpia tabla de facturas
-        txtSelected = { // inicializa, ya que al timbrar no hay ningun elemento seleccionado
-            nameTxt: null, // nombre del txt
-            facturas: null, // facturas en json
-            indexSelected: null, // factura seleccionada
-        }
-        cargarTxt();
-        alertSucces();
-    })
-    .catch(function (err) {
-        errorAlert();
-        console.log(err);
-    });
+    var facturasSinllenar = $("#idtbodyfac").find(".bg-warning, .bg-danger");
+    //facturasSinllenar = facturasSinllenar.concat($("#idtbodyfac").find(".bg-danger"));
+    var coreTimbrar = function () {
+        General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
+        .then(function (result) {
+            var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+            cuerpoTableFacturas.innerHTML = ""; // limpia tabla de facturas
+            txtSelected = { // inicializa, ya que al timbrar no hay ningun elemento seleccionado
+                nameTxt: null, // nombre del txt
+                facturas: null, // facturas en json
+                indexSelected: null, // factura seleccionada
+            }
+            cargarTxt();
+            alertSucces();
+        })
+        .catch(function (err) {
+            errorAlert();
+            console.log(err);
+        });
+    }
+    if (facturasSinllenar && facturasSinllenar.length > 0) {
+        $.confirm({
+            title: `¡Hay facturas ${facturasSinllenar.length} sin datos!`,
+            content: '¿Desea Continuar?',
+            buttons: {
+                confirmar: function () {coreTimbrar();},
+                cancelar: function () {return;},
+            }
+        });
+        return;
+    }
+    coreTimbrar();
+
 }
 
 //ocultar forms
@@ -548,14 +565,6 @@ function confirm(){
         cancelar: function () {
 
         },
-       /* somethingElse: {
-            text: 'Something else',
-            btnClass: 'btn-primary',
-            keys: ['enter', 'shift'],
-            action: function(){
-                $.alert('Something else?');
-            }
-        }*/
     }
 });
 
@@ -564,7 +573,7 @@ function confirm(){
 //alert Errorlogin
 function alertErrorLogin(){
    $.alert({
-    title: 'Error!',
+    title: '¡Error!',
     content: 'Revisa tus datos de acceso!',
 });
     // window.location.href = 'index.html';
@@ -574,7 +583,7 @@ function alertErrorLogin(){
 //alert mensaje
 function alertMensaje(texto){
    $.alert({
-       title: 'Aviso!',
+       title: '¡Aviso!',
        content: texto,
    });
 }
@@ -621,10 +630,13 @@ function errorAlert(){
 function swichForms(){
     var valueswHab =  $('#idSwitchHab').prop('checked');
     var inputsForms = $('input.editSwich');
-    if(valueswHab){
+    if(valueswHab) {
         inputsForms.prop('disabled', false);
-    }else
+        $("#tbSku").find("td").prop("contenteditable", "true");
+    } else {
          inputsForms.prop('disabled', true);
+         $("#tbSku").find("td").prop("contenteditable", "false");
+     }
 }
 
 function onClickHistorial(){
