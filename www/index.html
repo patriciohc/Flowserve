@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" >
     <!-- Include Datepicker -->
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+    <!--Bootstrap switch-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.3/css/bootstrap2/bootstrap-switch.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.3/css/bootstrap2/bootstrap-switch.min.css">
     <!-- Versión compilada y comprimida del CSS de Bootstrap -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/index.css">
@@ -23,11 +26,13 @@
     <!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
     <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
     <script src="jquery.ui.datepicker-es.js"></script>
-
+    
+    
     <!-- bootstrap -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.3/js/bootstrap-switch.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script> -->
@@ -424,24 +429,23 @@
                 </div>
                 <div class="form-group">
                     <label for="inputlg">Nombre Completo:</label>
-                    <input class="form-control" id="inputlg" placeholder="Nombre Completo" type="text">
+                    <input class="form-control" id="inputlg" placeholder="Nombre Completo" type="text" required>
                 </div>
               <div class="form-group">
                 <label for="inputdefault">Usuario:</label>
-                <input class="form-control" id="inputdefault"
-                placeholder="Usuario" type="text">
+                <input class="form-control" id="inputdefault" placeholder="Usuario" type="text" required>
               </div>
               <div class="form-group">
-                  <label for="pwd">Contraseña:</label>
-                  <input type="password" class="form-control" id="pwd" placeholder="Contraseña">
+                  <label for="pwd">Contraseña:</label><input id="" type="checkbox" data-onstyle="success" data-toggle="toggle" data-on="SI" data-off="NO">
+                  <input type="password" class="form-control" id="pwd" placeholder="Contraseña" required>
               </div>
               <div class="form-group">
                 <label for="inputsm">Area:</label>
-                <input class="form-control input-sm" id="inputsm" placeholder="Area" type="text">
+                <input class="form-control input-sm" id="inputsm" placeholder="Area" type="text" required>
               </div>
               <div class="form-group">
                 <label for="inputsm">Rol de Usuario:</label><br>
-                <select class="selectpicker" data-style="btn-info">
+                <select  class="selectpicker" data-style="btn-info">
                   <option>Administrador</option>
                   <option>Usuario</option>
                 </select>
@@ -449,9 +453,9 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-saved" aria-hidden="true"></span> Agregar</button>
-            <button type="button" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Actualizar</button>
-            <button type="button" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
+            <button id="idbtnAddUser" type="button" class="btn btn-danger btn-sm" style="display:block;"><span class="glyphicon glyphicon-saved" aria-hidden="true"></span> Agregar</button>
+            <button id="idbtnUpdateuser" type="button" class="btn btn-danger btn-sm" style="display:none;"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Actualizar</button>
+            <button id="btnDeletuser" type="button" class="btn btn-danger btn-sm" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Eliminar</button>
         </div>
       </div>
     </div>
