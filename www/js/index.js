@@ -167,6 +167,7 @@ function cargarTxt() {
     .then(function(result){
         if (result && result.length > 0) {
             for (i=0; i < result.length; i++) {
+                if (result[i].cantidad == 0) continue;
                 var li = document.createElement("li")
                 li.className="list-group-item item-list-txt";
                 li.id = result[i].nombre;

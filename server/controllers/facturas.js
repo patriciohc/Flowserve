@@ -10,7 +10,7 @@ const excel = require('../excel')
 
 //const dirFiles = "E:/datos_txt"
 const dirFacturas = "./datos_txt";
-const dirFacturasNacionales = "./facturas_nacionales";
+const dirFacturasNacionales = "./timbradas";
 const dirFacturasTimbradas = "./timbradas";
 
 var io; // websockets
@@ -22,17 +22,30 @@ var jsonExcel = (function(){
     var sheets = excel.readExcel(workbook);
     return sheets[0];
 })();
+
+var txtPendientesParaProcesar = [];
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
     if (eventType == "rename") {
-        console.log("nuevo archivo -> " + filename);
-        if (fs.existsSync(dirFacturas + "/" +filename)){
-            console.log("procesando nuevo archivo");
-            procesarTxt(filename, dirFacturas).then( function (){
-                console.log("proceso terminado");
-                var txt = getNumFacturasTxt(filename, dirFacturas)
-                io.emit('newTxt', txt);
-            });
+        if (fs.existsSync(dirFacturas + "/" +filename)) {
+            txtPendientesParaProcesar.push(filename + "|" + "1");
+        }
+    } else {
+        var item = txtPendientesParaProcesar.find(item => item.split("|")[0] == filename);
+        if (!item) return;
+        var indexFile = txtPendientesParaProcesar.indexOf(item);
+        var archivo = txtPendientesParaProcesar[indexFile].split("|")[0];
+        var stage = txtPendientesParaProcesar[indexFile].split("|")[1];
+        if (stage == "1") {
+            txtPendientesParaProcesar[indexFile] = archivo + "|" + "2";
+        } else if (stage == "2") {
+            txtPendientesParaProcesar.splice( indexFile, 1 );
+            if (fs.existsSync(dirFacturas + "/" +filename)) {
+                procesarTxt(filename, dirFacturas).then( function (){
+                    var txt = getNumFacturasTxt(filename, dirFacturas)
+                    io.emit('newTxt', txt);
+                });
+            }
         }
     }
 });
@@ -52,19 +65,23 @@ function procesarDirectorio(){
 */
 function procesarTxt(nameTxt, dir) {
     var facturas = convertTxtToJson(dir + "/" + nameTxt);
-    if (!facturas) return;
+    if (!facturas) return new Promise((resolv) => resolv());
+    console.log("procesando -> " + nameTxt);
     facturas = separarFacturas(facturas);
     if (facturas.nacionales.length > 0) {
         var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
         writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
     }
     return new Promise( function (resolv, reject) {
-        addInfoFactura(facturas.extranjeras).then( values => {
-            writeFile(facturas.extranjeras, nameTxt, dirFacturas).then(() => resolv());
-        }).catch( err => {
-            console.log(err);
-            reject(err);
-        });
+            addInfoFactura(facturas.extranjeras).then( values => {
+                writeFile(facturas.extranjeras, nameTxt, dirFacturas).then(() => {
+                    console.log("termino -> " + nameTxt);
+                    resolv();
+                });
+            }).catch( err => {
+                console.log(err);
+                reject(err);
+            });
     });
 }
 /**
@@ -248,7 +265,7 @@ function writeFile(facturas, nombreTxt, directorio) {
     var white = "                                                                                                                        ";
     var inicio = "XXXINICIO";
     var texto = "";
-
+    if (facturas.length == 0) return new Promise( (resolve, reject) => resolve());
     for (var i in facturas) {
         var factura = facturas[i];
         texto += inicio + "\r\n";
@@ -271,7 +288,6 @@ function writeFile(facturas, nombreTxt, directorio) {
             if (keySeccion == "otros") texto = texto.substring(0, texto.length - 2);
         }
     }
-/////////////3032
     return new Promise( (resolve, reject) => {
         fs.writeFile( directorio + "/" + nombreTxt, texto, (err) => {
             if (err) reject(err);
@@ -392,9 +408,11 @@ function getNumFacturasTxt(nameFile, dir) {
 function getListTxt(req, res) {
     var nameTxtToDate = function (nameTxt){
         var fechaArchivo = nameTxt.split(".")[0];
-        var fechaArchivo = fechaArchivo.split("_");
-        var fechaArchivo = fechaArchivo[fechaArchivo.length-1];
-        return new Date(fechaArchivo);
+        fechaArchivo = fechaArchivo.split("_");
+        fechaArchivo = fechaArchivo[fechaArchivo.length-1];
+        fechaArchivo = new Date(fechaArchivo);
+        if (fechaArchivo == "Invalid Date") return null;
+        else return fechaArchivo;
     };
     var dir = "";
     if (req.query.directorio == "pendientes")
@@ -427,6 +445,7 @@ function getListTxt(req, res) {
         for (var i in files) {
             var archivo = {};
             var fechaArchivo = nameTxtToDate(files[i]);
+            if (!fechaArchivo) continue;
             if (fIni.getTime() <= fechaArchivo.getTime() &&  fechaArchivo.getTime() <= fFin.getTime() ) {
                 var archivo = getNumFacturasTxt(files[i], dir)
                 lista.push(archivo);
@@ -439,6 +458,7 @@ function getListTxt(req, res) {
 * regresa las facturas en el txt
 */
 function getFacturas(req, res) {
+    console.log("getFacturas");
     var nameFile = dirFacturas + "/" + req.body.nameFile;
     var facturas = convertTxtToJson(nameFile);
     res.status(200).send(facturas);
@@ -449,6 +469,7 @@ function getFacturas(req, res) {
 function guardarTxt(req, res){
     var facturas = req.body.facturas;
     var nameTxt = req.body.nameTxt;
+    console.log("Guardar -> " + nameTxt);
     if (!facturas)
         res.status(200).send({message: "no hay facturas por guardar"});
 
@@ -465,6 +486,7 @@ function guardarTxt(req, res){
 */
 function timbrar(req, res) {
     var nameTxt = req.body.nameTxt;
+    console.log("timbrar -> " + nameTxt);
     fs.renameSync(dirFacturas + "/" + nameTxt, dirFacturasTimbradas + "/" + nameTxt);
     return res.status(200).send({message:"success"});
 }
@@ -474,6 +496,7 @@ function timbrar(req, res) {
 */
 function reEditar(req, res) {
     var nameTxts = req.body.nameTxts;
+    console.log("reEditar: ");
     console.log(nameTxts);
     for (var i = 0; i < nameTxts.length; i++) {
         var nameTxt = dirFacturasTimbradas + "/" + nameTxts[i]
