@@ -1,5 +1,6 @@
 'use strict'
 
+var lockFile = require('lockfile')
 // consulta base de datos sqlServer
 const EIS = require("./EIS.js");
 // lectura de archivos de directorios y archivos de texto
@@ -28,7 +29,16 @@ var txtPendientesParaProcesar = [];
 fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
-            txtPendientesParaProcesar.push(filename + "|" + "1");
+            //console.log(lockFile.checkSync(dirFacturas + "/" +filename));
+            procesarTxt(filename, dirFacturas)
+            .then(function (){
+                var txt = getNumFacturasTxt(filename, dirFacturas)
+                io.emit('newTxt', txt);
+            })
+            .catch(function (err) {
+                console.log("error: " + err.code);
+                txtPendientesParaProcesar.push(filename + "|" + "1");
+            });
         }
     } else {
         var item = txtPendientesParaProcesar.find(item => item.split("|")[0] == filename);
@@ -66,17 +76,28 @@ function procesarDirectorio(){
 function procesarTxt(nameTxt, dir) {
     var facturas = convertTxtToJson(dir + "/" + nameTxt);
     if (!facturas) return new Promise((resolv) => resolv());
+    if (facturas.Error) {
+        return new Promise((resolv, reject) => reject(facturas));
+    }
     console.log("procesando -> " + nameTxt);
     facturas = separarFacturas(facturas);
     if (facturas.nacionales.length > 0) {
         var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
         writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
     }
+    if (facturas.extranjeras == 0) {
+        if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
+            console.log("no data, delte file: " + nameTxt);
+            fs.unlinkSync(dirFacturas + "/" + nameTxt);
+        }
+        return new Promise((resolv) => resolv("delete file"));
+    }
+
     return new Promise( function (resolv, reject) {
             addInfoFactura(facturas.extranjeras).then( values => {
                 writeFile(facturas.extranjeras, nameTxt, dirFacturas).then(() => {
                     console.log("termino -> " + nameTxt);
-                    resolv();
+                    resolv("success");
                 });
             }).catch( err => {
                 console.log(err);
@@ -122,8 +143,14 @@ function addInfoFactura(facturas) {
 */
 function convertTxtToJson(nameFile) {
     if(!fs.existsSync(nameFile)) return [];
-    var texto = fs.readFileSync(nameFile, 'utf8');
-    if (!texto) return;
+    try {
+        var texto = fs.readFileSync(nameFile, 'utf8');
+    } catch(err) {
+        console.log("error ->")
+        console.log(err);
+        return err;
+    }
+    if (!texto) return [];
     var facturas = texto.split("XXXINICIO");
     facturas = facturas.filter(item => item != item.trim());
     facturas = facturas.map( item => {
@@ -265,7 +292,9 @@ function writeFile(facturas, nombreTxt, directorio) {
     var white = "                                                                                                                        ";
     var inicio = "XXXINICIO";
     var texto = "";
-    if (facturas.length == 0) return new Promise( (resolve, reject) => resolve());
+    if (facturas.length == 0) {
+        return new Promise( (resolve, reject) => resolve("noData"));
+    }
     for (var i in facturas) {
         var factura = facturas[i];
         texto += inicio + "\r\n";
@@ -291,7 +320,7 @@ function writeFile(facturas, nombreTxt, directorio) {
     return new Promise( (resolve, reject) => {
         fs.writeFile( directorio + "/" + nombreTxt, texto, (err) => {
             if (err) reject(err);
-            resolve();
+            resolve("success");
         });
     });
 
