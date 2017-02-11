@@ -1,6 +1,5 @@
 'use strict'
 
-var lockFile = require('lockfile')
 // consulta base de datos sqlServer
 const EIS = require("./EIS.js");
 // lectura de archivos de directorios y archivos de texto
