@@ -45,6 +45,21 @@ $(document).ready(function(){
     $('#idselectUsers').change(function(){
        infoUserSelect(); 
     });
+    
+    $("#switchPasschange").change(function(){
+       var chkPass = document.getElementById("switchPasschange");
+        if(chkPass.checked)
+            {
+                $("#pwd").prop("disabled", false);
+            }else{
+                $("#pwd").prop("disabled", true);
+                $("#pwd").val("");
+            }
+    });
+    
+    $("#idbtnAddUser").click(function(){
+        saveuserNew();
+    });
 
     $.datepicker.regional['es'] = {
         closeText: 'Cerrar',
@@ -708,7 +723,7 @@ function cargarUsuariosExis(){
     $("#idselectUsers").children().remove();
     var selectUsers = document.getElementById("idselectUsers");
     var optiondef = document.createElement("option");
-    optiondef.textContent = "Elige una opcion";
+    optiondef.textContent = "--Usuario nuevo--";
     optiondef.value=null;
     optiondef.selected = true;
     selectUsers.appendChild(optiondef);
@@ -738,7 +753,9 @@ function infoUserSelect(){
             $("#inputsm").val(result.user.area);
             $("#idbtnAddUser").css("display", "none");
             $("#idbtnUpdateuser").css("display", "block");
-            $( "#btnDeletuser" ).prop( "disabled", false );
+            $("#btnDeletuser").prop( "disabled", false );
+            $("#contentDivsNewpsw").css("display", "none");
+            $("#passChange").css("display", "block")
         })
         .catch(function(err){
             console.log(err);
@@ -751,11 +768,46 @@ function infoUserSelect(){
             $("#idbtnAddUser").css("display", "block");
             $("#idbtnUpdateuser").css("display", "none");
             $( "#btnDeletuser" ).prop( "disabled", true );
+            $("#contentDivsNewpsw").css("display", "block");
+            $("#passChange").css("display", "none")
         return;
     }
     
 }
 
 function saveuserNew(){
-    
+    var camposClass = $('input.ctrl-valVaci');
+    for(i=0; i < camposClass.length;i++){
+        if(camposClass[i].value == ""){
+            alertMensaje("Ingresa todos los campos solicitados!");
+            return;
+        }   
+    }
+    var pass1 = document.getElementById("pwdnew1").value;
+    var pass2 = document.getElementById("pwdnew2").value;
+    if(pass1 == pass2){
+      var nameCompleto = $("#inputlg").val();
+      var userNom  = $("#inputdefault").val();
+      var pass = $("#pwdnew1").val();
+      var areaUser = $("#inputsm").val();
+      var rol = $( "select#selectRol option:checked" ).val();
+        General.post("/api/registroUsuarios", {name: nameCompleto, userName: userNom, area: areaUser, password: pass, rolUser: rol})
+        .then(function(result){
+            if(result){
+                alertMensaje("Usuario creado con exito!");
+                $('#myModal').modal('hide');
+                $("#inputlg").val("");
+                $("#inputdefault").val("");
+                $("#pwdnew1").val("");
+                $("#pwdnew2").val("");
+                $("#inputsm").val("");
+            }
+        })
+        .catch(function(err){
+            alertMensaje("Hubo un error!");
+        });
+        
+    }else{
+        alertMensaje("La contraseñas no coinciden!");
+        }
 }
