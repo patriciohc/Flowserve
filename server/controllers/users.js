@@ -61,9 +61,37 @@ function getInfoUsers(req, res){
     })
 }
 
+function updateUsers(req, res){
+    var id = req.body.idU;
+    var nombreCom = req.body.nameCompletoU;
+    var userUpd = req.body.userNomU;
+    var passw = req.body.passU;
+    var areaUpd  = req.body.areaUserU;
+    var rol = req.body.rolU;
+        models.User.findOne({
+            where: {id: id}
+        })
+        .then(function(user){ 
+            if(!user)return res.status(404).send({message: "Error al actualizar"});
+            if(passw != ""){
+                passw = sha1(passw);
+                user.password = passw;
+            }
+                user.name = nombreCom;
+                user.userName = userUpd;
+                user.area = areaUpd;
+                user.rolUser = rol;
+                user.save();
+                return res.status(200).send({user});
+    })
+}
+
+
+
 module.exports = {
     createUser,
     login,
     obtainUsers,
-    getInfoUsers
+    getInfoUsers,
+    updateUsers
 };

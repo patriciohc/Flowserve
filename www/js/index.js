@@ -61,6 +61,10 @@ $(document).ready(function(){
         saveuserNew();
     });
 
+    $("#idbtnUpdateuser").click(function(){
+        updateuser();
+    });
+    
     $.datepicker.regional['es'] = {
         closeText: 'Cerrar',
         prevText: '< Ant',
@@ -78,7 +82,7 @@ $(document).ready(function(){
         showMonthAfterYear: false,
         yearSuffix: ''
      };
-     $.datepicker.setDefaults($.datepicker.regional['es']);
+    $.datepicker.setDefaults($.datepicker.regional['es']);
 
      $("#from").datepicker({
          dateFormat: 'dd-mm-yy',
@@ -101,6 +105,8 @@ $(document).ready(function(){
     var urlServer = "http://localhost:8880";
     var socket = io.connect( urlServer, {"forceNew": true});
     socket.on('newTxt', agregarElementoListaTxt);
+    
+
 
 }); // fin ready
 
@@ -812,3 +818,54 @@ function saveuserNew(){
         alertMensaje("La contraseñas no coinciden!");
         }
 }
+
+function updateuser(){
+      var iduser = $("#idselectUsers").val();
+      var nameCompletoUp = $("#inputlg").val();
+      var userNomUp  = $("#inputdefault").val();
+      var passUp = $("#pwd").val();
+      var areaUserUp = $("#inputsm").val();
+      var rolUp = $( "select#selectRol option:checked" ).val();
+      General.post("api/actualizaUsers", {idU: iduser, nameCompletoU: nameCompletoUp, userNomU: userNomUp, passU: passUp, areaUserU: areaUserUp, rolU: rolUp})
+      .then(function(result){
+          if(result){
+              alertMensaje("Proceso de actualizado terminado!");
+              $('#myModal').modal('hide');
+          }else
+              alertMensaje("Error al actualizar!");
+      })
+      .catch(function(err){
+          alertMensaje("Error al actualizar!");
+      })
+}
+
+function deleteUser(){
+    var iduserDel = $("#idselectUsers").val();
+    
+}
+
+function funcionEnter(evento) 
+{ 
+    //para IE 
+    if (window.event) 
+    { 
+        if (window.event.keyCode==13) 
+            { 
+            //Haga algo... (cambie focus) 
+                logueo();
+            } 
+    } 
+    else 
+    { 
+        //Firefox y otros navegadores 
+        if (evento) 
+        { 
+            if(evento.which==13) 
+                { 
+                //Haga algo...(cambie focus) 
+                    logueo();
+                } 
+        } 
+    } 
+}
+

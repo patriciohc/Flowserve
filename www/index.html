@@ -48,9 +48,9 @@
 <div id="idloguin" class="login" style="display:block;">
   <header class="login-header"><span class="text">LOGIN</span><span class="loader"></span></header>
   <div role="form" class="login-form">
-    <input id="userid" class="login-input" type="text" placeholder="Usuario"/>
-    <input id="passid" class="login-input" type="password" placeholder="Contraseña"/>
-    <button id="loguinbtn" class="login-btn" type="button">Entrar</button>
+    <input id="userid" class="login-input" onkeypress="funcionEnter(event)" type="text" placeholder="Usuario"/>
+    <input id="passid" class="login-input" onkeypress="funcionEnter(event)" type="password" placeholder="Contraseña"/>
+    <button id="loguinbtn" class="login-btn" type="button"> </button>
   </div>
 </div>
 <div id="divPrincipal" style="display:none;">
