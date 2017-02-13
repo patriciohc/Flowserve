@@ -6,7 +6,7 @@ var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES
 
 
-function getDatos(sku) {
+function getDatos(p) {
 
     // var connection = new Connection(configDB.sqlServer);
     //
@@ -21,7 +21,7 @@ function getDatos(sku) {
     //             }
     //         });
     //
-    //         request.addParameter('PartCode', TYPES.VarChar, sku);
+    //         request.addParameter('PartCode', TYPES.VarChar, p.VlrCodigo1);
     //         request.addParameter('OrganizationKey', TYPES.Int, 1);
     //
     //         // request.on('row', rows => {
@@ -30,10 +30,10 @@ function getDatos(sku) {
     //         // });
     //
     //         request.on('doneProc', (rowCount, more, returnStatus, rows) => {
-    //             var marca = rows.find( item => item.colName == "PartManufacturer");
-    //             var modelo = rows.find( item => item.colName == "MfgPartNumber");
+    //             p.cceMarca = rows.find( item => item.colName == "PartManufacturer");
+    //             p.cceModelo = rows.find( item => item.colName == "MfgPartNumber");
     //             connection.close()
-    //             resolve({marca, modelo});
+    //             resolve("success");
     //         });
     //
     //         connection.callProcedure(request);
@@ -51,7 +51,10 @@ function getDatos(sku) {
     // });
 
     return new Promise((resolve, reject) => {
-       setTimeout(resolve, parseInt(Math.random() * 3000), {marca: sku, modelo: sku});
+        p.cceMarca = p.VlrCodigo1;
+        p.cceModelo = p.VlrCodigo1;
+        resolve("success");
+       //setTimeout(resolve, parseInt(Math.random() * 3000), {marca: sku, modelo: sku});
     });
 }
 

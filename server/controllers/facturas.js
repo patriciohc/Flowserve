@@ -4,6 +4,7 @@
 const EIS = require("./EIS.js");
 // lectura de archivos de directorios y archivos de texto
 const fs = require('fs');
+const iconvlite = require('iconv-lite');
 // lectura de excel
 const XLSX = require('xlsx');
 const excel = require('../excel')
@@ -75,7 +76,7 @@ function procesarDirectorio(){
 function procesarTxt(nameTxt, dir) {
     var facturas = convertTxtToJson(dir + "/" + nameTxt);
     if (!facturas) return new Promise((resolv) => resolv());
-    if (facturas.Error) {
+    if (facturas.code == 'EBUSY') { // error
         return new Promise((resolv, reject) => reject(facturas));
     }
     console.log("procesando -> " + nameTxt);
@@ -143,10 +144,9 @@ function addInfoFactura(facturas) {
 function convertTxtToJson(nameFile) {
     if(!fs.existsSync(nameFile)) return [];
     try {
-        var texto = fs.readFileSync(nameFile, 'utf8');
+        var texto = fs.readFileSync(nameFile);
+        texto = iconvlite.decode(texto, ' ISO-8859-1');
     } catch(err) {
-        console.log("error ->")
-        console.log(err);
         return err;
     }
     if (!texto) return [];
@@ -317,6 +317,7 @@ function writeFile(facturas, nombreTxt, directorio) {
         }
     }
     return new Promise( (resolve, reject) => {
+        texto = iconvlite.encode(texto, ' ISO-8859-1');
         fs.writeFile( directorio + "/" + nombreTxt, texto, (err) => {
             if (err) reject(err);
             resolve("success");
@@ -341,16 +342,18 @@ function convertProductosJsonToTxt(productos) {
     texto += "\r\n";
     for (var i = 0; i < productos.rows.length; i++) {
         var row = productos.rows[i];
-        for (var j = 0; j < productos.head.length-1; j++) {
-            var keys = Object.keys(row)
+        var j;
+        for (j = 0; j < productos.head.length-1; j++) {
+            //var keys = Object.keys(row)
+            var key = productos.head[j].nombre;
             var espcioDisponible = productos.head[j+1].posicion - productos.head[j].posicion;
            // var value = row[keys[j]].toString();
-              var value = "";
-            if (row[keys[j]])
-                value = row[keys[j]].toString();
+            var value = "";
+            if (row[key])
+                value = row[key].toString();
             texto += value + white.substring(0, espcioDisponible - value.length);
         }
-        texto += row[keys[keys.length-1]];
+        texto += row[productos.head[j].nombre];
         texto += "\r\n";
     }
     return texto;
@@ -367,10 +370,14 @@ function complementarInfoPrducto(producto, head) {
     var infoExcel = jsonExcel.data.find(elemento => elemento.RPRDNO == codigo)
     || { DESCRIPCION_EN_ESPAnOL: "", DESCRIPCION_EN_INGLES: "", FRACCION: "" };
 
-    var match = {cceDescES: "DESCRIPCION_EN_ESPAnOL", cceDescEN: "DESCRIPCION_EN_INGLES", cceFraccion: "FRACCION"}
-    var checkItemExcel = function(key) {
+    var match = {cceDescES: "DESCRIPCION_EN_ESPAnOL", cceDescEN: "DESCRIPCION_EN_INGLES", cceFraccion: "FRACCION"};
+    var comentarios;
+    var checkItemExcel = function(key, esPirmero) {
         var tmp = head.find( item => item.nombre == key );
-        if (!tmp) {
+        if (!tmp && esPirmero) {
+            comentarios = head.pop();
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 60 });
+        } else if (!tmp) {
             head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
         }
         if (!producto.hasOwnProperty(key))
@@ -380,19 +387,22 @@ function complementarInfoPrducto(producto, head) {
     var checkItemVacio = function(key) {
         var tmp = head.find( item => item.nombre == key );
         if (!tmp) {
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 })
+            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 60 })
         }
         if (!producto.hasOwnProperty(key))
             producto[key] = ""
     }
     // datos excel
-    checkItemExcel("cceDescES");// descripcion español
+    checkItemExcel("cceDescES", true);// descripcion español
     checkItemExcel("cceDescEN");// descripcion ingles
     checkItemExcel("cceFraccion");// fraccion
     // campos vacios
     checkItemVacio("cceMarca");
     checkItemVacio("cceModelo");
     checkItemVacio("cceSerie");
+
+    if (comentarios)
+        head.push({ nombre: comentarios.nombre, posicion: head[head.length - 1].posicion + 50 });
 }
 /**
 * complementa la informacion para los productos recibidos
@@ -401,12 +411,12 @@ function complementarInfoPrducto(producto, head) {
 * asincronas, es necesario para determinar el momento en que se han ejecutado todas
 */
 function complementarInfoPrductos(productos, arrayPromises){
-    for (var i in productos.rows){
+    for (var i in productos.rows) {
         var p = productos.rows[i];
         complementarInfoPrducto(p, productos.head);
-        var promise = EIS.getDatos(p.VlrCodigo1).then(function(datos){
-            p.cceMarca = datos.marca;
-            p.cceModelo = datos.modelo;
+        var promise = EIS.getDatos(p).then(function(result) {
+            //p.cceMarca = datos.marca;
+            //p.cceModelo = datos.modelo;
         });
         arrayPromises.push(promise);
     }
