@@ -53,4 +53,17 @@ var General = {
       });
   },
 
+  delete: function (url) {
+      return new Promise(function (resolve, reject) {
+          $.ajax({
+              headers: { Authorization: General._getToken() },
+              type: "delete",
+              url: url,
+              dataType: "json",
+              success: function (result) { resolve(result); },
+              error: function (err) { reject(err); }
+          });
+     });
+ },
+
 }

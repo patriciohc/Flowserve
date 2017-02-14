@@ -1,9 +1,11 @@
-// cotiene los datos del txt seleccionado
+// cotiene los datos del txt seleccionado de las lista de archivos pendientes
 var txtSelected = {
     nameTxt: null, // nombre del txt
     facturas: null, // facturas en json
     indexSelected: null, // factura seleccionada
 };
+// informacion de los usuario actualmente registrados
+var usuariosRegistrados;
 
 $('.login-input').on('focus', function() {
   $('.login').addClass('focused');
@@ -17,6 +19,12 @@ $('.login').on('submit', function(e) {
 $(document).ready(function(){
     var infoUser = localStorage.getItem("infoUser");
     if (infoUser) {
+        infoUser = JSON.parse(infoUser);
+        $("#labelUser").html(infoUser.user.name);
+        if (infoUser.user.rolUser == "admin") 
+            $("#idbtnReguser").show();
+        else
+            $("#idbtnReguser").hide();
         $("body").css("background", "white")
         document.getElementById("idloguin").style.display = "none";
         document.getElementById("divPrincipal").style.display = "block";
@@ -38,14 +46,19 @@ $(document).ready(function(){
         swichForms();
     });
 
-    $('#idbtnReguser').click(function(){
-       cargarUsuariosExis();
-    });
-    
+    // $('#idbtnReguser').click(function(){
+    //    cargarUsuariosExis();
+    // });
+    cargarUsuariosExis();
+
     $('#idselectUsers').change(function(){
-       infoUserSelect(); 
+       infoUserSelect();
     });
-    
+
+    $('#btnDeletuser').click(function(){
+       deleteUser();
+    });
+
     $("#switchPasschange").change(function(){
        var chkPass = document.getElementById("switchPasschange");
         if(chkPass.checked)
@@ -56,7 +69,7 @@ $(document).ready(function(){
                 $("#pwd").val("");
             }
     });
-    
+
     $("#idbtnAddUser").click(function(){
         saveuserNew();
     });
@@ -64,7 +77,7 @@ $(document).ready(function(){
     $("#idbtnUpdateuser").click(function(){
         updateuser();
     });
-    
+
     $.datepicker.regional['es'] = {
         closeText: 'Cerrar',
         prevText: '< Ant',
@@ -105,7 +118,7 @@ $(document).ready(function(){
     var urlServer = "http://localhost:8880";
     var socket = io.connect( urlServer, {"forceNew": true});
     socket.on('newTxt', agregarElementoListaTxt);
-    
+
 
 
 }); // fin ready
@@ -138,6 +151,11 @@ function logueo(){
             //alert('Error, verifique sus datos.');
             return;
         }
+        $("#labelUser").html(result.user.name);
+        if (result.user.rolUser == "admin")
+            $("#idbtnReguser").show();
+        else
+            $("#idbtnReguser").hide();
         localStorage.setItem("infoUser", JSON.stringify(result));
         $("body").css("background", "white")
         document.getElementById("idloguin").style.display = "none";
@@ -555,7 +573,7 @@ function timbrar() {
     }
     if (facturasSinllenar && facturasSinllenar.length > 0) {
         $.confirm({
-            title: `¡Hay facturas ${facturasSinllenar.length} sin datos!`,
+            title: `¡Hay ${facturasSinllenar.length} facturas con datos faltantes!`,
             content: '¿Desea Continuar?',
             buttons: {
                 confirmar: function () {coreTimbrar();},
@@ -712,7 +730,7 @@ function restaurarTxt(){
         }
     });
     if (checks.length == 0) {
-        alertMensaje("Seleccione un elemento!");
+        alertMensaje("¡Seleccione un elemento!");
         return;
     }
     General.post("/api/reeditar", {nameTxts: checks})
@@ -726,7 +744,7 @@ function restaurarTxt(){
     });
 }
 
-function cargarUsuariosExis(){
+function cargarUsuariosExis() {
     $("#idselectUsers").children().remove();
     var selectUsers = document.getElementById("idselectUsers");
     var optiondef = document.createElement("option");
@@ -734,52 +752,53 @@ function cargarUsuariosExis(){
     optiondef.value=null;
     optiondef.selected = true;
     selectUsers.appendChild(optiondef);
-    General.get("/api/obtainUsers")
-    .then(function(result){
-        for(i = 0; i < result.length; i++)
-            {
-              var option = document.createElement('option');
-              // añadir el elemento option y sus valores
-              selectUsers.options.add(option, i);
-              selectUsers.options[i].value = result[i].id;
-              selectUsers.options[i].innerText = result[i].name;
-            }
+    General.get("/api/user")
+    .then(function(result) {
+        for(i = 0; i < result.length; i++) {
+            usuariosRegistrados = result;
+            var option = document.createElement('option');
+            // añadir el elemento option y sus valores
+            selectUsers.options.add(option, i);
+            selectUsers.options[i].value = result[i].id;
+            selectUsers.options[i].innerText = result[i].name;
+        }
     })
     .catch(function(err){
         console.log(err);
     });
 }
 
-function infoUserSelect(){
+function infoUserSelect() {
     var valorSelect = $("#idselectUsers" ).val();
-    if(valorSelect != "null"){
-        General.post("/api/getInfoUsers", {id: valorSelect})
-        .then(function(result){
-            $("#inputlg").val(result.user.name);
-            $("#inputdefault").val(result.user.userName);
-            $("#inputsm").val(result.user.area);
-            $("#idbtnAddUser").css("display", "none");
-            $("#idbtnUpdateuser").css("display", "block");
-            $("#btnDeletuser").prop( "disabled", false );
-            $("#contentDivsNewpsw").css("display", "none");
-            $("#passChange").css("display", "block")
-        })
-        .catch(function(err){
-            console.log(err);
-        });
-    }else{
-            $("#inputlg").val("");
-            $("#inputdefault").val("");
-            $("#pwd").val("");
-            $("#inputsm").val("");
-            $("#idbtnAddUser").css("display", "block");
-            $("#idbtnUpdateuser").css("display", "none");
-            $( "#btnDeletuser" ).prop( "disabled", true );
-            $("#contentDivsNewpsw").css("display", "block");
-            $("#passChange").css("display", "none")
-        return;
+    if(valorSelect != "null") {
+        var index = $("#idselectUsers").prop('selectedIndex');
+        var user = usuariosRegistrados[index];
+        $("#inputlg").val(user.name);
+        $("#inputdefault").val(user.userName);
+        $("#inputsm").val(user.area);
+        $( "select#selectRol option:checked" ).val(user.rolUser);
+        if (user.rolUser == "admin") {
+            $("#btnDeletuser").prop("disabled", "disabled");
+        } else {
+            $("#btnDeletuser").prop("disabled", "");
+        }
+        $("#idbtnAddUser").hide();
+        $("#idbtnUpdateuser").show();
+        $("#btnDeletuser").show();
+        $("#contentDivsNewpsw").hide();
+        $("#passChange").show();
+    } else {
+        $("#inputlg").val("");
+        $("#inputdefault").val("");
+        $("#pwd").val("");
+        $("#inputsm").val("");
+        $("#idbtnAddUser").show();
+        $("#idbtnUpdateuser").hide();
+        $( "#btnDeletuser" ).hide();
+        $("#contentDivsNewpsw").show();
+        $("#passChange").hide();
     }
-    
+
 }
 
 function saveuserNew(){
@@ -788,7 +807,7 @@ function saveuserNew(){
         if(camposClass[i].value == ""){
             alertMensaje("Ingresa todos los campos solicitados!");
             return;
-        }   
+        }
     }
     var pass1 = document.getElementById("pwdnew1").value;
     var pass2 = document.getElementById("pwdnew2").value;
@@ -798,9 +817,10 @@ function saveuserNew(){
       var pass = $("#pwdnew1").val();
       var areaUser = $("#inputsm").val();
       var rol = $( "select#selectRol option:checked" ).val();
-        General.post("/api/registroUsuarios", {name: nameCompleto, userName: userNom, area: areaUser, password: pass, rolUser: rol})
+        General.post("/api/user/", {name: nameCompleto, userName: userNom, area: areaUser, password: pass, rolUser: rol})
         .then(function(result){
             if(result){
+                cargarUsuariosExis();
                 alertMensaje("Usuario creado con exito!");
                 $('#myModal').modal('hide');
                 $("#inputlg").val("");
@@ -811,61 +831,70 @@ function saveuserNew(){
             }
         })
         .catch(function(err){
-            alertMensaje("Hubo un error!");
+            if (err.status == 401)
+                alertMensaje("¡No tiene permisos para crear usuarios!");
+            else
+                alertMensaje("Error al actualizar!");
         });
-        
-    }else{
+    } else {
         alertMensaje("La contraseñas no coinciden!");
-        }
+    }
 }
 
-function updateuser(){
+function updateuser() {
       var iduser = $("#idselectUsers").val();
       var nameCompletoUp = $("#inputlg").val();
       var userNomUp  = $("#inputdefault").val();
       var passUp = $("#pwd").val();
       var areaUserUp = $("#inputsm").val();
       var rolUp = $( "select#selectRol option:checked" ).val();
-      General.post("api/actualizaUsers", {idU: iduser, nameCompletoU: nameCompletoUp, userNomU: userNomUp, passU: passUp, areaUserU: areaUserUp, rolU: rolUp})
+      General.put("api/user", {idU: iduser, nameCompletoU: nameCompletoUp, userNomU: userNomUp, passU: passUp, areaUserU: areaUserUp, rolU: rolUp})
       .then(function(result){
           if(result){
+              cargarUsuariosExis();
               alertMensaje("Proceso de actualizado terminado!");
               $('#myModal').modal('hide');
           }else
               alertMensaje("Error al actualizar!");
       })
       .catch(function(err){
-          alertMensaje("Error al actualizar!");
+          if (err.status == 401)
+              alertMensaje("¡No tiene permisos para actualizar usuarios!");
+          else
+              alertMensaje("Error al actualizar!");
       })
 }
 
-function deleteUser(){
-    var iduserDel = $("#idselectUsers").val();
-    
+function deleteUser() {
+    var idUser = $("#idselectUsers").val();
+    General.delete("api/user/"+idUser)
+    .then(function (result) {
+        cargarUsuariosExis();
+        alertMensaje("¡El usuario se ha eliminado correctamente!");
+        $('#myModal').modal('hide');
+    })
+    .catch(function(err){
+        if (err.status == 200){
+            cargarUsuariosExis();
+            alertMensaje("¡El usuario se ha eliminado correctamente!");
+            $('#myModal').modal('hide');
+        } else if (err.status == 401) {
+            alertMensaje("¡No tiene permisos para actualizar usuarios!");
+        } else {
+            alertMensaje("Error al actualizar!");
+        }
+    });
 }
 
-function funcionEnter(evento) 
-{ 
-    //para IE 
-    if (window.event) 
-    { 
-        if (window.event.keyCode==13) 
-            { 
-            //Haga algo... (cambie focus) 
-                logueo();
-            } 
-    } 
-    else 
-    { 
-        //Firefox y otros navegadores 
-        if (evento) 
-        { 
-            if(evento.which==13) 
-                { 
-                //Haga algo...(cambie focus) 
-                    logueo();
-                } 
-        } 
-    } 
+function funcionEnter(evento)
+{
+    //para IE
+    if (window.event) {
+        if (window.event.keyCode==13) logueo();
+    } else {
+        //Firefox y otros navegadores
+        if (evento) {
+            if(evento.which==13) logueo();
+        }
+    }
 }
-

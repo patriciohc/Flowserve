@@ -8,6 +8,8 @@ const models = require('../models');
 const services = require('../services');
 
 function createUser(req, res) {
+    if (req.rolUser != "admin")
+        return res.status(401).send({message: "usuario no autorizado"});
 
     var user = {
         name: req.body.name,
@@ -29,7 +31,7 @@ function login(req, res) {
     var user = req.body.userName;
 
     models.User.findOne({
-        attributes: ['name', 'userName', 'area'],
+        attributes: ['name', 'userName', 'area', 'rolUser'],
         where: { userName: user, password: pass }
     })
     .then(function(user) {
@@ -43,14 +45,20 @@ function login(req, res) {
     });
 }
 
-function obtainUsers(req, res){
-    models.User.findAll({attributes:["id","name","userName","area","rolUser"]}).then(function(users) { 
+function obtainUsers(req, res) {
+    if (req.rolUser != "admin")
+        return res.status(401).send({message: "usuario no autorizado"});
+
+    models.User.findAll({attributes:["id","name","userName","area","rolUser"]}).then(function(users) {
         return res.status(200).send(users);
     });
 }
 
 function getInfoUsers(req, res){
-    var id = req.body.id;
+    if (req.rolUser != "admin")
+        return res.status(401).send({message: "usuario no autorizado"});
+
+    var id = req.params.id;
     models.User.findOne({
         attributes: ['name', 'userName', 'area', 'password', 'rolUser'],
         where: {id: id}
@@ -62,6 +70,9 @@ function getInfoUsers(req, res){
 }
 
 function updateUsers(req, res){
+    if (req.rolUser != "admin")
+        return res.status(401).send({message: "usuario no autorizado"});
+
     var id = req.body.idU;
     var nombreCom = req.body.nameCompletoU;
     var userUpd = req.body.userNomU;
@@ -71,7 +82,7 @@ function updateUsers(req, res){
         models.User.findOne({
             where: {id: id}
         })
-        .then(function(user){ 
+        .then(function(user){
             if(!user)return res.status(404).send({message: "Error al actualizar"});
             if(passw != ""){
                 passw = sha1(passw);
@@ -87,11 +98,26 @@ function updateUsers(req, res){
 }
 
 
+function deleteUser(req, res){
+    if (req.rolUser != "admin")
+        return res.status(401).send({message: "usuario no autorizado"});
+
+    var id = req.params.id;
+    models.User.destroy({ where: { id: id } })
+    .then( result => {
+        return res.status(200).send("success");
+    })
+    .catch( err => {
+        return res.status(505).send(err);
+    });
+}
+
 
 module.exports = {
     createUser,
     login,
     obtainUsers,
     getInfoUsers,
-    updateUsers
+    updateUsers,
+    deleteUser
 };

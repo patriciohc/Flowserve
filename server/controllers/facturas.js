@@ -87,7 +87,7 @@ function procesarTxt(nameTxt, dir) {
     }
     if (facturas.extranjeras == 0) {
         if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
-            console.log("no data, delte file: " + nameTxt);
+            console.log("no data, delete file: " + nameTxt);
             fs.unlinkSync(dirFacturas + "/" + nameTxt);
         }
         return new Promise((resolv) => resolv("delete file"));
