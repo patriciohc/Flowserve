@@ -457,8 +457,11 @@ function getNumFacturasTxt(nameFile, dir) {
 function getListTxt(req, res) {
     var nameTxtToDate = function (nameTxt){
         var fechaArchivo = nameTxt.split(".")[0];
-        fechaArchivo = fechaArchivo.split("_");
-        fechaArchivo = fechaArchivo[fechaArchivo.length-1];
+        var fechaArchivotmp = fechaArchivo.split("_");
+        fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-1];
+        if (fechaArchivo == "A1")
+            fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-2];
+
         fechaArchivo = new Date(fechaArchivo);
         if (fechaArchivo == "Invalid Date") return null;
         else return fechaArchivo;
