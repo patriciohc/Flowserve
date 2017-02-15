@@ -24,7 +24,7 @@ $(document).ready(function(){
         if (infoUser.user.rolUser == "admin") 
             $("#idbtnReguser").show();
         else
-            $("#idbtnReguser").hide();
+            $("#idbtnReguser").show();
         $("body").css("background", "white")
         document.getElementById("idloguin").style.display = "none";
         document.getElementById("divPrincipal").style.display = "block";
