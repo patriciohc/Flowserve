@@ -24,9 +24,19 @@ var jsonExcel = (function(){
     return sheets[0];
 })();
 
+function Isprocessed(fileName) {
+    var isProsesada = fileName.split("_");
+    isProsesada = isProsesada[isProsesada.length-1];
+    if (isProsesada == "A1.txt")
+        return true;
+    else
+        return false;
+}
+
 var txtPendientesParaProcesar = [];
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
+    if (Isprocessed(filename)) return;
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
             //console.log(lockFile.checkSync(dirFacturas + "/" +filename));
@@ -63,6 +73,7 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
 function procesarDirectorio(){
     var list = fs.readdirSync(dirFacturas);
     for (var i in list) {
+        if (Isprocessed(list[i])) return;
         procesarTxt(list[i], dirFacturas);
     }
 };
@@ -82,21 +93,21 @@ function procesarTxt(nameTxt, dir) {
     console.log("procesando -> " + nameTxt);
     facturas = separarFacturas(facturas);
     if (facturas.nacionales.length > 0) {
-        var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
-        writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
+        writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
     }
-    if (facturas.extranjeras == 0) {
-        if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
-            console.log("no data, delete file: " + nameTxt);
-            fs.unlinkSync(dirFacturas + "/" + nameTxt);
-        }
-        return new Promise((resolv) => resolv("delete file"));
-    }
-
+    // if (facturas.extranjeras == 0) {
+    //
+    //     return new Promise((resolv) => resolv("delete file"));
+    // }
     return new Promise( function (resolv, reject) {
             addInfoFactura(facturas.extranjeras).then( values => {
-                writeFile(facturas.extranjeras, nameTxt, dirFacturas).then(() => {
+                var nombreExtranjeras = nameTxt.split(".")[0] + "_A1" + ".txt";
+                writeFile(facturas.extranjeras, nombreExtranjeras, dirFacturas).then(() => {
                     console.log("termino -> " + nameTxt);
+                    if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
+                        console.log("no data, delete file: " + nameTxt);
+                        fs.unlinkSync(dirFacturas + "/" + nameTxt);
+                    }
                     resolv("success");
                 });
             }).catch( err => {
