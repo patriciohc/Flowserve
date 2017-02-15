@@ -460,9 +460,9 @@ function getListTxt(req, res) {
     var nameTxtToDate = function (nameTxt){
         var fechaArchivo = nameTxt.split(".")[0];
         var fechaArchivotmp = fechaArchivo.split("_");
-        fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-1];
-        if (fechaArchivo == "A1")
-            fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-2];
+        //fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-1];
+        //if (fechaArchivo == "A1")
+        fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-2];
 
         fechaArchivo = new Date(fechaArchivo);
         if (fechaArchivo == "Invalid Date") return null;
@@ -553,11 +553,14 @@ function reEditar(req, res) {
     console.log("reEditar: ");
     console.log(nameTxts);
     for (var i = 0; i < nameTxts.length; i++) {
-        var nameTxt = dirFacturasTimbradas + "/" + nameTxts[i]
-        if(fs.existsSync(nameTxt)){
-            console.log("nameTxt -> " + nameTxt);
-            fs.rename(nameTxt, dirFacturas + "/" + nameTxts[i], function(){
-                var txt = getNumFacturasTxt(nameTxt, dirFacturas)
+        var nameTxt = dirFacturasTimbradas + "/" + nameTxts[i];
+        var destino = dirFacturas + "/" + nameTxts[i];
+        if(fs.existsSync(nameTxt)) {
+            var fileAct = nameTxts[i];
+            console.log("fuente -> " + nameTxt);
+            console.log("destino -> " + destino);
+            fs.rename(nameTxt, destino, function(){
+                var txt = getNumFacturasTxt(fileAct, dirFacturas)
                 io.emit('newTxt', txt);
             });
         }
