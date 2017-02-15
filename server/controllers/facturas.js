@@ -41,8 +41,9 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
             //console.log(lockFile.checkSync(dirFacturas + "/" +filename));
             procesarTxt(filename, dirFacturas)
-            .then(function (){
-                var txt = getNumFacturasTxt(filename, dirFacturas)
+            .then(function (newFile){
+                console.log("new File->" + newFile)
+                var txt = getNumFacturasTxt(newFile, dirFacturas)
                 io.emit('newTxt', txt);
             })
             .catch(function (err) {
@@ -61,8 +62,9 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
         } else if (stage == "2") {
             txtPendientesParaProcesar.splice( indexFile, 1 );
             if (fs.existsSync(dirFacturas + "/" +filename)) {
-                procesarTxt(filename, dirFacturas).then( function (){
-                    var txt = getNumFacturasTxt(filename, dirFacturas)
+                procesarTxt(filename, dirFacturas).then( function (newFile){
+                    console.log("new File->" + newFile)
+                    var txt = getNumFacturasTxt(newFile, dirFacturas)
                     io.emit('newTxt', txt);
                 });
             }
@@ -108,7 +110,7 @@ function procesarTxt(nameTxt, dir) {
                         console.log("no data, delete file: " + nameTxt);
                         fs.unlinkSync(dirFacturas + "/" + nameTxt);
                     }
-                    resolv("success");
+                    resolv(nombreExtranjeras);
                 });
             }).catch( err => {
                 console.log(err);
@@ -554,7 +556,10 @@ function reEditar(req, res) {
         var nameTxt = dirFacturasTimbradas + "/" + nameTxts[i]
         if(fs.existsSync(nameTxt)){
             console.log("nameTxt -> " + nameTxt);
-            fs.renameSync(nameTxt, dirFacturas + "/" + nameTxts[i]);
+            fs.rename(nameTxt, dirFacturas + "/" + nameTxts[i], function(){
+                var txt = getNumFacturasTxt(nameTxt, dirFacturas)
+                io.emit('newTxt', txt);
+            });
         }
     }
     return res.status(200).send({message:"success"});
