@@ -83,7 +83,7 @@ function procesarTxt(nameTxt, dir) {
     facturas = separarFacturas(facturas);
     if (facturas.nacionales.length > 0) {
         var nombreNacionales = nameTxt.split(".")[0] + "_A1" + ".txt";
-        writeFile(facturas.nacionales, nombreNacionales, dirFacturasNacionales);
+        writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
     }
     if (facturas.extranjeras == 0) {
         if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
@@ -94,8 +94,9 @@ function procesarTxt(nameTxt, dir) {
     }
 
     return new Promise( function (resolv, reject) {
-            addInfoFactura(facturas.extranjeras).then( values => {
-                writeFile(facturas.extranjeras, nameTxt, dirFacturas).then(() => {
+                addInfoFactura(facturas.extranjeras).then( values => {
+                var nombreNacionales2 = nameTxt.split(".")[0] + "_A1" + ".txt";
+                writeFile(facturas.extranjeras, nombreNacionales2, dirFacturas).then(() => {
                     console.log("termino -> " + nameTxt);
                     resolv("success");
                 });
