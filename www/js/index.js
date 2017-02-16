@@ -171,6 +171,8 @@ function logueo(){
    }
 }
 
+
+
 // agrega un nuevo elemento a la lista de txt
 function agregarElementoListaTxt(txt) {
         var tableTxt = document.getElementById("ul-txt");
@@ -180,7 +182,7 @@ function agregarElementoListaTxt(txt) {
         li.style.cursor = "pointer";
         //li.style.height = "50px";
         li.onclick = onClickCargarFacturas;
-        li.innerHTML = "<span>"+txt.nombre+"</span><span class='badge'>"+txt.cantidad+"</span>";
+        li.innerHTML = `<span>${txt.nombre}</span><span class='badge' id='badge_${txt.nombre}'>${txt.cantidad}</span>`;
         tableTxt.appendChild(li);
 }
 //funcion encargada de obtener txt a cargar en la lista de archivo pendientes
@@ -196,7 +198,6 @@ function cargarTxt() {
                 li.className="list-group-item item-list-txt";
                 li.id = result[i].nombre;
                 li.style.cursor = "pointer";
-                //li.style.height = "50px";
                 li.onclick = onClickCargarFacturas;
                 li.innerHTML = `<span>${result[i].nombre}</span><span class='badge' id='badge_${result[i].nombre}'>${result[i].cantidad}</span>`;
                 tableTxt.appendChild(li);
@@ -224,7 +225,7 @@ function onClickCargarFacturas(){
 
 function cargarFacturas() {
     hideForms();
-    var getClassRow = function(factura){
+    var getClassRow = function(factura) {
         var datosFaltantes = validarFactura(factura);
         if (datosFaltantes.length == 0) {
             return "bg-success";
@@ -238,7 +239,12 @@ function cargarFacturas() {
     .then(function (result){
         if(result) {
             txtSelected.facturas = result;
-            document.getElementById("badge_"+txtSelected.nameTxt).innerHTML = txtSelected.facturas.length;
+            if (txtSelected.facturas.length > 0) {
+                document.getElementById("badge_"+txtSelected.nameTxt).innerHTML = txtSelected.facturas.length;
+            } else {
+                var item = document.getElementById(txtSelected.nameTxt);
+                item.parentNode.removeChild(item);
+            }
             var cuerpoTableFacturas = document.getElementById("idtbodyfac");
             cuerpoTableFacturas.innerHTML = "";
             for(i=0; i<result.length;i++){
@@ -565,8 +571,7 @@ function timbrar() {
             txtSelected.facturas.splice(txtSelected.indexSelected, 1);
             General.put("/api/facturas", txtSelected)
             .then(function (result) {
-                cargarFacturas();
-                //alertSucces();
+                cargarFacturas()
                 console.log(result);
             })
             .catch(function (err) {
