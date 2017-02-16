@@ -24,14 +24,6 @@ api.delete('/user/:id', middleware.ensureAuthenticated, users.deleteUser); // el
 
 api.post('/login/', users.login);
 
-//api.get('/obtainUsers', users.obtainUsers);
-//api.post('/getInfoUsers/', users.getInfoUsers);
-//api.post('/actualizaUsers', users.updateUsers);
-
-
-//api.get('/user/:id', controllers.getUser);
-//api.get('/cat-atributo/:id', catProductoCtrl.getCatProducto);
-
 module.exports = api;
 
 module.exports = function(sockeIO) {
