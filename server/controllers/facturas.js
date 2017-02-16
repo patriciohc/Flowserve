@@ -299,7 +299,7 @@ function writeFile(facturas, nombreTxt, directorio) {
     var white = "                                                                                                                        ";
     var inicio = "XXXINICIO";
     var texto = "";
-    if (facturas.length == 0) {
+    if (!facturas || facturas.length == 0) {
         return new Promise( (resolve, reject) => {
             if (fs.existsSync(directorio + "/" + nombreTxt)) {
                 fs.unlinkSync(directorio + "/" + nombreTxt);
@@ -522,8 +522,6 @@ function guardarTxt(req, res){
     var facturas = req.body.facturas;
     var nameTxt = req.body.nameTxt;
     console.log("Guardar -> " + nameTxt);
-    if (!facturas)
-        res.status(200).send({message: "no hay facturas por guardar"});
 
     writeFile(facturas, nameTxt, dirFacturas)
     .then( () => {
@@ -561,8 +559,7 @@ function timbrar(req, res) {
 */
 function reEditar(req, res) {
     var nameTxts = req.body.nameTxts;
-    console.log("reEditar: ");
-    console.log(nameTxts);
+    console.log("reEditar -> " + nameTxts);
     for (var i = 0; i < nameTxts.length; i++) {
         var nameTxt = dirFacturasTimbradas + "/" + nameTxts[i];
         var destino = dirFacturas + "/" + nameTxts[i];
