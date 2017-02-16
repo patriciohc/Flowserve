@@ -24,6 +24,7 @@ var jsonExcel = (function(){
     return sheets[0];
 })();
 
+// determina si un txt tiene A1 en su nombre
 function Isprocessed(fileName) {
     var isProsesada = fileName.split("_");
     isProsesada = isProsesada[isProsesada.length-1];
@@ -39,11 +40,11 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
     if (Isprocessed(filename)) return;
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
-            //console.log(lockFile.checkSync(dirFacturas + "/" +filename));
+            console.log("inicio-> " + filename);
             procesarTxt(filename, dirFacturas)
-            .then(function (newFile){
-                console.log("new File->" + newFile)
-                var txt = getNumFacturasTxt(newFile, dirFacturas)
+            .then(function (newFile) {
+                console.log("termino-> " + newFile);
+                var txt = getNumFacturasTxt(newFile, dirFacturas);
                 io.emit('newTxt', txt);
             })
             .catch(function (err) {
@@ -63,7 +64,7 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
             txtPendientesParaProcesar.splice( indexFile, 1 );
             if (fs.existsSync(dirFacturas + "/" +filename)) {
                 procesarTxt(filename, dirFacturas).then( function (newFile){
-                    console.log("new File->" + newFile)
+                    console.log("termino-> " + newFile);
                     var txt = getNumFacturasTxt(newFile, dirFacturas)
                     io.emit('newTxt', txt);
                 });
@@ -72,7 +73,7 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
     }
 });
 /** procesa los txt que se encuentran en el directorio */
-function procesarDirectorio(){
+function procesarDirectorio() {
     var list = fs.readdirSync(dirFacturas);
     for (var i in list) {
         if (Isprocessed(list[i])) return;
@@ -92,31 +93,25 @@ function procesarTxt(nameTxt, dir) {
     if (facturas.code == 'EBUSY') { // error
         return new Promise((resolv, reject) => reject(facturas));
     }
-    console.log("procesando -> " + nameTxt);
     facturas = separarFacturas(facturas);
-    if (facturas.nacionales.length > 0) {
-        writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
-    }
-    // if (facturas.extranjeras == 0) {
-    //
-    //     return new Promise((resolv) => resolv("delete file"));
-    // }
-    return new Promise( function (resolv, reject) {
-            addInfoFactura(facturas.extranjeras).then( values => {
-                var nombreExtranjeras = nameTxt.split(".")[0] + "_A1" + ".txt";
-                writeFile(facturas.extranjeras, nombreExtranjeras, dirFacturas).then(() => {
-                    console.log("termino -> " + nameTxt);
-                    if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
-                        console.log("no data, delete file: " + nameTxt);
-                        fs.unlinkSync(dirFacturas + "/" + nameTxt);
-                    }
-                    resolv(nombreExtranjeras);
-                });
-            }).catch( err => {
-                console.log(err);
-                reject(err);
+    writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
+
+
+    var promise = new Promise( (resolv, reject) => {
+        addInfoFactura(facturas.extranjeras).then( values => {
+            var nombreExtranjeras = nameTxt.split(".")[0] + "_A1" + ".txt";
+            writeFile(facturas.extranjeras, nombreExtranjeras, dirFacturas).then(() => {
+                if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
+                    fs.unlinkSync(dirFacturas + "/" + nameTxt);
+                }
+                resolv(nombreExtranjeras);
             });
+        }).catch( err => {
+            reject(err);
+        });
     });
+
+    return promise;
 }
 /**
 * separa en facturas nacionales y extranjeras
@@ -305,7 +300,12 @@ function writeFile(facturas, nombreTxt, directorio) {
     var inicio = "XXXINICIO";
     var texto = "";
     if (facturas.length == 0) {
-        return new Promise( (resolve, reject) => resolve("noData"));
+        return new Promise( (resolve, reject) => {
+            if (fs.existsSync(directorio + "/" + nombreTxt)) {
+                fs.unlinkSync(directorio + "/" + nombreTxt);
+            }
+            resolve("noData")
+        });
     }
     for (var i in facturas) {
         var factura = facturas[i];
@@ -394,7 +394,7 @@ function complementarInfoPrducto(producto, head) {
             head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
         }
         //if (!producto.hasOwnProperty(key))
-            producto[key] = infoExcel[match[key]];
+        producto[key] = infoExcel[match[key]];
     }
 
     var checkItemVacio = function(key) {
@@ -460,8 +460,6 @@ function getListTxt(req, res) {
     var nameTxtToDate = function (nameTxt){
         var fechaArchivo = nameTxt.split(".")[0];
         var fechaArchivotmp = fechaArchivo.split("_");
-        //fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-1];
-        //if (fechaArchivo == "A1")
         fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-2];
 
         fechaArchivo = new Date(fechaArchivo);
@@ -540,9 +538,22 @@ function guardarTxt(req, res){
 */
 function timbrar(req, res) {
     var nameTxt = req.body.nameTxt;
-    console.log("timbrar -> " + nameTxt);
-    fs.renameSync(dirFacturas + "/" + nameTxt, dirFacturasTimbradas + "/" + nameTxt);
-    return res.status(200).send({message:"success"});
+    var factura = req.body.factura;
+    var numeroInterno = factura.factura[0].NumeroInterno;
+
+    var partsNameTxt = nameTxt.split("_");
+    var part1 = partsNameTxt.splice(0,3);
+    partsNameTxt.splice(0,3);
+    var newNameTxt = part1.join("_") + "_" + numeroInterno + "_Thru_" + partsNameTxt.join("_");
+
+    console.log("timbrar -> " + newNameTxt);
+    writeFile([factura], newNameTxt, dirFacturasTimbradas)
+    .then( () => {
+        res.status(200).send({message: "success"});
+    })
+    .catch( err => {
+        res.status(500).send({error: err});
+    });
 }
 /**
 * reeditar, regresa de facturas timbradas a facturas pendientes

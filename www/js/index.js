@@ -21,7 +21,7 @@ $(document).ready(function(){
     if (infoUser) {
         infoUser = JSON.parse(infoUser);
         $("#labelUser").html(infoUser.user.name);
-        if (infoUser.user.rolUser == "admin") 
+        if (infoUser.user.rolUser == "admin")
             $("#idbtnReguser").show();
         else
             $("#idbtnReguser").show();
@@ -198,7 +198,7 @@ function cargarTxt() {
                 li.style.cursor = "pointer";
                 //li.style.height = "50px";
                 li.onclick = onClickCargarFacturas;
-                li.innerHTML = "<span>"+result[i].nombre+"</span><span class='badge'>"+result[i].cantidad+"</span>";
+                li.innerHTML = `<span>${result[i].nombre}</span><span class='badge' id='badge_${result[i].nombre}'>${result[i].cantidad}</span>`;
                 tableTxt.appendChild(li);
             }
         } else {
@@ -236,8 +236,9 @@ function cargarFacturas() {
     }
     General.post("/api/facturas", {"nameFile": txtSelected.nameTxt})
     .then(function (result){
-        if(result){
+        if(result) {
             txtSelected.facturas = result;
+            document.getElementById("badge_"+txtSelected.nameTxt).innerHTML = txtSelected.facturas.length;
             var cuerpoTableFacturas = document.getElementById("idtbodyfac");
             cuerpoTableFacturas.innerHTML = "";
             for(i=0; i<result.length;i++){
@@ -303,7 +304,7 @@ function validarFactura(factura) {
 function formularioData(){
     txtSelected.indexSelected = this.IndexData
     var datos = txtSelected.facturas[txtSelected.indexSelected];
-// datos encabezado
+    // datos encabezado
     $("#txtEncNumInter").val(datos.factura[0].NumeroInterno)
     $("#txtEncNumApro").val(datos.factura[0].NroAprob)
     $("#txtEncAñoAprobacion").val(datos.factura[0].AnoAprob)
@@ -316,14 +317,14 @@ function formularioData(){
     $("#txtEncTerminoPago").val(datos.factura[0].TermPagoDias)
     $("#txtEncFechaVencimiento").val(datos.factura[0].FechaVenc);
 
-// datos emisor col 1
+    // datos emisor col 1
     $("#txtEmiRFC").val(datos.emisor[0].RFCEmisor);
     $("#txtEmiNombreEmisor").val(datos.emisor[0].NmbEmisor);
     $("#txtEmiTipoCod").val(datos.emisor[0].TpoCdgIntEmisor1);
     $("#txtEmiCod").val(datos.emisor[0].CdgIntEmisor1);
     $("#txtEmiSucursal").val(datos.emisor[0].Sucursal);
     //CdgVendedor
-// col 2
+    // col 2
     $("#txtEmiD1Calle").val(datos.emisor[1].Calle);
     $("#txtEmiD1NumExt").val(datos.emisor[1].NroExterior);
     $("#txtEmiD1NumInt").val(datos.emisor[1].NroInterior);
@@ -332,7 +333,7 @@ function formularioData(){
     $("#txtEmiD1Estado").val(datos.emisor[1].Estado);
     $("#txtEmiD1Pais").val(datos.emisor[1].Pais);
     $("#txtEmiD1CP").val(datos.emisor[1].CodigoPostal);
-// col 3
+    // col 3
     $("#txtEmiD2Calle").val(datos.emisor[2].Calle);
     $("#txtEmiD2NumExt").val(datos.emisor[2].NroExterior);
     $("#txtEmiD2NumInt").val(datos.emisor[2].NroInterior);
@@ -342,14 +343,14 @@ function formularioData(){
     $("#txtEmiD2Pais").val(datos.emisor[2].Pais);
     $("#txtEmiD2CP").val(datos.emisor[2].CodigoPostal);
 
-//datos receptor
+    //datos receptor
     $("#txtRecepRFC").val(datos.receptor[0].RFCRecep);
     $("#txtRecepNombre").val(datos.receptor[0].NmbRecep);
     $("#txtRecepCodGLN").val(datos.receptor[0].CdgGLNRecep);
     $("#txtRecepTipoCod").val(datos.receptor[0].TpoCdgIntRecep1);
     $("#txtRecepCodInter").val(datos.receptor[0].CdgIntRecep1);
     $("#txtRecepCodCliente").val(datos.receptor[0].CdgCliente);
-// col 2
+    // col 2
     $("#txtRecepD1Calle").val(datos.receptor[1].Calle);
     $("#txtRecepD1NumExt").val(datos.receptor[1].NroExterior);
     $("#txtRecepD1NumInt").val(datos.receptor[1].NroInterior);
@@ -360,7 +361,7 @@ function formularioData(){
     $("#txtRecepD1Estado").val(datos.receptor[1].Estado);
     $("#txtRecepD1Pais").val(datos.receptor[1].Pais);
     $("#txtRecepD1CP").val(datos.receptor[1].CodigoPostal);
-// col 3
+    // col 3
     $("#txtRecepD2Calle").val(datos.receptor[2].Calle);
     $("#txtRecepD2NumExt").val(datos.receptor[2].NroExterior);
     $("#txtRecepD2NumInt").val(datos.receptor[2].NroInterior);
@@ -382,7 +383,7 @@ function formularioData(){
     $("#txt_cceCertOrig").val(datos.receptor[3].cceCertOrig);
     $("#txt_cceNCertOrig").val(datos.receptor[3].cceNCertOrig);
 
-// datos productos
+    // datos productos
     var item = datos.receptor.find( item => item.hasOwnProperty("productos"));
     var tb = document.getElementById("tbSku");
     tb.innerHTML = "";
@@ -424,7 +425,7 @@ function formularioData(){
 // toma los datos de las cajas de texto y los asigna al json de facturas correspondiente
 function setDatosFactura(){
     var datos = txtSelected.facturas[txtSelected.indexSelected];
-// datos encabezado
+    // datos encabezado
     datos.factura[0].NumeroInterno = $("#txtEncNumInter").val()
     datos.factura[0].NroAprob = $("#txtEncNumApro").val()
     datos.factura[0].AnoAprob = $("#txtEncAñoAprobacion").val()
@@ -437,14 +438,14 @@ function setDatosFactura(){
     datos.factura[0].TermPagoDias = $("#txtEncTerminoPago").val()
     datos.factura[0].FechaVenc = $("#txtEncFechaVencimiento").val();
 
-// datos emisor col 1
+    // datos emisor col 1
     datos.emisor[0].RFCEmisor = $("#txtEmiRFC").val();
     datos.emisor[0].NmbEmisor = $("#txtEmiNombreEmisor").val();
     datos.emisor[0].TpoCdgIntEmisor1 = $("#txtEmiTipoCod").val();
     datos.emisor[0].CdgIntEmisor1 = $("#txtEmiCod").val();
     datos.emisor[0].Sucursal = $("#txtEmiSucursal").val();
     //CdgVendedor
-// col 2
+    // col 2
     datos.emisor[1].Calle = $("#txtEmiD1Calle").val();
     datos.emisor[1].NroExterior = $("#txtEmiD1NumExt").val();
     datos.emisor[1].NroInterior = $("#txtEmiD1NumInt").val();
@@ -453,7 +454,7 @@ function setDatosFactura(){
     datos.emisor[1].Estado = $("#txtEmiD1Estado").val();
     datos.emisor[1].Pais = $("#txtEmiD1Pais").val();
     datos.emisor[1].CodigoPostal = $("#txtEmiD1CP").val();
-// col 3
+    // col 3
     datos.emisor[2].Calle = $("#txtEmiD2Calle").val();
     datos.emisor[2].NroExterior = $("#txtEmiD2NumExt").val();
     datos.emisor[2].NroInterior = $("#txtEmiD2NumInt").val();
@@ -463,14 +464,14 @@ function setDatosFactura(){
     datos.emisor[2].Pais = $("#txtEmiD2Pais").val();
     datos.emisor[2].CodigoPostal = $("#txtEmiD2CP").val();
 
-//datos receptor
+    //datos receptor
     datos.receptor[0].RFCRecep = $("#txtRecepRFC").val();
     datos.receptor[0].NmbRecep = $("#txtRecepNombre").val();
     datos.receptor[0].CdgGLNRecep = $("#txtRecepCodGLN").val();
     datos.receptor[0].TpoCdgIntRecep1 = $("#txtRecepTipoCod").val();
     datos.receptor[0].CdgIntRecep1 = $("#txtRecepCodInter").val();
     datos.receptor[0].CdgCliente = $("#txtRecepCodCliente").val();
-// col 2
+    // col 2
     datos.receptor[1].Calle = $("#txtRecepD1Calle").val();
     datos.receptor[1].NroExterior = $("#txtRecepD1NumExt").val();
     datos.receptor[1].NroInterior = $("#txtRecepD1NumInt").val();
@@ -481,7 +482,7 @@ function setDatosFactura(){
     datos.receptor[1].Estado = $("#txtRecepD1Estado").val();
     datos.receptor[1].Pais = $("#txtRecepD1Pais").val();
     datos.receptor[1].CodigoPostal = $("#txtRecepD1CP").val();
-// col 3
+    // col 3
     datos.receptor[2].Calle = $("#txtRecepD2Calle").val();
     datos.receptor[2].NroExterior = $("#txtRecepD2NumExt").val();
     datos.receptor[2].NroInterior = $("#txtRecepD2NumInt").val();
@@ -503,7 +504,7 @@ function setDatosFactura(){
     datos.receptor[3].cceCertOrig = $("#txt_cceCertOrig").val();
     datos.receptor[3].cceNCertOrig = $("#txt_cceNCertOrig").val();
 
-// datos productos
+    // datos productos
     var bloque = datos.receptor.find( item => item.hasOwnProperty("productos"));
     var rows = [];
     if (bloque)
@@ -547,23 +548,39 @@ function guardarTxt() {
 }
 
 function timbrar() {
-    if (txtSelected.nameTxt == null) {
-        alertMensaje("Seleccione un elemento de la lista de archivos pendientes");
-        return;
-    }
-    var facturasSinllenar = $("#idtbodyfac").find(".bg-warning, .bg-danger");
+    //if (txtSelected.nameTxt == null) {
+    //    alertMensaje("Seleccione un elemento de la lista de archivos pendientes");
+    //    return;
+    //}
+    //var facturasSinllenar = $("#idtbodyfac").find(".bg-warning, .bg-danger");
     //facturasSinllenar = facturasSinllenar.concat($("#idtbodyfac").find(".bg-danger"));
     var coreTimbrar = function () {
-        General.post("/api/timbrarFactura", {nameTxt: txtSelected.nameTxt})
+        setDatosFactura();
+        var parametros = {
+            nameTxt: txtSelected.nameTxt,
+            factura: txtSelected.facturas[txtSelected.indexSelected],
+        }
+        General.post("/api/timbrarFactura", parametros)
         .then(function (result) {
-            var cuerpoTableFacturas = document.getElementById("idtbodyfac");
-            cuerpoTableFacturas.innerHTML = ""; // limpia tabla de facturas
-            txtSelected = { // inicializa, ya que al timbrar no hay ningun elemento seleccionado
-                nameTxt: null, // nombre del txt
-                facturas: null, // facturas en json
-                indexSelected: null, // factura seleccionada
-            }
-            cargarTxt();
+            txtSelected.facturas.splice(txtSelected.indexSelected, 1);
+            General.put("/api/facturas", txtSelected)
+            .then(function (result) {
+                cargarFacturas();
+                //alertSucces();
+                console.log(result);
+            })
+            .catch(function (err) {
+                //errorAlert();
+                console.log(err);
+            });
+            // var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+            // cuerpoTableFacturas.innerHTML = ""; // limpia tabla de facturas
+            // txtSelected = { // inicializa, ya que al timbrar no hay ningun elemento seleccionado
+            //     nameTxt: null, // nombre del txt
+            //     facturas: null, // facturas en json
+            //     indexSelected: null, // factura seleccionada
+            // }
+            // cargarTxt();
             alertSucces();
         })
         .catch(function (err) {
@@ -571,17 +588,17 @@ function timbrar() {
             console.log(err);
         });
     }
-    if (facturasSinllenar && facturasSinllenar.length > 0) {
-        $.confirm({
-            title: `¡Hay ${facturasSinllenar.length} facturas con datos faltantes!`,
-            content: '¿Desea Continuar?',
-            buttons: {
-                confirmar: function () {coreTimbrar();},
-                cancelar: function () {return;},
-            }
-        });
-        return;
-    }
+    // if (facturasSinllenar && facturasSinllenar.length > 0) {
+    //     $.confirm({
+    //         title: `¡Hay ${facturasSinllenar.length} facturas con datos faltantes!`,
+    //         content: '¿Desea Continuar?',
+    //         buttons: {
+    //             confirmar: function () {coreTimbrar();},
+    //             cancelar: function () {return;},
+    //         }
+    //     });
+    //     return;
+    // }
     coreTimbrar();
 
 }
@@ -607,7 +624,6 @@ function confirm(){
         },
     }
 });
-
 }
 
 //alert Errorlogin
@@ -873,7 +889,7 @@ function deleteUser() {
         alertMensaje("¡El usuario se ha eliminado correctamente!");
         $('#myModal').modal('hide');
     })
-    .catch(function(err){
+    .catch(function(err) {
         if (err.status == 200){
             cargarUsuariosExis();
             alertMensaje("¡El usuario se ha eliminado correctamente!");
@@ -886,8 +902,7 @@ function deleteUser() {
     });
 }
 
-function funcionEnter(evento)
-{
+function funcionEnter(evento) {
     //para IE
     if (window.event) {
         if (window.event.keyCode==13) logueo();
