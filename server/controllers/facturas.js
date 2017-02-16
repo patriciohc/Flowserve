@@ -393,7 +393,7 @@ function complementarInfoPrducto(producto, head) {
         } else if (!tmp) {
             head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
         }
-        if (!producto.hasOwnProperty(key))
+        //if (!producto.hasOwnProperty(key))
             producto[key] = infoExcel[match[key]];
     }
 
