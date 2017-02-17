@@ -634,7 +634,8 @@ function timbrar() {
 function hideForms(){
     $("#idformulario").hide();
     $("#idcontenedorestxt").show();
-    $('#idSwitchHab').bootstrapToggle('off');
+    //$('#idSwitchHab').bootstrapToggle('off');
+    $("#idSwitchHab").prop("checked", "");
 }
 
 //confirm
