@@ -125,7 +125,7 @@
                   </label>
                 <!-- <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button> -->
                 <button type="button" onclick="guardarTxt()" style="margin:2px;" class="btn btn-primary btn-xs pull-right">Guardar <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
-                <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs pull-right">Guardar y timbrar<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                <button type="button" onclick="timbrar()" style="margin:2px;" class="btn btn-success btn-xs pull-right">Guardar y timbrar <span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
             </div>
             <ul class="tab">
               <li><a href="javascript:void(0)" class="tablinks" onclick="openCity(event, 'encabezado')" id="defaultOpen">Encabezado</a></li>
@@ -401,11 +401,15 @@
                      </div>
                      <div class="col-xs-4">
                          <label for="txt_cceCertOrig">Certificado de origen:</label>
-                         <input class="form-control" id="txt_cceCertOrig" type="text">
+                         <!--<input class="form-control" id="txt_cceCertOrig" type="text">-->
+                         <select class="form-control" id="txt_cceCertOrig">
+                             <option>0</option>
+                             <option>1</option>
+                         </select>
                      </div>
                      <div class="col-xs-4">
                          <label for="txt_cceNCertOrig">No. de certificado de origen:</label>
-                         <input class="form-control" id="txt_cceNCertOrig" type="text">
+                         <input class="form-control" id="txt_cceNCertOrig" type="text" maxlength="40">
                      </div>
                  </div>
              </div>
