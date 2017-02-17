@@ -16,7 +16,8 @@ $('.login').on('submit', function(e) {
   $('.login').removeClass('focused').addClass('loading');
 });
 
-$(document).ready(function(){
+$(document).ready(function() {
+    General.init();
     var infoUser = localStorage.getItem("infoUser");
     if (infoUser) {
         infoUser = JSON.parse(infoUser);
@@ -25,7 +26,7 @@ $(document).ready(function(){
             $("#idbtnReguser").show();
         else
             $("#idbtnReguser").show();
-        $("body").css("background", "white")
+        $("body").css("background", "#F4F2F0");
         document.getElementById("idloguin").style.display = "none";
         document.getElementById("divPrincipal").style.display = "block";
         cargarTxt();
@@ -119,7 +120,11 @@ $(document).ready(function(){
     var socket = io.connect( urlServer, {"forceNew": true});
     socket.on('newTxt', agregarElementoListaTxt);
 
+    $("#panelListaTxtPendientes").height($(window).height() - 110);
+    $("#divListaTxt").height($("#panelListaTxtPendientes").height() - 100);
 
+    $("#panelTablaFacturas").height($(window).height() - 110);
+    $("#divTablaFacturas").height($("#panelTablaFacturas").height() - 100);
 
 }); // fin ready
 
@@ -133,7 +138,7 @@ function salir(){
 }
 
 //funcion encargada de logueo
-function logueo(){
+function logueo() {
     var usuario = $("#userid").val();
     var contraseña = $("#passid").val();
     var ObjPriData = {
@@ -157,7 +162,7 @@ function logueo(){
         else
             $("#idbtnReguser").hide();
         localStorage.setItem("infoUser", JSON.stringify(result));
-        $("body").css("background", "white")
+        $("body").css("background", "#F4F2F0");
         document.getElementById("idloguin").style.display = "none";
         document.getElementById("divPrincipal").style.display = "block";
         cargarTxt();
@@ -272,6 +277,23 @@ function cargarFacturas() {
         alert('Error, notifique al area de sistemas.');
     });
 
+}
+
+function actualiarFacturas() {
+    General.get("/api/actualiarFacturas").then(result => {
+        alertMensaje("se actualizo correctamente");
+        $(".item-list-txt").removeClass("active");
+        var cuerpoTableFacturas = document.getElementById("idtbodyfac");
+        cuerpoTableFacturas.innerHTML = "";
+        txtSelected = {
+            nameTxt: null, // nombre del txt
+            facturas: null, // facturas en json
+            indexSelected: null, // factura seleccionada
+        };
+    }).catch(err =>{
+
+        console.log(err);
+    });
 }
 
 function validarFactura(factura) {
@@ -610,8 +632,9 @@ function timbrar() {
 
 //ocultar forms
 function hideForms(){
-    $("#idcontenedorestxt").css("display", "");
-    $("#idformulario").css("display", "none");
+    $("#idformulario").hide();
+    $("#idcontenedorestxt").show();
+    $('#idSwitchHab').bootstrapToggle('off');
 }
 
 //confirm
@@ -693,10 +716,10 @@ function swichForms(){
     var inputsForms = $('input.editSwich');
     if(valueswHab) {
         inputsForms.prop('disabled', false);
-        $("#tbSku").find("td").prop("contenteditable", "true");
+        //$("#tbSku").find("td").prop("contenteditable", "true");
     } else {
          inputsForms.prop('disabled', true);
-         $("#tbSku").find("td").prop("contenteditable", "false");
+         //$("#tbSku").find("td").prop("contenteditable", "false");
      }
 }
 
@@ -797,7 +820,8 @@ function infoUserSelect() {
         $("#inputlg").val(user.name);
         $("#inputdefault").val(user.userName);
         $("#inputsm").val(user.area);
-        $( "select#selectRol option:checked" ).val(user.rolUser);
+        $("#selectRol" ).val(user.rolUser);
+         $('#selectRol').selectpicker('refresh');
         if (user.rolUser == "admin") {
             $("#btnDeletuser").prop("disabled", "disabled");
         } else {

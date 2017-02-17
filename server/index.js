@@ -8,8 +8,8 @@ const app = express();
 
 app.use(express.static("www"));
 // Middlewares
-app.use(bodyParser.json({limit: '52428800'}));
-app.use(bodyParser.urlencoded({ extended: true, limit: '52428800', parameterLimit:50000 }));
+app.use(bodyParser.json({limit: '524288000'}));
+app.use(bodyParser.urlencoded({ extended: true, limit: '524288000', parameterLimit:500000 }));
 
 // websockets
 const server = require("http").Server(app);
