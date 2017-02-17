@@ -9,20 +9,21 @@ const iconvlite = require('iconv-lite');
 const XLSX = require('xlsx');
 const excel = require('../excel')
 
-//const dirFiles = "E:/datos_txt"
 const dirFacturas = "./datos_txt";
 const dirFacturasNacionales = "./timbradas";
 const dirFacturasTimbradas = "./timbradas";
 
 var io; // websockets
+var watch // en escucha de archivos
 
-// carga informacion del excel en formato json
-var jsonExcel = (function(){
+function cargaDeExcel() {
     var workbook = XLSX.readFile("./info_excel/Base_avance_para_IT.xlsx");
     //return excel.readExcel(workbook);
     var sheets = excel.readExcel(workbook);
     return sheets[0];
-})();
+}
+// carga informacion del excel en formato json
+var jsonExcel = cargaDeExcel();
 
 // determina si un txt tiene A1 en su nombre
 function Isprocessed(fileName) {
@@ -34,9 +35,9 @@ function Isprocessed(fileName) {
         return false;
 }
 
-var txtPendientesParaProcesar = [];
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
-fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
+var txtPendientesParaProcesar = [];
+function callBackWatchFs(eventType, filename) {
     if (Isprocessed(filename)) return;
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
@@ -71,16 +72,37 @@ fs.watch(dirFacturas, {encoding: 'utf8'}, (eventType, filename) => {
             }
         }
     }
-});
+}
+
+//watch.close();
+
 /** procesa los txt que se encuentran en el directorio */
 function procesarDirectorio() {
     var list = fs.readdirSync(dirFacturas);
+    var arrayPromises = [];
     for (var i in list) {
-        if (Isprocessed(list[i])) return;
-        procesarTxt(list[i], dirFacturas);
+        if (Isprocessed(list[i])) {
+            continue;
+        } else {
+            arrayPromises.push(procesarTxt(list[i], dirFacturas));
+        }
     }
+    return Promise.all(arrayPromises);
 };
-(function(){procesarDirectorio()})();
+
+// procesar archivos txt en directorio de trabajo y pone a la escuha de nuevos txt
+(function() {
+    if (watch) {
+        watch.close();
+        watch = null;
+        txtPendientesParaProcesar = [];
+    }
+    procesarDirectorio().then(() => {
+        watch = fs.watch(dirFacturas, {encoding: 'utf8'}, callBackWatchFs);
+    }).catch(err => {
+        console.log(err);
+    });
+})();
 /**
 * separa en facturas nacionales y extranjeras, en las facturas extranjeras agrega
 * la informacion requerida, las facturas nacionales las guarda en un nuevo txt
@@ -95,7 +117,6 @@ function procesarTxt(nameTxt, dir) {
     }
     facturas = separarFacturas(facturas);
     writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
-
 
     var promise = new Promise( (resolv, reject) => {
         addInfoFactura(facturas.extranjeras).then( values => {
@@ -380,7 +401,7 @@ function complementarInfoPrducto(producto, head) {
 
     var codigo = producto.VlrCodigo1
 
-    var infoExcel = jsonExcel.data.find(elemento => elemento.RPRDNO == codigo)
+    var infoExcel = jsonExcel.data.find(elemento => elemento.RPRDNO.trim() == codigo.trim())
     || { DESCRIPCION_EN_ESPAnOL: "", DESCRIPCION_EN_INGLES: "", FRACCION: "" };
 
     var match = {cceDescES: "DESCRIPCION_EN_ESPAnOL", cceDescEN: "DESCRIPCION_EN_INGLES", cceFraccion: "FRACCION"};
@@ -394,6 +415,7 @@ function complementarInfoPrducto(producto, head) {
             head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
         }
         //if (!producto.hasOwnProperty(key))
+        //console.log(infoExcel[match[key]]);
         producto[key] = infoExcel[match[key]];
     }
 
@@ -457,15 +479,6 @@ function getNumFacturasTxt(nameFile, dir) {
 * @return lista de archivos txt en el directorio { nombre, cantidad: cantidad de facturas }
 */
 function getListTxt(req, res) {
-    var nameTxtToDate = function (nameTxt){
-        var fechaArchivo = nameTxt.split(".")[0];
-        var fechaArchivotmp = fechaArchivo.split("_");
-        fechaArchivo = fechaArchivotmp[fechaArchivotmp.length-2];
-
-        fechaArchivo = new Date(fechaArchivo);
-        if (fechaArchivo == "Invalid Date") return null;
-        else return fechaArchivo;
-    };
     var dir = "";
     if (req.query.directorio == "pendientes")
         dir = dirFacturas;
@@ -496,9 +509,9 @@ function getListTxt(req, res) {
         var lista = [];
         for (var i in files) {
             var archivo = {};
-            var fechaArchivo = nameTxtToDate(files[i]);
-            if (!fechaArchivo) continue;
-            if (fIni.getTime() <= fechaArchivo.getTime() &&  fechaArchivo.getTime() <= fFin.getTime() ) {
+            var infoName = testNameTxt(files[i]);
+            if (!infoName) continue;
+            if (fIni.getTime() <= infoName.fecha.getTime() &&  infoName.fecha.getTime() <= fFin.getTime() ) {
                 var archivo = getNumFacturasTxt(files[i], dir)
                 lista.push(archivo);
             }
@@ -514,6 +527,39 @@ function getFacturas(req, res) {
     var nameFile = dirFacturas + "/" + req.body.nameFile;
     var facturas = convertTxtToJson(nameFile);
     res.status(200).send(facturas);
+}
+/**
+* regresa las facturas en el txt
+*/
+function reProcesarTxt(req, res) {
+    console.log("reProcesarTxt");
+    jsonExcel = cargaDeExcel();
+    if (watch) {
+        watch.close();
+        watch = null;
+        txtPendientesParaProcesar = [];
+    }
+    var list = fs.readdirSync(dirFacturas);
+    var arrayPromises = [];
+    for (var i in list) {
+        if (!Isprocessed(list[i])) {
+            continue;
+        } else {
+            var tmp = list[i].split(".")[0];
+            tmp = tmp.split("_");
+            tmp.splice(tmp.length-1, 1);
+            var name = tmp.join("_") + ".txt";
+            fs.renameSync(dirFacturas + "/" + list[i], dirFacturas + "/" + name);
+        }
+    }
+
+    procesarDirectorio().then(() => {
+        watch = fs.watch(dirFacturas, {encoding: 'utf8'}, callBackWatchFs);
+        return res.status(200).send({message: "success"});
+    }).catch(err => {
+        console.log(err);
+        return res.status(500).send(err);
+    });
 }
 /**
 * guardas las facturas en el txt
@@ -537,15 +583,18 @@ function guardarTxt(req, res){
 function timbrar(req, res) {
     var nameTxt = req.body.nameTxt;
     var factura = req.body.factura;
+    console.log("timbrar -> " + nameTxt);
     var numeroInterno = factura.factura[0].NumeroInterno;
-
-    var partsNameTxt = nameTxt.split("_");
-    var part1 = partsNameTxt.splice(0,3);
-    partsNameTxt.splice(0,3);
-    var newNameTxt = part1.join("_") + "_" + numeroInterno + "_Thru_" + partsNameTxt.join("_");
-
-    console.log("timbrar -> " + newNameTxt);
-    writeFile([factura], newNameTxt, dirFacturasTimbradas)
+    var infoFile = testNameTxt(nameTxt);
+    if (!infoFile){
+        return res.status(404).send({message: "nombre de factura no valido"});
+    }
+    if (infoFile.parts.length == 9 ){
+        var part1 = infoFile.parts.splice(0,3);
+        infoFile.parts.splice(0,3);
+        nameTxt = part1.join("_") + "_" + numeroInterno + "_Thru_" + infoFile.parts.join("_");
+    }
+    writeFile([factura], nameTxt, dirFacturasTimbradas)
     .then( () => {
         res.status(200).send({message: "success"});
     })
@@ -565,15 +614,43 @@ function reEditar(req, res) {
         var destino = dirFacturas + "/" + nameTxts[i];
         if(fs.existsSync(nameTxt)) {
             var fileAct = nameTxts[i];
-            console.log("fuente -> " + nameTxt);
-            console.log("destino -> " + destino);
-            fs.rename(nameTxt, destino, function(){
-                var txt = getNumFacturasTxt(fileAct, dirFacturas)
-                io.emit('newTxt', txt);
-            });
+            fs.renameSync(nameTxt, destino);
+            sendNewTxt(fileAct);
         }
     }
     return res.status(200).send({message:"success"});
+}
+
+//comprueba si el nombre de archivo es valido y avisa de un nuevo txt mediante sokects
+function sendNewTxt(nameTxt) {
+    if (!testNameTxt(nameTxt)){
+        console.log("nombre de archivo no valido ->" + nameTxt);
+        return;
+    }
+    var txt = getNumFacturasTxt(nameTxt, dirFacturas)
+    io.emit('newTxt', txt);
+}
+// comprueba si el nombre de archivo es valido
+function testNameTxt(nameTxt) {
+    var partsTxt = nameTxt.split("_");
+    if (partsTxt.length != 9 && partsTxt.length != 8) {
+        return false;
+    }
+    if (partsTxt[partsTxt.length - 1] == "A1.txt") {
+        var fecha = partsTxt[partsTxt.length - 2];
+        fecha = new Date(fecha);
+        if (fecha == "Invalid Date") {
+            return null;
+        }
+        else {
+            return {
+                parts: partsTxt,
+                fecha: fecha
+            };
+        }
+    } else {
+        return false;
+    }
 }
 
 function procesarCarpeta(req, res){
@@ -593,5 +670,6 @@ module.exports = {
         timbrar,
         //tmp
         procesarCarpeta,
-        setSocketIO
+        setSocketIO,
+        reProcesarTxt
 }

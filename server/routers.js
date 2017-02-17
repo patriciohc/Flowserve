@@ -13,6 +13,8 @@ api.post('/facturas/', middleware.ensureAuthenticated, facturas.getFacturas);
 api.put('/facturas/', middleware.ensureAuthenticated, facturas.guardarTxt);
 api.post('/timbrarFactura/', middleware.ensureAuthenticated, facturas.timbrar);
 api.post('/reeditar/', middleware.ensureAuthenticated, facturas.reEditar);
+api.get('/actualiarFacturas/', middleware.ensureAuthenticated, facturas.reProcesarTxt);
+
 //api.get('/procesar/', facturas.procesarCarpeta); // temporal
 
 // users
