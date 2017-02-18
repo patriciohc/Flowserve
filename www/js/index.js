@@ -176,8 +176,6 @@ function logueo() {
    }
 }
 
-
-
 // agrega un nuevo elemento a la lista de txt
 function agregarElementoListaTxt(txt) {
         var tableTxt = document.getElementById("ul-txt");
@@ -410,6 +408,7 @@ function formularioData(){
     $("#txt_cceNExpConfiable").val(datos.receptor[3].cceNExpConfiable);
     $("#txt_cceCertOrig").val(datos.receptor[3].cceCertOrig);
     $("#txt_cceNCertOrig").val(datos.receptor[3].cceNCertOrig);
+    $("#selectCceMTraslado").val(datos.receptor[3].cceMTraslado);
 
     // datos productos
     var item = datos.receptor.find( item => item.hasOwnProperty("productos"));
@@ -531,6 +530,7 @@ function setDatosFactura(){
     datos.receptor[3].cceNExpConfiable = $("#txt_cceNExpConfiable").val();
     datos.receptor[3].cceCertOrig = $("#txt_cceCertOrig").val();
     datos.receptor[3].cceNCertOrig = $("#txt_cceNCertOrig").val();
+    datos.receptor[3].cceMTraslado = $("#selectCceMTraslado").val();
 
     // datos productos
     var bloque = datos.receptor.find( item => item.hasOwnProperty("productos"));
