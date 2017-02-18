@@ -184,7 +184,7 @@ function convertTxtToJson(nameFile) {
     }
     if (!texto) return [];
     var facturas = texto.split("XXXINICIO");
-    facturas = facturas.filter(item => item != item.trim());
+    facturas = facturas.filter(item => item.trim() != "");
     facturas = facturas.map( item => {
         return item.split("\r\n\r\n")
             .map( item => {
@@ -270,6 +270,7 @@ function addSeccionManual(factura){
         cceVersion: "1.1",
         cceTipoOp: "Exportacion",
         cceClavePed: "A1",
+        cceMTraslado: "",
     }
     // busca si ya fueron agregados los nuevos datos
     var nuevosDatosTest = factura.receptor.find( item => item.hasOwnProperty("cceNExpConfiable"));

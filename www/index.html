@@ -5,53 +5,36 @@
     <title>login form</title>
 
     <link rel="stylesheet" href="css/style.css">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"> -->
     <link rel="stylesheet" href="css/reset.min.css">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.css"> -->
     <link rel="stylesheet" href="css/jquery-confirm.css">
     <!-- Tema opcional -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css"> -->
     <link rel="stylesheet" href="css/bootstrap-select.min.css">
-    <!-- <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" > -->
     <link rel="stylesheet" href="css/bootstrap-toggle.min.css">
     <!-- Include Datepicker -->
-    <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" /> -->
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <!--Bootstrap switch-->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.3/css/bootstrap3/bootstrap-switch.css"> -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.3/css/bootstrap3/bootstrap-switch.min.css"> -->
 
     <!-- Versión compilada y comprimida del CSS de Bootstrap -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/index.css">
     <!-- jquery -->
-    <!-- <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
     <script src="js/libs/jquery-3.1.1.min.js"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.js"></script> -->
     <script src="js/libs/jquery-confirm.min.js"></script>
     <!-- Include Datepicker -->
-    <!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
-    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
     <script src="js/libs/jquery-ui.min.js"></script>
     <!-- <script src="jquery.ui.datepicker-es.js"></script> -->
-
     <!-- bootstrap -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <!-- <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
     <script src="js/libs/bootstrap-toggle.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script> -->
     <script src="js/libs/bootstrap-select.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.3/js/bootstrap-switch.js"></script> -->
     <!-- Latest compiled and minified JavaScript -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script> -->
 	<script src="/socket.io/socket.io.js"></script>
     <script src="js/libs/spin.min.js"></script>
     <script src="js/index.js"></script>
     <script src="js/general.js"></script>
-
 </head>
 
 <body>
@@ -381,11 +364,11 @@
                         <label for="txt_cceClavePed">Clave de pedimento:</label>
                         <input class="form-control" id="txt_cceClavePed" type="text" disabled="disabled">
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <label for="txt_cceNExpConfiable">No. exportador confiable:</label>
                         <input class="form-control" id="txt_cceNExpConfiable" type="text">
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <label for="txt_cceCertOrig">Certificado de origen:</label>
                         <!--<input class="form-control" id="txt_cceCertOrig" type="text">-->
                         <select class="form-control" id="txt_cceCertOrig">
@@ -393,10 +376,22 @@
                             <option>1</option>
                         </select>
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <label for="txt_cceNCertOrig">No. de certificador de origen:</label>
                         <input class="form-control" id="txt_cceNCertOrig" type="text">
                     </div>
+                    <div class="col-xs-3">
+                        <label for="txt_cceNCertOrig">Motivo del traslado:</label>
+                        <select name="" id="selectCceMTraslado" class="form-control">
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="99">99</option>
+                        </select>
+                    </div>
+
                 </div>
             </div>
         </div>
