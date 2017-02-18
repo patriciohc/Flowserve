@@ -49,8 +49,9 @@ function callBackWatchFs(eventType, filename) {
                 io.emit('newTxt', txt);
             })
             .catch(function (err) {
-                console.log("error: " + err.code);
-                txtPendientesParaProcesar.push(filename + "|" + "1");
+                if (err.code == 'EBUSY') {
+                    txtPendientesParaProcesar.push(filename + "|" + "1");
+                }
             });
         }
     } else {
@@ -100,7 +101,10 @@ function procesarDirectorio() {
     procesarDirectorio().then(() => {
         watch = fs.watch(dirFacturas, {encoding: 'utf8'}, callBackWatchFs);
     }).catch(err => {
-        console.log(err);
+        if (err.code == 'EISDIR')
+            watch = fs.watch(dirFacturas, {encoding: 'utf8'}, callBackWatchFs);
+        else
+            console.log(err);
     });
 })();
 /**
@@ -112,7 +116,7 @@ function procesarDirectorio() {
 function procesarTxt(nameTxt, dir) {
     var facturas = convertTxtToJson(dir + "/" + nameTxt);
     if (!facturas) return new Promise((resolv) => resolv());
-    if (facturas.code == 'EBUSY') { // error
+    if (facturas.code == 'EBUSY' || facturas.code == 'EISDIR') { // error
         return new Promise((resolv, reject) => reject(facturas));
     }
     facturas = separarFacturas(facturas);
