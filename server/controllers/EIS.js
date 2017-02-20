@@ -8,7 +8,7 @@ var TYPES = require('tedious').TYPES
 
 function getDatos(p) {
 
-     var connection = new Connection(configDB.sqlServer);
+     /*var connection = new Connection(configDB.sqlServer);
     
      return new Promise( (resolve, reject) => {
     
@@ -47,14 +47,14 @@ function getDatos(p) {
              }
          });
     
-     });
+     });*/
 
-    /*return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         p.cceMarca = p.VlrCodigo1;
         p.cceModelo = p.VlrCodigo1;
         resolve("success");
        //setTimeout(resolve, parseInt(Math.random() * 3000), {marca: sku, modelo: sku});
-    });*/
+    });
 }
 
 

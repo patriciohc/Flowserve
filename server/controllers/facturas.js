@@ -9,13 +9,13 @@ const iconvlite = require('iconv-lite');
 const XLSX = require('xlsx');
 const excel = require('../excel')
 
-/*const dirFacturas = "./datos_txt";
+const dirFacturas = "./datos_txt";
 const dirFacturasNacionales = "./timbradas";
-const dirFacturasTimbradas = "./timbradas";*/
+const dirFacturasTimbradas = "./timbradas";
 
-const dirFacturas = "\\tlxfp1\prnportCCE";
-const dirFacturasNacionales = "\\tlxfp1\prnportCCE\Salida";
-const dirFacturasTimbradas = "\\tlxfp1\prnportCCE\Salida";
+/*const dirFacturas = "\\\\tlxfp1/prnportCCE";
+const dirFacturasNacionales = "\\\\tlxfp1/prnportCCE/Salida";
+const dirFacturasTimbradas = "\\\\tlxfp1/prnportCCE/Salida";*/
 
 var io; // websockets
 var watch // en escucha de archivos
@@ -105,8 +105,10 @@ function procesarDirectorio() {
     procesarDirectorio().then(() => {
         watch = fs.watch(dirFacturas, {encoding: 'utf8'}, callBackWatchFs);
     }).catch(err => {
-        if (err.code == 'EISDIR')
+        if (err.code == 'EISDIR'){
+            console.log("escuchando");
             watch = fs.watch(dirFacturas, {encoding: 'utf8'}, callBackWatchFs);
+        }
         else
             console.log(err);
     });
