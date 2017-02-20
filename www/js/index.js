@@ -116,8 +116,8 @@ $(document).ready(function() {
         onchangeDate();
     });
 
-    var urlServer = "http://localhost:8880";
-    //var urlServer = "http://172.31.224.50:8880";
+    //var urlServer = "http://localhost:8880";
+    var urlServer = "http://172.31.224.50:8880";
     var socket = io.connect( urlServer, {"forceNew": true});
     socket.on('newTxt', agregarElementoListaTxt);
 
