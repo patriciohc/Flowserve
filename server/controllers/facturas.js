@@ -7,11 +7,11 @@ const fs = require('fs');
 const iconvlite = require('iconv-lite');
 // lectura de excel
 const XLSX = require('xlsx');
-const excel = require('../excel')
+const excel = require('../excel');
 
 const dirFacturas = "./datos_txt";
-const dirFacturasNacionales = "./timbradas";
-const dirFacturasTimbradas = "./timbradas";
+const dirFacturasNacionales = "./datos_txt/timbradas";
+const dirFacturasTimbradas = "./datos_txt/timbradas";
 
 var io; // websockets
 var watch // en escucha de archivos
@@ -38,7 +38,7 @@ function Isprocessed(fileName) {
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 var txtPendientesParaProcesar = [];
 function callBackWatchFs(eventType, filename) {
-    if (Isprocessed(filename)) return;
+    if (Isprocessed(filename) || !testNameTxt(filename)) return;
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
             console.log("inicio-> " + filename);
@@ -82,9 +82,10 @@ function procesarDirectorio() {
     var list = fs.readdirSync(dirFacturas);
     var arrayPromises = [];
     for (var i in list) {
-        if (Isprocessed(list[i])) {
+        if (Isprocessed(list[i]) || !testNameTxt(list[i]) ) {
             continue;
         } else {
+            console.log("procesando ->" + list[i]);
             arrayPromises.push(procesarTxt(list[i], dirFacturas));
         }
     }
@@ -116,18 +117,23 @@ function procesarDirectorio() {
 function procesarTxt(nameTxt, dir) {
     var facturas = convertTxtToJson(dir + "/" + nameTxt);
     if (!facturas) return new Promise((resolv) => resolv());
-    if (facturas.code == 'EBUSY' || facturas.code == 'EISDIR') { // error
+    if (facturas.code) { // error
         return new Promise((resolv, reject) => reject(facturas));
     }
     facturas = separarFacturas(facturas);
-    writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
+    if (facturas.nacionales.length > 0)
+        writeFile(facturas.nacionales, nameTxt, dirFacturasNacionales);
+    if (facturas.novalidas.length > 0) {
+        var novalidas = nameTxt.split(".")[0] + "_formato_no_valido" + ".txt";
+        writeFile(facturas.novalidas, novalidas, dirFacturas);
+    }
 
     var promise = new Promise( (resolv, reject) => {
         addInfoFactura(facturas.extranjeras).then( values => {
             var nombreExtranjeras = nameTxt.split(".")[0] + "_A1" + ".txt";
             writeFile(facturas.extranjeras, nombreExtranjeras, dirFacturas).then(() => {
                 if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
-                    fs.unlinkSync(dirFacturas + "/" + nameTxt);
+                   fs.unlinkSync(dirFacturas + "/" + nameTxt);
                 }
                 resolv(nombreExtranjeras);
             });
@@ -144,10 +150,16 @@ function procesarTxt(nameTxt, dir) {
 */
 function separarFacturas(facturas) {
     var s = {
+        novalidas: [],
         nacionales: [],
         extranjeras: []
     };
-    for (var i in facturas ){
+    for (var i in facturas ) {
+        if (!facturas[i].receptor || facturas[i].receptor.length < 2 || !facturas[i].receptor[2].Pais) {
+            console.log("factura tiene formato no valido");
+            s.novalidas.push(facturas[i]);
+            continue;
+        }
         var lugar = facturas[i].receptor[2].Pais;
         if (lugar == "MEXICO"){
             s.nacionales.push(facturas[i]);
@@ -166,7 +178,11 @@ function addInfoFactura(facturas) {
     var promises = []
     for (var i in facturas){
         addSeccionManual(facturas[i]);
-        complementarInfoPrductos(facturas[i].receptor[2].productos, promises)
+        if (!facturas[i].receptor || facturas[i].receptor.length < 2 || !facturas[i].receptor[2].productos){
+            console.log("factura no cotiene lista de productos");
+            continue;
+        }
+        complementarInfoPrductos(facturas[i].receptor[2].productos, promises);
     }
     return Promise.all(promises);
 }
@@ -327,9 +343,9 @@ function writeFile(facturas, nombreTxt, directorio) {
     var texto = "";
     if (!facturas || facturas.length == 0) {
         return new Promise( (resolve, reject) => {
-            if (fs.existsSync(directorio + "/" + nombreTxt)) {
-                fs.unlinkSync(directorio + "/" + nombreTxt);
-            }
+            // if (fs.existsSync(directorio + "/" + nombreTxt)) {
+            //     fs.unlinkSync(directorio + "/" + nombreTxt);
+            // }
             resolve("noData")
         });
     }
@@ -638,14 +654,14 @@ function sendNewTxt(nameTxt) {
 // comprueba si el nombre de archivo es valido
 function testNameTxt(nameTxt) {
     var partsTxt = nameTxt.split("_");
-    if (partsTxt.length != 9 && partsTxt.length != 8) {
+    if (partsTxt.length != 9 && partsTxt.length != 8 && partsTxt.length != 7) {
         return false;
     }
     if (partsTxt[partsTxt.length - 1] == "A1.txt") {
         var fecha = partsTxt[partsTxt.length - 2];
         fecha = new Date(fecha);
         if (fecha == "Invalid Date") {
-            return null;
+            return false;
         }
         else {
             return {
@@ -654,7 +670,17 @@ function testNameTxt(nameTxt) {
             };
         }
     } else {
-        return false;
+        var fecha = partsTxt[partsTxt.length - 1];
+        fecha = new Date(fecha.split(".")[0]);
+        if (fecha == "Invalid Date") {
+            return false;
+        }
+        else {
+            return {
+                parts: partsTxt,
+                fecha: fecha
+            };
+        }
     }
 }
 
