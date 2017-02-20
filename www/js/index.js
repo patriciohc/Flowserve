@@ -332,6 +332,12 @@ function formularioData(){
     txtSelected.indexSelected = this.IndexData
     var datos = txtSelected.facturas[txtSelected.indexSelected];
     // datos encabezado
+    if (!datos.factura || datos.factura.length < 1
+        || !datos.emisor || datos.emisor.length < 3
+        || !datos.receptor || datos.receptor.length < 4) {
+        alertMensaje("Esta factura tiene un formato no valido");
+        return;
+    }
     $("#txtEncNumInter").val(datos.factura[0].NumeroInterno)
     $("#txtEncNumApro").val(datos.factura[0].NroAprob)
     $("#txtEncAñoAprobacion").val(datos.factura[0].AnoAprob)
