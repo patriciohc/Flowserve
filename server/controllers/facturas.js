@@ -211,6 +211,7 @@ function addSeccionComercioExterior(factura) {
         NoExportadorConfiabl: "",
         TipoCambio: tipoCambio,
         Incoterm: icoterm,
+        MotivoTraslado: "",
         "xxxxxxxxxxxxxxxxxxxxxxxxxDetalleMercancias": "",
         productos: {
             head:[

@@ -418,7 +418,7 @@ function formularioData(){
     $("#txt_cceNCertOrig").val(datos.otros[5].NumCertificadoOrigen);
     $("#txt_TipoCambio").val(datos.otros[5].TipoCambio);
     $("#txt_Incoterm").val(datos.otros[5].Incoterm);
-    //$("#selectCceMTraslado").val(datos.otros[5].cceMTraslado);
+    $("#selectCceMTraslado").val(datos.otros[5].MotivoTraslado);
 
     // datos productos
     var item = datos.otros.find( item => item.hasOwnProperty("productos"));
@@ -553,7 +553,7 @@ function setDatosFactura(){
     datos.otros[5].NumCertificadoOrigen = $("#txt_cceNCertOrig").val();
     datos.otros[5].TipoCambio = $("#txt_TipoCambio").val();
     datos.otros[5].Incoterm = $("#txt_Incoterm").val();
-    //datos.otros[5].cceMTraslado = $("#selectCceMTraslado").val();
+    datos.otros[5].MotivoTraslado = $("#selectCceMTraslado").val();
 
     // datos productos
     var bloque = datos.otros.find( item => item.hasOwnProperty("productos"));
