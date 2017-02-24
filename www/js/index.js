@@ -116,8 +116,8 @@ $(document).ready(function() {
         onchangeDate();
     });
 
-    //var urlServer = "http://localhost:8880";
-    var urlServer = "http://172.31.224.50:8880";
+    var urlServer = "http://localhost:8880";
+    //var urlServer = "http://172.31.224.50:8880";
     var socket = io.connect( urlServer, {"forceNew": true});
     socket.on('newTxt', agregarElementoListaTxt);
 
@@ -297,20 +297,20 @@ function actualiarFacturas() {
 
 function validarFactura(factura) {
     var faltantes = [];
-    if (factura.receptor[3].cceVersion == "") faltantes.push("Version");
-    if (factura.receptor[3].cceTipoOp == "") faltantes.push("Tipo operación")
-    if (factura.receptor[3].cceClavePed == "") faltantes.push("Clave pediemento");
-    if (factura.receptor[3].cceNExpConfiable == "") faltantes.push("No. exportador confiable");
-    if (factura.receptor[3].cceCertOrig == "") faltantes.push("Certificado de origen");
-    if (factura.receptor[3].cceNCertOrig == "") faltantes.push("No. de certificador de origen");
+    if (factura.otros[5].Version == "") faltantes.push("Version");
+    if (factura.otros[5].TipoOperacion == "") faltantes.push("Tipo operación")
+    if (factura.otros[5].ClavePedimento == "") faltantes.push("Clave pediemento");
+    if (factura.otros[5].NoExportadorConfiabl == "") faltantes.push("No. exportador confiable");
+    if (factura.otros[5].CertificadoOrigen == "") faltantes.push("Certificado de origen");
+    if (factura.otros[5].NumCertificadoOrigen == "") faltantes.push("No. de certificador de origen");
 
-    var bloque = factura.receptor.find( item => item.hasOwnProperty("productos"));
+    var bloque = factura.otros.find( item => item.hasOwnProperty("productos"));
     var rows = [];
     if (bloque)
         rows = bloque.productos.rows;
     if (rows){
         var ban = false;
-        var keys = ["cceDescES", "cceDescEN", "cceFraccion", "cceMarca", "cceModelo", "cceSerie"];
+        var keys = ["cceDescEsp", "cceDescIng", "FraccionArancelaria", "Marca", "Modelo", "NumeroSerie"];
         for (var i = 0; i < rows.length; i++) {
             var item = rows[i];
             for (var j in keys){
@@ -334,7 +334,8 @@ function formularioData(){
     // datos encabezado
     if (!datos.factura || datos.factura.length < 1
         || !datos.emisor || datos.emisor.length < 3
-        || !datos.receptor || datos.receptor.length < 4) {
+        || !datos.receptor || datos.receptor.length < 3
+        || !datos.otros || datos.otros.length < 6) {
         alertMensaje("Esta factura tiene un formato no valido");
         return;
     }
@@ -409,16 +410,18 @@ function formularioData(){
     $("#txtRecepD2MetodoPago").val(datos.receptor[2].methodoDePago);
     //$("#txtRecepD2NumPago").val(dato.receptor[2].);
 
-    $("#txt_cceVersion").val(datos.receptor[3].cceVersion);
-    $("#txt_cceTipoOp").val(datos.receptor[3].cceTipoOp);
-    $("#txt_cceClavePed").val(datos.receptor[3].cceClavePed);
-    $("#txt_cceNExpConfiable").val(datos.receptor[3].cceNExpConfiable);
-    $("#txt_cceCertOrig").val(datos.receptor[3].cceCertOrig);
-    $("#txt_cceNCertOrig").val(datos.receptor[3].cceNCertOrig);
-    $("#selectCceMTraslado").val(datos.receptor[3].cceMTraslado);
+    $("#txt_cceVersion").val(datos.otros[5].Version);
+    $("#txt_cceTipoOp").val(datos.otros[5].TipoOperacion);
+    $("#txt_cceClavePed").val(datos.otros[5].ClavePedimento);
+    $("#txt_cceNExpConfiable").val(datos.otros[5].NoExportadorConfiabl);
+    $("#txt_cceCertOrig").val(datos.otros[5].CertificadoOrigen);
+    $("#txt_cceNCertOrig").val(datos.otros[5].NumCertificadoOrigen);
+    $("#txt_TipoCambio").val(datos.otros[5].TipoCambio);
+    $("#txt_Incoterm").val(datos.otros[5].Incoterm);
+    //$("#selectCceMTraslado").val(datos.otros[5].cceMTraslado);
 
     // datos productos
-    var item = datos.receptor.find( item => item.hasOwnProperty("productos"));
+    var item = datos.otros.find( item => item.hasOwnProperty("productos"));
     var tb = document.getElementById("tbSku");
     tb.innerHTML = "";
     if (!item) return; // no hay apartado de productos
@@ -426,27 +429,38 @@ function formularioData(){
     for (var i in productos.rows) {
         var p = productos.rows[i];
         var tr = document.createElement("tr");
+
         var td = document.createElement("td");
-        td.innerHTML = p.VlrCodigo1;
+        td.innerHTML = p.NoIdentificacion;
         tr.appendChild(td);
+
         td = document.createElement("td");
-        td.innerHTML = p.cceDescES;
+        td.innerHTML = p.FraccionArancelaria;
         tr.appendChild(td);
+
         td = document.createElement("td");
-        td.innerHTML = p.cceDescEN;
+        td.innerHTML = p.ValorDolares;
         tr.appendChild(td);
+
         td = document.createElement("td");
-        td.innerHTML = p.cceFraccion;
+        td.innerHTML = p.Marca;
         tr.appendChild(td);
+
         td = document.createElement("td");
-        td.innerHTML = p.cceMarca;
+        td.innerHTML = p.Modelo;
         tr.appendChild(td);
+
         td = document.createElement("td");
-        td.innerHTML = p.cceModelo;
-        tr.appendChild(td);
-        td = document.createElement("td");
-        td.innerHTML = p.cceSerie;
+        td.innerHTML = p.NumeroSerie;
         td.setAttribute("contenteditable", "true");
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.innerHTML = p.cceDescEsp;
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.innerHTML = p.cceDescIng;
         tr.appendChild(td);
 
         tb.appendChild(tr);
@@ -531,16 +545,18 @@ function setDatosFactura(){
     datos.receptor[2].methodoDePago = $("#txtRecepD2MetodoPago").val();
     //$("#txtRecepD2NumPago").val(dato.receptor[2].);
 
-    datos.receptor[3].cceVersion = $("#txt_cceVersion").val();
-    datos.receptor[3].cceTipoOp = $("#txt_cceTipoOp").val();
-    datos.receptor[3].cceClavePed = $("#txt_cceClavePed").val();
-    datos.receptor[3].cceNExpConfiable = $("#txt_cceNExpConfiable").val();
-    datos.receptor[3].cceCertOrig = $("#txt_cceCertOrig").val();
-    datos.receptor[3].cceNCertOrig = $("#txt_cceNCertOrig").val();
-    datos.receptor[3].cceMTraslado = $("#selectCceMTraslado").val();
+    datos.otros[5].Version = $("#txt_cceVersion").val();
+    datos.otros[5].TipoOperacion = $("#txt_cceTipoOp").val();
+    datos.otros[5].ClavePedimento = $("#txt_cceClavePed").val();
+    datos.otros[5].NoExportadorConfiabl = $("#txt_cceNExpConfiable").val();
+    datos.otros[5].CertificadoOrigen = $("#txt_cceCertOrig").val();
+    datos.otros[5].NumCertificadoOrigen = $("#txt_cceNCertOrig").val();
+    datos.otros[5].TipoCambio = $("#txt_TipoCambio").val();
+    datos.otros[5].Incoterm = $("#txt_Incoterm").val();
+    //datos.otros[5].cceMTraslado = $("#selectCceMTraslado").val();
 
     // datos productos
-    var bloque = datos.receptor.find( item => item.hasOwnProperty("productos"));
+    var bloque = datos.otros.find( item => item.hasOwnProperty("productos"));
     var rows = [];
     if (bloque)
         rows = bloque.productos.rows;
@@ -549,19 +565,21 @@ function setDatosFactura(){
         //var campo1, campo2, campo3;
         $(this).children("td").each(function (index2) {
             switch (index2) {
-                case 0: p.VlrCodigo1 = $(this).text();
+                case 0: p.NoIdentificacion = $(this).text();
                     break;
-                case 1: p.cceDescES = $(this).text();
+                case 1: p.FraccionArancelaria = $(this).text();
                     break;
-                case 2: p.cceDescEN = $(this).text();
+                case 2: p.ValorDolares = $(this).text();
                     break;
-                case 3: p.cceFraccion = $(this).text();
+                case 3: p.Marca = $(this).text();
                     break;
-                case 4: p.cceMarca = $(this).text();
+                case 4: p.Modelo = $(this).text();
                     break;
-                case 5: p.cceModelo = $(this).text();
+                case 5: p.NumeroSerie = $(this).text();
                     break;
-                case 6: p.cceSerie = $(this).text();
+                case 6: p.cceDescEsp = $(this).text();
+                    break;
+                case 7: p.cceDescIng = $(this).text();
                     break;
             }
         })
