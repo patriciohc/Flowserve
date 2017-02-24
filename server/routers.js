@@ -5,6 +5,7 @@ const api = express.Router();
 const users = require('./controllers/users');
 const middleware = require('./middleware');
 const facturas = require('./controllers/facturas');
+const EIS = require('./controllers/EIS');
 // middleware.ensureAuthenticated,
 // txt
 api.get('/listText/', middleware.ensureAuthenticated, facturas.getListTxt);
@@ -25,6 +26,8 @@ api.get('/user/:id/', middleware.ensureAuthenticated, users.getInfoUsers); // ob
 api.delete('/user/:id', middleware.ensureAuthenticated, users.deleteUser); // elimina el usuario espedifiaco en id
 
 api.post('/login/', users.login);
+
+api.get('/testBDEIS/', EIS.testDb);
 
 module.exports = api;
 

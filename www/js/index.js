@@ -116,8 +116,8 @@ $(document).ready(function() {
         onchangeDate();
     });
 
-    var urlServer = "http://localhost:8880";
-    //var urlServer = "http://172.31.224.50:8880";
+    //var urlServer = "http://localhost:8880";
+    var urlServer = "http://172.31.224.50:8880";
     var socket = io.connect( urlServer, {"forceNew": true});
     socket.on('newTxt', agregarElementoListaTxt);
 
@@ -964,6 +964,18 @@ function deleteUser() {
             alertMensaje("Error al actualizar!");
         }
     });
+}
+
+function testearBD(){
+  General.get('api/testBDEIS')
+  .then(function(result){
+    alertMensaje("¡Conexion establecida correctamente!");
+  })
+  .catch(function(err){
+    if(err.status == 500){
+          alertMensaje("¡No hay conexion!");
+    }
+  })
 }
 
 function funcionEnter(evento) {
