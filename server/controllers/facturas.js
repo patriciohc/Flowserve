@@ -218,7 +218,7 @@ function addSeccionComercioExterior(factura) {
         NoExportadorConfiabl: "",
         TipoCambio: tipoCambio,
         Incoterm: icoterm,
-        //"xxxxxxxxxxxxxxxxxxxxxxxxx DetalleMercancias": "",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxDetalleMercancias": "",
         productos: {
             head:[
                 {nombre: "NoIdentificacion", posicion: 0},
@@ -464,7 +464,7 @@ function convertComercioExteriorToTxt(seccion) {
             + white.substring(0, 31 - keyItemSeccion.length)
             + seccion[keyItemSeccion] + "\r\n";
     }
-    texto += "xxxxxxxxxxxxxxxxxxxxxxxxxDetalleMercancias\r\n";
+    //texto += "xxxxxxxxxxxxxxxxxxxxxxxxxDetalleMercancias\r\n";
     texto += convertProductosJsonToTxt(seccion.productos);
     texto += "xxxxxxxxxxxxxxxxxxxxxxxxxFinDetalleMercancias\r\n\r\n";
     return texto;
