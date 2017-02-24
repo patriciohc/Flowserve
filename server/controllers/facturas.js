@@ -419,7 +419,7 @@ function writeFile(facturas, nombreTxt, directorio) {
             if (keySeccion == "otros") texto += "\r\n\r\n\r\n";
             for (var keyItemSeccion in seccion) {
                 var itemSeccion = seccion[keyItemSeccion];
-                if (keyItemSeccion == 5){
+                if (keySeccion == "otros" && keyItemSeccion == 5 && seccion.length == 7){
                     texto += convertComercioExteriorToTxt(itemSeccion);
                     continue;
                 }
@@ -669,7 +669,11 @@ function guardarTxt(req, res){
     var facturas = req.body.facturas;
     var nameTxt = req.body.nameTxt;
     console.log("Guardar -> " + nameTxt);
-
+    if (nameTxt && !facturas){
+        if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
+           fs.unlinkSync(dirFacturas + "/" + nameTxt);
+        }
+    }
     writeFile(facturas, nameTxt, dirFacturas)
     .then( () => {
         res.status(200).send({message: "success"});
@@ -735,6 +739,9 @@ function sendNewTxt(nameTxt) {
 function testNameTxt(nameTxt) {
     var partsTxt = nameTxt.split("_");
     if (partsTxt.length != 9 && partsTxt.length != 8 && partsTxt.length != 7) {
+        return false;
+    }
+    if (partsTxt[2] == "Memos"){
         return false;
     }
     if (partsTxt[partsTxt.length - 1] == "A1.txt") {
