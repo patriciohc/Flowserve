@@ -419,6 +419,7 @@ function formularioData(){
     $("#txt_TipoCambio").val(datos.otros[5].TipoCambio);
     $("#txt_Incoterm").val(datos.otros[5].Incoterm);
     $("#selectCceMTraslado").val(datos.otros[5].MotivoTraslado);
+    $("#id_RFCRec").val(datos.otros[5].numRegidTrib);
 
     // datos productos
     var item = datos.otros.find( item => item.hasOwnProperty("productos"));

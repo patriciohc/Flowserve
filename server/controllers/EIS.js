@@ -24,7 +24,7 @@ function getDatos(p) {
              //request.addParameter('PartCode', TYPES.VarChar, p.VlrCodigo1);
              request.addParameter('PartCode', TYPES.VarChar, p.NoIdentificacion);
              request.addParameter('OrganizationKey', TYPES.Int, 1);
-
+            console.log(p.NoIdentificacion);
              // request.on('row', rows => {
              //     console.log(rows);
              //     return res.status(200).send(rows);
@@ -52,7 +52,7 @@ function getDatos(p) {
 
      });
 
-   /*return new Promise((resolve, reject) => {
+  /* return new Promise((resolve, reject) => {
         p.cceMarca = p.VlrCodigo1;
         p.cceModelo = p.VlrCodigo1;
         resolve("success");
@@ -65,14 +65,14 @@ function testDb(req, res){
   var connection = new Connection(configDB.sqlServer);
   connection.on('connect', function(err) {
              if (err){
-                 return res.status(500).send({message: "conexion fallida"}
+                 return res.status(500).send({message: "conexion fallida"})
              } else {
-                 return res.status(200).send({message: "conexion exitosa"}
+                 return res.status(200).send({message: "conexion exitosa"})
              }
          });
 }
 
 module.exports = {
     getDatos,
-    testDb,
+    testDb
 };

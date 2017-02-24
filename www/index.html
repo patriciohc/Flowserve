@@ -77,9 +77,9 @@
                                 <span class="glyphicon glyphicon-refresh"></span>
                                 Actualizar Excel
                             </button>
-                            <button class="btn btn-success btn-xs pull-right" onclick="testearBD()">
-                                <span class="glyphicon glyphicon-refresh"></span>
-                                Testear conexion a EIS
+                            <button class="btn btn-warning btn-xs pull-right" onclick="testearBD()">
+                                <span class="glyphicon glyphicon-cloud-upload"></span>
+                                Comprobar conexion a EIS
                             </button>
                         </div>
                         <div id="divListaTxt" style="overflow: scroll;">
@@ -371,7 +371,17 @@
                     </div>
                     <div class="col-xs-4">
                         <label for="txt_cceNExpConfiable">No. exportador confiable:</label>
-                        <input class="form-control" id="txt_cceNExpConfiable" type="number"  min="0" max="8">
+                        <!--<input class="form-control" id="txt_cceNExpConfiable" type="number"  min="0" max="8">-->
+                        <select class="form-control" id="txt_cceNExpConfiable">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                        </select>
                     </div>
                     <div class="col-xs-4">
                         <label for="txt_cceCertOrig">Certificado de origen:</label>
@@ -403,6 +413,10 @@
                     <div class="col-xs-4">
                         <label for="txt_cceNCertOrig">Incoterm:</label>
                         <input class="form-control" id="txt_Incoterm" type="text">
+                    </div>
+                    <div class="col-xs-4">
+                      <label for="txt_rfcRecep">RFC</label>
+                      <input class="form-control" id="id_RFCRec" type="text">
                     </div>
 
                 </div>
