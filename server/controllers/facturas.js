@@ -205,7 +205,7 @@ function addInfoFactura(facturas) {
 function addSeccionComercioExterior(factura) {
     var tipoCambio = factura.otros.find( item => item.hasOwnProperty("FctConv") ).FctConv;
     var icoterm = factura.otros.find( item => item.hasOwnProperty("TermsEmb") ).TermsEmb;
-    if (icoterm && icoterm.length <= 3){
+    if (icoterm && icoterm.length > 3){
         icoterm = icoterm.substring(0, 3);
     }
     var nuevosDatos = {
@@ -672,7 +672,6 @@ function getListTxt(req, res) {
         }
         if (dir == "pendientes") {
             procesarDirectorio().then( () => {
-
                 var lista = getLista(files);
                 return res.status(200).send(lista);
             });

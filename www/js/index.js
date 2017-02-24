@@ -601,6 +601,15 @@ function guardarTxt() {
 }
 
 function timbrar() {
+/*  var cerDOrig = $("#txt_cceCertOrig").val;
+  var noCertDorig = $("#txt_cceNCertOrig").val;
+  var inco = $("#txt_Incoterm").val;
+  var typeCambio = $("#txt_TipoCambio").val;
+  if(cerDOrig == "" || noCertDorig == "" || inco == "" || typeCambio="")
+  {
+    alertMensaje("Algunos campos son obligatorios y no pueden ir vacios");
+    return;
+  }*/
     //if (txtSelected.nameTxt == null) {
     //    alertMensaje("Seleccione un elemento de la lista de archivos pendientes");
     //    return;
@@ -632,7 +641,7 @@ function timbrar() {
             //     facturas: null, // facturas en json
             //     indexSelected: null, // factura seleccionada
             // }
-            // cargarTxt();
+            //cargarTxt();
             alertSucces();
         })
         .catch(function (err) {

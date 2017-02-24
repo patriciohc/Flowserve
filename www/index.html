@@ -52,7 +52,7 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <img src="Imgs/FlowserveLogo.gif"  width="200" height="80">
+                    <img src="Imgs/FlowserveLogo.gif"  width="200" height="60">
                 </div>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a data-toggle="modal" onclick="onClickHistorial()" data-target="#myModalHistorial" href="#"><span class="glyphicon glyphicon-folder-close"></span> Historial</a></li>
@@ -367,7 +367,7 @@
                     </div>
                     <div class="col-xs-4">
                         <label for="txt_cceNExpConfiable">No. exportador confiable:</label>
-                        <input class="form-control" id="txt_cceNExpConfiable" type="text">
+                        <input class="form-control" id="txt_cceNExpConfiable" type="number"  min="0" max="8">
                     </div>
                     <div class="col-xs-4">
                         <label for="txt_cceCertOrig">Certificado de origen:</label>
@@ -378,7 +378,7 @@
                         </select>
                     </div>
                     <div class="col-xs-4">
-                        <label for="txt_cceNCertOrig">No. de certificador de origen:</label>
+                        <label for="txt_cceNCertOrig">No. de certificado de origen:</label>
                         <input class="form-control" id="txt_cceNCertOrig" type="text">
                     </div>
                     <!-- <div class="col-xs-3">
