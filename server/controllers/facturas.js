@@ -10,8 +10,8 @@ const XLSX = require('xlsx');
 const excel = require('../excel');
 
 const dirFacturas = "./datos_txt";
-const dirFacturasNacionales = "./datos_txt/timbradas";
-const dirFacturasTimbradas = "./datos_txt/timbradas";
+const dirFacturasNacionales = "./timbradas";
+const dirFacturasTimbradas = "./timbradas";
 
 /*const dirFacturas = "\\\\tlxfp1/prnportCCE";
 const dirFacturasNacionales = "\\\\tlxfp1/prnportCCE/Salida";
@@ -42,6 +42,8 @@ function Isprocessed(fileName) {
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 var txtPendientesParaProcesar = [];
 function callBackWatchFs(eventType, filename) {
+      if (!filename)
+        return;
     if (Isprocessed(filename) || !testNameTxt(filename)) return;
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
@@ -290,7 +292,7 @@ function addSeccionManual(factura){
         cceCertOrig: "",
         cceNCertOrig: "",
         cceVersion: "1.1",
-        cceTipoOp: "Exportacion",
+        cceTipoOp: "2",
         cceClavePed: "A1",
         cceMTraslado: "",
     }
@@ -505,7 +507,7 @@ function getNumFacturasTxt(nameFile, dir) {
 * @param {string} directorio - pendientes, timbradas
 * @return lista de archivos txt en el directorio { nombre, cantidad: cantidad de facturas }
 */
-function getListTxt(req, res) {
+/*function getListTxt(req, res) {
     var dir = "";
     if (req.query.directorio == "pendientes")
         dir = dirFacturas;
@@ -544,6 +546,63 @@ function getListTxt(req, res) {
             }
         }
         return res.status(200).send(lista);
+    });
+}*/
+function getListTxt(req, res) {
+    console.log("getListTxt");
+    var dir = "";
+    if (req.query.directorio == "pendientes")
+        dir = dirFacturas;
+    else if (req.query.directorio == "timbradas")
+        dir = dirFacturasTimbradas;
+    else
+        return res.status(404).send({message:"directorio no valido"});
+
+    var fIni, fFin;
+    if (req.query.fIni) {
+        fIni = new Date(req.query.fIni);
+    } else {
+        fIni = new Date("2014-01-01");
+        //fIni.setDate(1);
+    }
+    if (req.query.fFin) {
+        fFin = new Date(req.query.fFin);
+    } else {
+        fFin = new Date("2060-01-01");
+        //fFins.setDate(30);
+    }
+
+    var getLista = function (files) {
+        var lista = [];
+        for (var i in files) {
+            var archivo = {};
+            var infoName = testNameTxt(files[i]);
+            if (!infoName) continue;
+            if (fIni.getTime() <= infoName.fecha.getTime() &&  infoName.fecha.getTime() <= fFin.getTime() ) {
+                var archivo = getNumFacturasTxt(files[i], dir)
+                lista.push(archivo);
+            }
+        }
+        return lista;
+    };
+
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        if (dir == "pendientes") {
+            procesarDirectorio().then( () => {
+
+                var lista = getLista(files);
+                return res.status(200).send(lista);
+            });
+        } else {
+            var lista = getLista(files);
+            return res.status(200).send(lista);
+        }
+
+
     });
 }
 /**

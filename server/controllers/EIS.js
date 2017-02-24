@@ -49,7 +49,7 @@ function getDatos(p) {
     
      });*/
 
-    return new Promise((resolve, reject) => {
+   return new Promise((resolve, reject) => {
         p.cceMarca = p.VlrCodigo1;
         p.cceModelo = p.VlrCodigo1;
         resolve("success");
