@@ -17,18 +17,22 @@ const dirFacturasTimbradas = "./timbradas";
 const dirFacturasNacionales = "\\\\tlxfp1/prnportCCE/Salida";
 const dirFacturasTimbradas = "\\\\tlxfp1/prnportCCE/Salida";*/
 
+const fileDatosExcel = "./info_excel/Base_avance_para_IT.xlsx";
+const fileDatosEscelRfc = "./info_excel/RFC.xlsx"
+
 var io; // websockets
 var watch // en escucha de archivos
 
-function cargaDeExcel() {
-    var workbook = XLSX.readFile("./info_excel/Base_avance_para_IT.xlsx");
+function cargaDeExcel(file) {
+    var workbook = XLSX.readFile(file);
     //return excel.readExcel(workbook);
     var sheets = excel.readExcel(workbook);
     return sheets[0];
 }
 // carga informacion del excel en formato json
-var jsonExcel = cargaDeExcel();
+var jsonExcel = cargaDeExcel(fileDatosExcel);
 
+var jsonExcelRfc = cargaDeExcel(fileDatosEscelRfc);
 // determina si un txt tiene A1 en su nombre
 function Isprocessed(fileName) {
     var isProsesada = fileName.split("_");
@@ -205,7 +209,20 @@ function addInfoFactura(facturas) {
 function addSeccionComercioExterior(factura) {
     var tipoCambio = factura.otros.find( item => item.hasOwnProperty("FctConv") ).FctConv;
     var icoterm = factura.otros.find( item => item.hasOwnProperty("TermsEmb") ).TermsEmb;
-    if (icoterm && icoterm.length > 3){
+
+    var rfc = jsonExcelRfc.data.find( item => {
+        if (!item.No_cliente)
+            return false;
+        else
+            return item.No_cliente.trim() == factura.receptor[0].CdgCliente.trim();
+    });
+    console.log(rfc);
+    if (rfc) {
+        rfc = rfc.RFC
+    } else {
+        rfc = "";
+    }
+    if (icoterm && icoterm.length <= 3){
         icoterm = icoterm.substring(0, 3);
     }
     var nuevosDatos = {
@@ -214,11 +231,12 @@ function addSeccionComercioExterior(factura) {
         TipoOperacion: "2",
         ClavePedimento: "A1",
         CertificadoOrigen: "",
+        MotivoTraslado: "",
+        numRegidTrib: rfc,
         NumCertificadoOrigen: "",
         NoExportadorConfiabl: "",
         TipoCambio: tipoCambio,
         Incoterm: icoterm,
-        MotivoTraslado: "",
         "xxxxxxxxxxxxxxxxxxxxxxxxxDetalleMercancias": "",
         productos: {
             head:[
@@ -698,7 +716,8 @@ function getFacturas(req, res) {
 */
 function reProcesarTxt(req, res) {
     console.log("reProcesarTxt");
-    jsonExcel = cargaDeExcel();
+    jsonExcel = cargaDeExcel(fileDatosExcel);
+    jsonExcelRfc = cargaDeExcel(fileDatosEscelRfc);
     if (watch) {
         watch.close();
         watch = null;
