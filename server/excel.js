@@ -93,6 +93,7 @@ var excel = {
                 address_of_cell = intToChar(nCol) + nRow;
                 desired_cell = worksheet[address_of_cell];
                 var index = nCol - colInit;
+                if (!head[index]) continue;
                 var attr = head[index].normal
                 if (typeof(desired_cell) == 'undefined'){
                     if (nCol == colInit){ // no hay No. se terminaron las filas
