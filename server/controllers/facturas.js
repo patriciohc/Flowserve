@@ -38,7 +38,11 @@ function Isprocessed(fileName) {
 /** esta a la eschucha de nuevos txt en el directorios de faturas */
 var txtPendientesParaProcesar = [];
 function callBackWatchFs(eventType, filename) {
-    if (Isprocessed(filename) || !testNameTxt(filename)) return;
+    if (!filename)
+        return;
+
+    if (Isprocessed(filename) || !testNameTxt(filename))
+        return;
     if (eventType == "rename") {
         if (fs.existsSync(dirFacturas + "/" +filename)) {
             console.log("inicio-> " + filename);
@@ -130,12 +134,13 @@ function procesarTxt(nameTxt, dir) {
 
     var promise = new Promise( (resolv, reject) => {
         addInfoFactura(facturas.extranjeras).then( values => {
+            //console.log(facturas.extranjeras);
             var nombreExtranjeras = nameTxt.split(".")[0] + "_A1" + ".txt";
             writeFile(facturas.extranjeras, nombreExtranjeras, dirFacturas).then(() => {
-                if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
-                   fs.unlinkSync(dirFacturas + "/" + nameTxt);
-                }
-                resolv(nombreExtranjeras);
+               if (fs.existsSync(dirFacturas + "/" +nameTxt)) {
+                  fs.unlinkSync(dirFacturas + "/" + nameTxt);
+               }
+               resolv(nombreExtranjeras);
             });
         }).catch( err => {
             reject(err);
@@ -177,14 +182,89 @@ function separarFacturas(facturas) {
 function addInfoFactura(facturas) {
     var promises = []
     for (var i in facturas){
-        addSeccionManual(facturas[i]);
-        if (!facturas[i].receptor || facturas[i].receptor.length < 2 || !facturas[i].receptor[2].productos){
+        addSeccionComercioExterior(facturas[i]);
+        if (!facturas[i].receptor || facturas[i].receptor.length < 2 || !facturas[i].receptor[2].productos) {
             console.log("factura no cotiene lista de productos");
             continue;
         }
-        complementarInfoPrductos(facturas[i].receptor[2].productos, promises);
+        complementarInfoPrductos(facturas[i].receptor[2].productos , facturas[i].otros[facturas[i].otros.length - 2].productos, promises);
     }
     return Promise.all(promises);
+}
+/**
+* agrega las claves para la informacion que se agregara manualmente
+* @param {json} factura - factura
+*/
+function addSeccionComercioExterior(factura) {
+    var tipoCambio = factura.otros.find( item => item.hasOwnProperty("FctConv") ).FctConv;
+    var icoterm = factura.otros.find( item => item.hasOwnProperty("TermsEmb") ).TermsEmb;
+    if (icoterm && icoterm.length <= 3){
+        icoterm = icoterm.substring(0, 3);
+    }
+    var nuevosDatos = {
+        "======================ComercioExterior": "",
+        Version: "1.1",
+        TipoOperacion: "2",
+        ClavePedimento: "A1",
+        CertificadoOrigen: "",
+        NumCertificadoOrigen: "",
+        NoExportadorConfiabl: "",
+        TipoCambio: tipoCambio,
+        Incoterm: icoterm,
+        //"xxxxxxxxxxxxxxxxxxxxxxxxx DetalleMercancias": "",
+        productos: {
+            head:[
+                {nombre: "NoIdentificacion", posicion: 0},
+                {nombre: "FraccionArancelaria", posicion: 30},
+                {nombre: "ValorDolares", posicion: 60},
+                {nombre: "Marca", posicion: 100},
+                {nombre: "Modelo", posicion: 150},
+                {nombre: "NumeroSerie", posicion: 200},
+                {nombre: "cceDescEsp", posicion: 250},
+                {nombre: "cceDescIng", posicion: 300},
+            ]
+            //rows: [],
+        }
+    }
+    // busca si ya fueron agregados los nuevos datos
+    //var nuevosDatosTest = factura.receptor.find( item => item.hasOwnProperty("cceNExpConfiable"));
+    var nuevosDatosTest = factura.otros.find( item => item.hasOwnProperty("======================ComercioExterior"));
+    if (!nuevosDatosTest) {
+        var tmp = factura.otros.pop();
+        factura.otros.push(nuevosDatos);
+        factura.otros.push(tmp);
+        //factura.receptor.push(nuevosDatos);
+    }
+}
+/**
+* complementa la informacion para los productos recibidos
+* @param {json} productos - array de productos
+* @param {Array} arrayPromises - debido a que se ejecutan consultas sqlServer
+* asincronas, es necesario para determinar el momento en que se han ejecutado todas
+*/
+function complementarInfoPrductos(productos, nuevaSeccionProductos, arrayPromises) {
+    nuevaSeccionProductos.rows = [];
+    for (var i in productos.rows) {
+        var newRow = {
+            NoIdentificacion: productos.rows[i].VlrCodigo1,
+            FraccionArancelaria: "",
+            ValorDolares: productos.rows[i].MontoNetoItem,
+            Marca: "",
+            Modelo: "",
+            NumeroSerie: "",
+            cceDescEsp: "",
+            cceDescIng: "",
+        }
+        nuevaSeccionProductos.rows.push(newRow);
+        var p = nuevaSeccionProductos.rows[i];
+        //var p = productos.rows[i];
+        complementarInfoExcelPrducto(p/*, nuevaSeccionProductos.head*/);
+        var promise = EIS.getDatos(p).then(function(result) {
+            //p.cceMarca = datos.marca;
+            //p.cceModelo = datos.modelo;
+        });
+        arrayPromises.push(promise);
+    }
 }
 /**
 * procesa el txt y regresa un json con las facturas que contiene
@@ -211,10 +291,10 @@ function convertTxtToJson(nameFile) {
                     if (item == "") continue;
                     var key = item.split(" ")[0];
                     var value = item.substring(key.length, item.length).trim();
-                    if (key == "TpoCodigo1") {
+                    if (key == "TpoCodigo1" || key == "NoIdentificacion") {
                         var infoHead = procesarHead(item);
                         var rows = [];
-                        while(++i < elementos.length)
+                        while(++i < elementos.length && elementos[i] != "xxxxxxxxxxxxxxxxxxxxxxxxxFinDetalleMercancias")
                             rows.push(procesarRow(elementos[i], infoHead));
                         dic["productos"] =  { head: infoHead, rows: rows } ;
                     } else {
@@ -274,25 +354,7 @@ function convertTxtToJson(nameFile) {
     }
     return facturasProcesadas;
 }
-/**
-* agrega las claves para la informacion que se agregara manualmente
-* @param {json} factura - factura
-*/
-function addSeccionManual(factura){
-    var nuevosDatos = {
-        cceNExpConfiable: "",
-        cceCertOrig: "",
-        cceNCertOrig: "",
-        cceVersion: "1.1",
-        cceTipoOp: "Exportacion",
-        cceClavePed: "A1",
-        cceMTraslado: "",
-    }
-    // busca si ya fueron agregados los nuevos datos
-    var nuevosDatosTest = factura.receptor.find( item => item.hasOwnProperty("cceNExpConfiable"));
-    if (!nuevosDatosTest)
-        factura.receptor.push(nuevosDatos);
-}
+
 /**
 * dentro de cada factura hay un aparatado donde se encuetran los productos con
 * con su descripcion en forma de columnas, esta funcion procesa el nombre de
@@ -356,7 +418,11 @@ function writeFile(facturas, nombreTxt, directorio) {
             var seccion = factura[keySeccion];
             if (keySeccion == "otros") texto += "\r\n\r\n\r\n";
             for (var keyItemSeccion in seccion) {
-                var itemSeccion = seccion[keyItemSeccion]
+                var itemSeccion = seccion[keyItemSeccion];
+                if (keyItemSeccion == 5){
+                    texto += convertComercioExteriorToTxt(itemSeccion);
+                    continue;
+                }
                 for (var keyImteSeccion in itemSeccion) {
                     if (keyImteSeccion == "productos") {
                         texto += convertProductosJsonToTxt(itemSeccion[keyImteSeccion]);
@@ -379,6 +445,22 @@ function writeFile(facturas, nombreTxt, directorio) {
         });
     });
 
+}
+
+function convertComercioExteriorToTxt(seccion) {
+    var white = "                                    ";
+    var texto = "======================ComercioExterior\r\n"
+    var keys = Object.keys(seccion);
+    for (var i = 1; i < keys.length-1; i++) {
+        var keyItemSeccion = keys[i];
+        texto += keyItemSeccion
+            + white.substring(0, 31 - keyItemSeccion.length)
+            + seccion[keyItemSeccion] + "\r\n";
+    }
+    texto += "xxxxxxxxxxxxxxxxxxxxxxxxxDetalleMercancias\r\n";
+    texto += convertProductosJsonToTxt(seccion.productos);
+    texto += "xxxxxxxxxxxxxxxxxxxxxxxxxFinDetalleMercancias\r\n\r\n";
+    return texto;
 }
 /**
 * convierte lo productos que se encuentran en formato json a texto para ser escritos
@@ -418,64 +500,47 @@ function convertProductosJsonToTxt(productos) {
 * @param {json} producto - producto
 * @param {json} head - descripcion de las columnas
 */
-function complementarInfoPrducto(producto, head) {
+function complementarInfoExcelPrducto(producto/*, head*/) {
 
-    var codigo = producto.VlrCodigo1
+    var codigo = producto.NoIdentificacion;
 
     var infoExcel = jsonExcel.data.find(elemento => elemento.RPRDNO.trim() == codigo.trim())
     || { DESCRIPCION_EN_ESPAnOL: "", DESCRIPCION_EN_INGLES: "", FRACCION: "" };
 
-    var match = {cceDescES: "DESCRIPCION_EN_ESPAnOL", cceDescEN: "DESCRIPCION_EN_INGLES", cceFraccion: "FRACCION"};
+    var match = {cceDescEsp: "DESCRIPCION_EN_ESPAnOL", cceDescIng: "DESCRIPCION_EN_INGLES", FraccionArancelaria: "FRACCION"};
     var comentarios;
-    var checkItemExcel = function(key, esPirmero) {
-        var tmp = head.find( item => item.nombre == key );
-        if (!tmp && esPirmero) {
-            comentarios = head.pop();
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 60 });
-        } else if (!tmp) {
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
-        }
+    var checkItemExcel = function(key/*, esPirmero*/) {
+        // var tmp = head.find( item => item.nombre == key );
+        // if (!tmp && esPirmero) {
+        //     comentarios = head.pop();
+        //     head.push({ nombre: key, posicion: head[head.length - 1].posicion + 60 });
+        // } else if (!tmp) {
+        //     head.push({ nombre: key, posicion: head[head.length - 1].posicion + 100 });
+        // }
         //if (!producto.hasOwnProperty(key))
         //console.log(infoExcel[match[key]]);
         producto[key] = infoExcel[match[key]];
     }
 
-    var checkItemVacio = function(key) {
-        var tmp = head.find( item => item.nombre == key );
-        if (!tmp) {
-            head.push({ nombre: key, posicion: head[head.length - 1].posicion + 60 })
-        }
-        if (!producto.hasOwnProperty(key))
-            producto[key] = ""
-    }
+    // var checkItemVacio = function(key) {
+    //     var tmp = head.find( item => item.nombre == key );
+    //     if (!tmp) {
+    //         head.push({ nombre: key, posicion: head[head.length - 1].posicion + 60 })
+    //     }
+    //     if (!producto.hasOwnProperty(key))
+    //         producto[key] = ""
+    // }
     // datos excel
-    checkItemExcel("cceDescES", true);// descripcion español
-    checkItemExcel("cceDescEN");// descripcion ingles
-    checkItemExcel("cceFraccion");// fraccion
+    checkItemExcel("cceDescEsp"/*, true*/);// descripcion español
+    checkItemExcel("cceDescIng");// descripcion ingles
+    checkItemExcel("FraccionArancelaria");// fraccion
     // campos vacios
-    checkItemVacio("cceMarca");
-    checkItemVacio("cceModelo");
-    checkItemVacio("cceSerie");
+    //checkItemVacio("cceMarca");
+    //checkItemVacio("cceModelo");
+    //checkItemVacio("cceSerie");
 
-    if (comentarios)
-        head.push({ nombre: comentarios.nombre, posicion: head[head.length - 1].posicion + 50 });
-}
-/**
-* complementa la informacion para los productos recibidos
-* @param {json} productos - array de productos
-* @param {Array} arrayPromises - debido a que se ejecutan consultas sqlServer
-* asincronas, es necesario para determinar el momento en que se han ejecutado todas
-*/
-function complementarInfoPrductos(productos, arrayPromises){
-    for (var i in productos.rows) {
-        var p = productos.rows[i];
-        complementarInfoPrducto(p, productos.head);
-        var promise = EIS.getDatos(p).then(function(result) {
-            //p.cceMarca = datos.marca;
-            //p.cceModelo = datos.modelo;
-        });
-        arrayPromises.push(promise);
-    }
+    //if (comentarios)
+    //    head.push({ nombre: comentarios.nombre, posicion: head[head.length - 1].posicion + 50 });
 }
 
 /**
@@ -500,6 +565,7 @@ function getNumFacturasTxt(nameFile, dir) {
 * @return lista de archivos txt en el directorio { nombre, cantidad: cantidad de facturas }
 */
 function getListTxt(req, res) {
+    console.log("getListTxt");
     var dir = "";
     if (req.query.directorio == "pendientes")
         dir = dirFacturas;
@@ -512,21 +578,17 @@ function getListTxt(req, res) {
     if (req.query.fIni) {
         fIni = new Date(req.query.fIni);
     } else {
-        fIni = new Date("2015-01-01");
+        fIni = new Date("2014-01-01");
         //fIni.setDate(1);
     }
     if (req.query.fFin) {
         fFin = new Date(req.query.fFin);
     } else {
-        fFin = new Date("2020-01-01");
+        fFin = new Date("2060-01-01");
         //fFins.setDate(30);
     }
 
-    fs.readdir(dir, (err, files) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send(err);
-        }
+    var getLista = function (files) {
         var lista = [];
         for (var i in files) {
             var archivo = {};
@@ -537,7 +599,25 @@ function getListTxt(req, res) {
                 lista.push(archivo);
             }
         }
-        return res.status(200).send(lista);
+        return lista;
+    };
+
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        if (dir == "pendientes") {
+            procesarDirectorio().then( () => {
+                var lista = getLista(files);
+                return res.status(200).send(lista);
+            });
+        } else {
+            var lista = getLista(files);
+            return res.status(200).send(lista);
+        }
+
+
     });
 }
 /**

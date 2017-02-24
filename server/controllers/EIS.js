@@ -21,7 +21,7 @@ function getDatos(p) {
     //             }
     //         });
     //
-    //         request.addParameter('PartCode', TYPES.VarChar, p.VlrCodigo1);
+    //         request.addParameter('PartCode', TYPES.VarChar, p.NoIdentificacion);
     //         request.addParameter('OrganizationKey', TYPES.Int, 1);
     //
     //         // request.on('row', rows => {
@@ -32,6 +32,10 @@ function getDatos(p) {
     //         request.on('doneProc', (rowCount, more, returnStatus, rows) => {
     //             p.cceMarca = rows.find( item => item.colName == "PartManufacturer");
     //             p.cceModelo = rows.find( item => item.colName == "MfgPartNumber");
+
+    //             p.Marca = rows.find( item => item.colName == "PartManufacturer");
+    //             p.Modelo = rows.find( item => item.colName == "MfgPartNumber");
+
     //             connection.close()
     //             resolve("success");
     //         });
