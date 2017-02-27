@@ -10,7 +10,8 @@ var sqlServer = {
     server: 'kaldb5131',
     options: {
         //port: 54187,
-        database: "EISystem"
+        database: "EISystem",
+        //rowCollectionOnDone: true,
     },
     // If you're on Windows Azure, you will need this:
     //options: {encrypt: true}
