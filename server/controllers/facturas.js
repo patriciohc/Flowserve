@@ -13,12 +13,14 @@ const excel = require('../excel');
 //const dirFacturasNacionales = "./timbradas";
 //const dirFacturasTimbradas = "./timbradas";
 
+//const fileDatosExcel = "./info_excel/Base_avance_para_IT.xlsx";
+//const fileDatosEscelRfc = "./info_excel/TaxID.xlsx"
+
 const dirFacturas = "\\\\tlxfp1/prnportCCE/Entrada";
 const dirFacturasNacionales = "\\\\tlxfp1/prnportCCE/Salida";
 const dirFacturasTimbradas = "\\\\tlxfp1/prnportCCE/Salida";
 
 const fileDatosExcel = "E:/APPCCE/BDExcel/Base_avance_para_IT.xlsx";
-//const fileDatosEscelRfc = "./info_excel/RFC.xlsx"
 const fileDatosEscelRfc = "E:/APPCCE/BDExcel/TaxID.xlsx"
 
 var io; // websockets
@@ -698,9 +700,7 @@ function getListTxt(req, res) {
         } else {
             var lista = getLista(files);
             return res.status(200).send(lista);
-        }
-
-
+        }   
     });
 }
 /**

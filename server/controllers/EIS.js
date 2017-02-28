@@ -40,19 +40,15 @@ function getDatos(p) {
                 //     p.Modelo = modelo.value;
                 // else
                 //     p.Modelo = "";
-
                  //connection.close();
                  //resolve("success");
                  //return res.status(200).send(rows);
              });
              request.on('doneProc', (rowCount, more, returnStatus, rows) => {
-                //console.log(rows);
-                connection.close()
+                connection.close();
                 resolve("success");
              });
-
              connection.callProcedure(request);
-
          }
 
          connection.on('connect', function(err) {
