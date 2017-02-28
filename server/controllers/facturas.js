@@ -13,12 +13,14 @@ const dirFacturas = "./datos_txt";
 const dirFacturasNacionales = "./timbradas";
 const dirFacturasTimbradas = "./timbradas";
 
-/*const dirFacturas = "\\\\tlxfp1/prnportCCE";
-const dirFacturasNacionales = "\\\\tlxfp1/prnportCCE/Salida";
-const dirFacturasTimbradas = "\\\\tlxfp1/prnportCCE/Salida";*/
-
+// const dirFacturas = "\\\\tlxfp1/prnportCCE/Entrada";
+// const dirFacturasNacionales = "\\\\tlxfp1/prnportCCE/Salida";
+// const dirFacturasTimbradas = "\\\\tlxfp1/prnportCCE/Salida";
+//
+// const fileDatosExcel = "E:/APPCCE/BDExcel/Base_avance_para_IT.xlsx";
 const fileDatosExcel = "./info_excel/Base_avance_para_IT.xlsx";
-const fileDatosEscelRfc = "./info_excel/RFC.xlsx"
+const fileDatosEscelRfc = "./info_excel/TaxID.xlsx";
+//const fileDatosEscelRfc = "E:/APPCCE/BDExcel/TaxID.xlsx"
 
 var io; // websockets
 var watch // en escucha de archivos
@@ -231,9 +233,9 @@ function addSeccionComercioExterior(factura) {
         TipoOperacion: "2",
         ClavePedimento: "A1",
         CertificadoOrigen: "",
-        MotivoTraslado: "",
-        numRegidTrib: rfc,
         NumCertificadoOrigen: "",
+        numRegidTrib: rfc,
+        MotivoTraslado: "",
         NoExportadorConfiabl: "",
         TipoCambio: tipoCambio,
         Incoterm: icoterm,
