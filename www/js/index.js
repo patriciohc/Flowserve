@@ -555,7 +555,7 @@ function setDatosFactura(){
     datos.otros[5].TipoCambio = $("#txt_TipoCambio").val();
     datos.otros[5].Incoterm = $("#txt_Incoterm").val();
     datos.otros[5].MotivoTraslado = $("#selectCceMTraslado").val();
-
+    datos.otros[5].numRegidTrib = $("#id_RFCRec").val();
     // datos productos
     var bloque = datos.otros.find( item => item.hasOwnProperty("productos"));
     var rows = [];

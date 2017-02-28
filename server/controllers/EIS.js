@@ -21,21 +21,34 @@ function getDatos(p) {
                  }
              });
 
-             //request.addParameter('PartCode', TYPES.VarChar, p.VlrCodigo1);
              request.addParameter('PartCode', TYPES.VarChar, p.NoIdentificacion);
+             //request.addParameter('PartCode', TYPES.NVarChar, 'B0156720-K12');
              request.addParameter('OrganizationKey', TYPES.Int, 1);
-            console.log(p.NoIdentificacion);
-             // request.on('row', rows => {
-             //     console.log(rows);
-             //     return res.status(200).send(rows);
-             // });
+
+             request.on('row', rows => {
+                 //console.log(rows);
+                 var marca = rows.find( item => item.metadata.colName == "PartManufacturer");
+                 var modelo = rows.find( item => item.metadata.colName == "MfgPartNumber");
+                 p.Marca = marca.value;
+                 p.Modelo = modelo.value;
+                //  if (marca)
+                //      p.Marca = marca.value;
+                //  else
+                //     p.Marca = "";
+                //
+                // if (modelo)
+                //     p.Modelo = modelo.value;
+                // else
+                //     p.Modelo = "";
+
+                 //connection.close();
+                 //resolve("success");
+                 //return res.status(200).send(rows);
+             });
              request.on('doneProc', (rowCount, more, returnStatus, rows) => {
-                // p.cceMarca = rows.find( item => item.colName == "PartManufacturer");
-                 //p.cceModelo = rows.find( item => item.colName == "MfgPartNumber");
-                 p.Marca = rows.find( item => item.colName == "PartManufacturer");
-                 p.Modelo = rows.find( item => item.colName == "MfgPartNumber");
-                 connection.close()
-                 resolve("success");
+                //console.log(rows);
+                connection.close()
+                resolve("success");
              });
 
              connection.callProcedure(request);
